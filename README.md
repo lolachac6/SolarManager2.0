@@ -44,4 +44,4 @@ Extensión prevista a Android para trabajar en campo con información sincroniza
 ### 1️⃣ Clona el repositorio
 
 ```bash
-git clone https://github.com/usuario/solar-manager.git
+git clone https://github.com/lolachac6/SolarManager2.0.git
