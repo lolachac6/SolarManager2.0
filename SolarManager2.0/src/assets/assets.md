@@ -33,6 +33,10 @@ src
  │       ├─ CardController.java
  │       └─ card.css
  │
+ ├─ DB
+ │   ├─ MongoConnection.java        
+ │         
+ │
  └─ lib
      ├─ javafx
      │   ├─ javafx-base.jar
