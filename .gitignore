@@ -1,0 +1,13 @@
+# Carpeta de compilación
+build/
+dist/
+nbproject/private/
+
+# Archivos de sistema
+*.class
+*.log
+
+# IDE específico
+*.swp
+.DS_Store
+
