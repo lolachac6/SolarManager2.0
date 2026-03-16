@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane id="AnchorPane"
-            prefHeight="400.0"
+            prefHeight="450.0"
             prefWidth="600.0"
             styleClass="mainFxmlClass"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -34,34 +34,72 @@
 
             <children>
 
+                <!-- NOMBRE -->
+
                 <Label text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
                 <TextField fx:id="txtNombre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <!-- APELLIDOS -->
 
                 <Label text="Apellidos:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
                 <TextField fx:id="txtApellidos" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-                <Label text="Dirección:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtDireccion" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <!-- CALLE -->
 
-                <Label text="Teléfono:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtTelefono" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                <Label text="Calle:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtCalle" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                <Label text="Mail:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtMail" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                <!-- NUMERO -->
 
-                <Label text="DNI/CIF:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtDniCif" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                <Label text="Nº:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtNumero" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-                <Label text="Comercial:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtComercial" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+                <!-- CIUDAD -->
 
-                <Label text="Número Cuenta:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtNumeroCuenta" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+                <Label text="Ciudad:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtCiudad" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-                <Label text="Observaciones:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+                <!-- CODIGO POSTAL -->
+
+                <Label text="CP:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtCP" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                <!-- PAIS -->
+
+                <Label text="País:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtPais" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+                <!-- TELEFONO -->
+
+                <Label text="Teléfono:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtTelefono" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+                <!-- MAIL -->
+
+                <Label text="Mail:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtMail" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+                <!-- DNI CIF -->
+
+                <Label text="DNI/CIF:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtDniCif" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+
+                <!-- COMERCIAL -->
+
+                <Label text="Comercial:" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtComercial" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+
+                <!-- NUMERO CUENTA -->
+
+                <Label text="Número Cuenta:" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtNumeroCuenta" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+
+                <!-- OBSERVACIONES -->
+
+                <Label text="Observaciones:" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
                 <TextArea fx:id="txtObservaciones"
                           prefRowCount="4"
-                          GridPane.rowIndex="8"
+                          GridPane.rowIndex="12"
                           GridPane.columnIndex="1"/>
 
             </children>

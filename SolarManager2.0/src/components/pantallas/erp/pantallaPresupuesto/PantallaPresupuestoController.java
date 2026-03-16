@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
-package components.pantallaClientes;
+package components.pantallas.erp.pantallaPresupuesto;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,7 +13,7 @@ import javafx.fxml.Initializable;
  *
  * @author ivang
  */
-public class PantallaClientesController implements Initializable {
+public class PantallaPresupuestoController implements Initializable {
 
     /**
      * Initializes the controller class.
