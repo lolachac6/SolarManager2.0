@@ -1,62 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="256.0" prefWidth="589.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="components.form.datosPersona.datosInstalacion.FormInstalacionController">
+<VBox spacing="12"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="components.form.datosInstalacion.instPropuesta.FormInstalacionController">
 
-    <stylesheets>
-        <URL value="@forminstalacion.css" />
-    </stylesheets>
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
 
-    <children>
+    <Label text="Datos de instalación" styleClass="form-section-title"/>
 
-        <GridPane hgap="10" prefHeight="216.0" prefWidth="545.0" vgap="10" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="20">
+    <GridPane hgap="10" vgap="10">
 
-            <columnConstraints>
-                <ColumnConstraints maxWidth="181.0" minWidth="160.0" prefWidth="181.0" />
-                <ColumnConstraints hgrow="ALWAYS" maxWidth="374.0" minWidth="354.0" prefWidth="354.0" />
-            </columnConstraints>
+        <columnConstraints>
+            <ColumnConstraints percentWidth="15"/>
+            <ColumnConstraints percentWidth="35" hgrow="ALWAYS"/>
+            <ColumnConstraints percentWidth="15"/>
+            <ColumnConstraints percentWidth="35" hgrow="ALWAYS"/>
+        </columnConstraints>
 
-            <children>
+        <Label text="Potencia instalada (kW):" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="txtPotenciaInstalada" GridPane.columnIndex="1" GridPane.rowIndex="0" maxWidth="Infinity"/>
 
-                <Label text="Potencia instalada (kW):" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <Label text="Número de paneles:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        <TextField fx:id="txtNumeroPaneles" GridPane.columnIndex="3" GridPane.rowIndex="0" maxWidth="Infinity"/>
 
-                <TextField fx:id="txtPotenciaInstalada" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <Label text="Producción estimada:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <TextField fx:id="txtProduccionEstimada" GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="Infinity"/>
 
-                <Label text="Número de paneles:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <Label text="Ahorro estimado (€):" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <TextField fx:id="txtAhorroEstimado" GridPane.columnIndex="3" GridPane.rowIndex="1" maxWidth="Infinity"/>
 
-                <TextField fx:id="txtNumeroPaneles" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Label text="Dirección instalación:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <TextArea fx:id="txtDireccionInstalacion"
+                  GridPane.columnIndex="1"
+                  GridPane.rowIndex="2"
+                  GridPane.columnSpan="3"
+                  prefRowCount="3"
+                  maxWidth="Infinity"/>
 
-                <Label text="Producción estimada (kWh/año):" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+    </GridPane>
 
-                <TextField fx:id="txtProduccionEstimada" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-
-                <Label text="Ahorro estimado (€):" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-
-                <TextField fx:id="txtAhorroEstimado" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-
-                <Label text="Dirección instalación:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-
-                <TextArea fx:id="txtDireccionInstalacion" prefRowCount="3" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-
-            </children>
-         <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-         </rowConstraints>
-
-        </GridPane>
-
-    </children>
-
-</AnchorPane>
+</VBox>

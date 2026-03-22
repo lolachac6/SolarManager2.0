@@ -33,7 +33,7 @@ public class NewFXMain extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/components/plantillaGeneral/PlantillaGeneral.fxml")
+                getClass().getResource("/components//pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml")
         );
 
         Parent root = loader.load();

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="components.form.datosDireccion.DatosDireccionController"
+      spacing="12">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Dirección" styleClass="form-section-title"/>
+
+    <GridPane hgap="10" vgap="10">
+
+        <columnConstraints>
+            <ColumnConstraints percentWidth="15"/>
+            <ColumnConstraints percentWidth="35" hgrow="ALWAYS"/>
+            <ColumnConstraints percentWidth="15"/>
+            <ColumnConstraints percentWidth="35" hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Calle:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtCalle" GridPane.rowIndex="0" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+        <Label text="Número:" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <TextField fx:id="txtNumero" GridPane.rowIndex="0" GridPane.columnIndex="3" maxWidth="Infinity"/>
+
+        <Label text="Ciudad:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtCiudad" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+        <Label text="Provincia:" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <TextField fx:id="txtProvincia" GridPane.rowIndex="1" GridPane.columnIndex="3" maxWidth="Infinity"/>
+
+        <Label text="Código Postal:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtCodigoPostal" GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+    </GridPane>
+
+</VBox>

@@ -18,7 +18,7 @@
             styleClass="mainFxmlClass"
             xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="components.pantallas.plantillaGeneral.PlantillaGeneralController">
+            fx:controller="components.pantallas.erp.plantillaGeneral.PlantillaGeneralController">
 
     <stylesheets>
         <URL value="@plantillageneral.css"/>
