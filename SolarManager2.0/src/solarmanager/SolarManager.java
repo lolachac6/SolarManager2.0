@@ -1,20 +1,43 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package solarmanager;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 /**
- *
- * @author lolachaconcarrion
+ * Clase principal que inicia la aplicación Solar Manager.
+ * Carga la plantilla general del dashboard.
  */
-public class SolarManager {
+public class SolarManager extends Application {
 
     /**
-     * @param args the command line arguments
+     * Método que inicia JavaFX
+     */
+    @Override
+    public void start(Stage stage) throws Exception {
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/components/plantillaGeneral/PlantillaGeneral.fxml")
+        );
+
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+
+        stage.setTitle("Solar Manager");
+        stage.setMaximized(true);   // abre en pantalla completa
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    /**
+     * Método main que lanza la aplicación
+     * @param args
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        launch(args);
     }
-    
+
 }

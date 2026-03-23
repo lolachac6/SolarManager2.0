@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="800.0"
+            prefWidth="1200.0"
+            styleClass="mainFxmlClass"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="components.pantallas.erp.pantallaInformes.PantallaInformesController">
+
+    <stylesheets>
+        <URL value="@plantillageneral.css"/>
+    </stylesheets>
+
+    <children>
+
+        <BorderPane AnchorPane.topAnchor="0"
+                    AnchorPane.bottomAnchor="0"
+                    AnchorPane.leftAnchor="0"
+                    AnchorPane.rightAnchor="0">
+
+            <!-- ===================== -->
+            <!-- CABECERA -->
+            <!-- ===================== -->
+            <top>
+                <HBox alignment="CENTER_LEFT"
+                      spacing="10"
+                      style="-fx-background-color:#f4f4f4; -fx-padding:10;">
+
+                    <Button fx:id="btnVolver"
+                            text="← Volver"
+                            onAction="#volverInicio"/>
+
+                    <Label text="Solar Manager"
+                           style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+
+                    <Pane HBox.hgrow="ALWAYS"/>
+
+                </HBox>
+            </top>
+
+            <!-- ===================== -->
+            <!-- MENU LATERAL (IDÉNTICO) -->
+            <!-- ===================== -->
+            <left>
+
+                <VBox alignment="TOP_CENTER"
+                      prefWidth="200"
+                      spacing="10"
+                      style="
+                            -fx-background-color:#e6e9ef;
+                            -fx-padding:85 15 15 15;
+                            -fx-border-color:#d0d0d0;
+                            -fx-border-width:2;
+                            -fx-background-radius:5;
+                            -fx-border-radius:5;">
+
+                    <BorderPane.margin>
+                        <Insets top="90" right="15" bottom="65" left="15"/>
+                    </BorderPane.margin>
+
+                    <Label text="Inicio"
+                           style="-fx-font-weight:bold;"/>
+
+                    <Button text="Clientes" maxWidth="Infinity" styleClass="menu-button" onAction="#irClientes"/>
+                    <Button text="Comerciales" maxWidth="Infinity" styleClass="menu-button" onAction="#irComerciales"/>
+                    <Button text="Proveedores" maxWidth="Infinity" styleClass="menu-button" onAction="#irProveedores"/>
+                    <Button text="Stock" maxWidth="Infinity" styleClass="menu-button" onAction="#irStock"/>
+                    <Button text="Presupuestos" maxWidth="Infinity" styleClass="menu-button" onAction="#irPresupuestos"/>
+                    <Button text="Informes" maxWidth="Infinity" styleClass="menu-button" onAction="#irInformes"/>
+
+                </VBox>
+
+            </left>
+
+            <!-- ===================== -->
+            <!-- CONTENIDO -->
+            <!-- ===================== -->
+            <center>
+
+                <VBox spacing="20" style="-fx-padding:20;">
+
+                    <!-- TITULO -->
+                    <Label text="Informes"
+                           style="-fx-font-size:22px; -fx-font-weight:bold;"/>
+
+                    <!-- ===================== -->
+                    <!-- FILTRO (MISMO TAMAÑO QUE PROVEEDORES) -->
+                    <!-- ===================== -->
+                    <HBox spacing="10">
+
+                        <TextField fx:id="txtComercial"
+                                   promptText="Comercial..."
+                                   HBox.hgrow="ALWAYS"/>
+
+                        <Button fx:id="btnValidar"
+                                text="Validar"
+                                prefWidth="100"/>
+
+                    </HBox>
+
+                    <!-- ===================== -->
+                    <!-- PANEL INFORMES (MISMO ESPACIO QUE TABLA) -->
+                    <!-- ===================== -->
+                    <GridPane hgap="20" vgap="20"
+                              VBox.vgrow="ALWAYS"
+                              style="-fx-border-color:#d0d0d0; -fx-border-width:2;">
+
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50"/>
+                            <ColumnConstraints percentWidth="50"/>
+                        </columnConstraints>
+
+                        <rowConstraints>
+                            <RowConstraints percentHeight="100"/>
+                        </rowConstraints>
+
+                        <!-- PANEL 1 -->
+                        <Pane fx:id="panelInforme1"
+                              style="
+                                -fx-background-color:white;
+                                -fx-border-color:#d0d0d0;
+                                -fx-border-width:2;
+                                -fx-border-radius:5;
+                                -fx-background-radius:5;"
+                              GridPane.columnIndex="0"
+                              GridPane.rowIndex="0"/>
+
+                        <!-- PANEL 2 -->
+                        <Pane fx:id="panelInforme2"
+                              style="
+                                -fx-background-color:white;
+                                -fx-border-color:#d0d0d0;
+                                -fx-border-width:2;
+                                -fx-border-radius:5;
+                                -fx-background-radius:5;"
+                              GridPane.columnIndex="1"
+                              GridPane.rowIndex="0"/>
+
+                    </GridPane>
+
+                    <!-- ===================== -->
+                    <!-- PANEL INFERIOR (IGUAL) -->
+                    <!-- ===================== -->
+                    <Pane prefHeight="100"
+                          style="
+                                -fx-background-color:white;
+                                -fx-border-color:#d0d0d0;
+                                -fx-border-width:2;
+                                -fx-border-radius:5;
+                                -fx-background-radius:5;"/>
+
+                </VBox>
+
+            </center>
+
+        </BorderPane>
+
+    </children>
+
+</AnchorPane>

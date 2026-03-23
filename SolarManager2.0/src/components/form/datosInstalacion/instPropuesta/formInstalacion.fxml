@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="12"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="components.form.datosInstalacion.instPropuesta.FormInstalacionController">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Datos de instalación" styleClass="form-section-title"/>
+
+    <GridPane hgap="10" vgap="10">
+
+        <columnConstraints>
+            <ColumnConstraints percentWidth="15"/>
+            <ColumnConstraints percentWidth="35" hgrow="ALWAYS"/>
+            <ColumnConstraints percentWidth="15"/>
+            <ColumnConstraints percentWidth="35" hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Potencia instalada (kW):" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="txtPotenciaInstalada" GridPane.columnIndex="1" GridPane.rowIndex="0" maxWidth="Infinity"/>
+
+        <Label text="Número de paneles:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        <TextField fx:id="txtNumeroPaneles" GridPane.columnIndex="3" GridPane.rowIndex="0" maxWidth="Infinity"/>
+
+        <Label text="Producción estimada:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <TextField fx:id="txtProduccionEstimada" GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="Infinity"/>
+
+        <Label text="Ahorro estimado (€):" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <TextField fx:id="txtAhorroEstimado" GridPane.columnIndex="3" GridPane.rowIndex="1" maxWidth="Infinity"/>
+
+        <Label text="Dirección instalación:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <TextArea fx:id="txtDireccionInstalacion"
+                  GridPane.columnIndex="1"
+                  GridPane.rowIndex="2"
+                  GridPane.columnSpan="3"
+                  prefRowCount="3"
+                  maxWidth="Infinity"/>
+
+    </GridPane>
+
+</VBox>
