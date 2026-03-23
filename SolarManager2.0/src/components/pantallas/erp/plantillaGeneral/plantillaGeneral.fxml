@@ -16,7 +16,7 @@
 <AnchorPane prefHeight="800.0"
             prefWidth="1200.0"
             styleClass="mainFxmlClass"
-            xmlns="http://javafx.com/javafx/25"
+            xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="components.pantallas.erp.plantillaGeneral.PlantillaGeneralController">
 
@@ -31,8 +31,9 @@
                     AnchorPane.rightAnchor="0"
                     AnchorPane.topAnchor="0">
 
+            <!-- ===================== -->
             <!-- BARRA SUPERIOR -->
-
+            <!-- ===================== -->
             <top>
                 <HBox alignment="CENTER_LEFT"
                       spacing="10"
@@ -48,18 +49,20 @@
                 </HBox>
             </top>
 
+            <!-- ===================== -->
             <!-- MENU LATERAL -->
-
+            <!-- ===================== -->
             <left>
-
                 <VBox alignment="TOP_CENTER"
                       prefWidth="200"
                       spacing="10"
                       style="
-                        -fx-background-color:#e6e9ef;
-                        -fx-padding:85 15 15 15;
-                        -fx-border-color:#d0d0d0;
-                        -fx-border-width:2;">
+                            -fx-background-color:#e6e9ef;
+                            -fx-padding:85 15 15 15;
+                            -fx-border-color:#d0d0d0;
+                            -fx-border-width:2;
+                            -fx-background-radius:5;
+                            -fx-border-radius:5;">
 
                     <BorderPane.margin>
                         <Insets top="90" right="15" bottom="65" left="15"/>
@@ -68,20 +71,43 @@
                     <Label text="Inicio"
                            style="-fx-font-weight:bold;"/>
 
-                    <Button text="Clientes" maxWidth="Infinity"/>
-                    <Button text="Comerciales" maxWidth="Infinity"/>
-                    <Button text="Proveedores" maxWidth="Infinity"/>
-                    <Button text="Stock" maxWidth="Infinity"/>
-                    <Button text="Presupuestos" maxWidth="Infinity"/>
+                    <Button text="Clientes"
+                            styleClass="menu-button"
+                            maxWidth="Infinity"
+                            onAction="#irClientes"/>
+
+                    <Button text="Comerciales"
+                            styleClass="menu-button"
+                            maxWidth="Infinity"
+                            onAction="#irComerciales"/>
+
+                    <Button text="Proveedores"
+                            styleClass="menu-button"
+                            maxWidth="Infinity"
+                            onAction="#irProveedores"/>
+
+                    <Button text="Stock"
+                            styleClass="menu-button"
+                            maxWidth="Infinity"
+                            onAction="#irStock"/>
+
+                    <Button text="Presupuestos"
+                            styleClass="menu-button"
+                            maxWidth="Infinity"
+                            onAction="#irPresupuestos"/>
+
+                    <Button text="Informes"
+                            styleClass="menu-button"
+                            maxWidth="Infinity"
+                            onAction="#irInformes"/>
 
                 </VBox>
-
             </left>
 
-            <!-- DASHBOARD CENTRAL -->
-
+            <!-- ===================== -->
+            <!-- DASHBOARD -->
+            <!-- ===================== -->
             <center>
-
                 <VBox spacing="20" style="-fx-padding:20;">
 
                     <Label text="Vista General"
@@ -101,89 +127,72 @@
                         </rowConstraints>
 
                         <!-- CLIENTES -->
-
                         <Button fx:id="btnClientes"
-                                
+                                styleClass="dashboard-button"
                                 contentDisplay="TOP"
-                                style="-fx-background-color: transparent; -fx-border-color: transparent;"
                                 maxWidth="Infinity"
                                 maxHeight="Infinity"
-                                onAction="#abrirClientes"
+                                onAction="#irClientes"
                                 GridPane.columnIndex="0"
                                 GridPane.rowIndex="0"/>
 
                         <!-- COMERCIALES -->
-
                         <Button fx:id="btnComerciales"
-                                
+                                styleClass="dashboard-button"
                                 contentDisplay="TOP"
-                                style="-fx-background-color: transparent; -fx-border-color: transparent;"
                                 maxWidth="Infinity"
                                 maxHeight="Infinity"
-                                onAction="#abrirComerciales"
+                                onAction="#irComerciales"
                                 GridPane.columnIndex="1"
                                 GridPane.rowIndex="0"/>
 
                         <!-- PROVEEDORES -->
-
                         <Button fx:id="btnProveedores"
-                                
+                                styleClass="dashboard-button"
                                 contentDisplay="TOP"
-                                style="-fx-background-color: transparent; -fx-border-color: transparent;"
                                 maxWidth="Infinity"
                                 maxHeight="Infinity"
-                                onAction="#abrirProveedores"
+                                onAction="#irProveedores"
                                 GridPane.columnIndex="2"
                                 GridPane.rowIndex="0"/>
 
                         <!-- STOCK -->
-
                         <Button fx:id="btnStock"
-                                
+                                styleClass="dashboard-button"
                                 contentDisplay="TOP"
-                                style="-fx-background-color: transparent; -fx-border-color: transparent;"
                                 maxWidth="Infinity"
                                 maxHeight="Infinity"
-                                onAction="#abrirStock"
+                                onAction="#irStock"
                                 GridPane.columnIndex="0"
                                 GridPane.rowIndex="1"/>
 
                         <!-- PRESUPUESTOS -->
-
                         <Button fx:id="btnPresupuestos"
-                                
+                                styleClass="dashboard-button"
                                 contentDisplay="TOP"
-                                style="-fx-background-color: transparent; -fx-border-color: transparent;"
                                 maxWidth="Infinity"
                                 maxHeight="Infinity"
-                                onAction="#abrirPresupuestos"
+                                onAction="#irPresupuestos"
                                 GridPane.columnIndex="1"
                                 GridPane.rowIndex="1"/>
 
                         <!-- INFORMES -->
-
                         <Button fx:id="btnInformes"
-                                
+                                styleClass="dashboard-button"
                                 contentDisplay="TOP"
-                                style="-fx-background-color: transparent; -fx-border-color: transparent;"
                                 maxWidth="Infinity"
                                 maxHeight="Infinity"
-                                onAction="#abrirInformes"
+                                onAction="#irInformes"
                                 GridPane.columnIndex="2"
                                 GridPane.rowIndex="1"/>
 
                     </GridPane>
 
-                    <!-- ESPACIO FLEXIBLE -->
-
+                    <!-- PANEL INFERIOR -->
                     <Pane VBox.vgrow="ALWAYS"
-                          style="
-                            -fx-background-color:white;
-                            -fx-border-color:#d0d0d0;
-                            -fx-border-width:2;"/>
+                          style="-fx-background-color:white; -fx-border-color:#d0d0d0; -fx-border-width:2;"/>
 
                 </VBox>
-
             </center>
 
         </BorderPane>

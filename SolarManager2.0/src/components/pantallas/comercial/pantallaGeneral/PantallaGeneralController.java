@@ -1,81 +1,139 @@
 package components.pantallas.comercial.pantallaGeneral;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import javafx.event.ActionEvent;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import javafx.application.Platform;
 
 /**
  * Controller de la pantalla general comercial
  */
 public class PantallaGeneralController implements Initializable {
 
-    // 🔹 BOTONES DASHBOARD
+    // =========================
+    // BOTONES DASHBOARD
+    // =========================
+
     @FXML private Button btnClientes;
-    @FXML private Button btnPresupuestos;
     @FXML private Button btnInstalaciones;
 
-    // TABLA CLIENTES
-    @FXML private TableView<?> tablaClientes;
+    // =========================
+    // INITIALIZE
+    // =========================
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        // Cargar iconos 
-        cargarIcono(btnClientes, "/assets/iconos/clientes.jpg");
-        cargarIcono(btnPresupuestos, "/assets/iconos/presupuestos.jpg");
-        cargarIcono(btnInstalaciones, "/assets/iconos/instalaciones.jpg");
-
-        // (Opcional) aquí luego cargarás datos reales
+        // 🔥 IMPORTANTE: esperar a que la UI esté renderizada
+        Platform.runLater(() -> {
+            cargarIcono(btnClientes, "/assets/iconos/clientes.jpg");
+            cargarIcono(btnInstalaciones, "/assets/iconos/instalaciones.jpg");
+        });
     }
 
-    /**
-     * Método reutilizable para asignar iconos a botones
-     */
+    // =========================
+    // CARGA ICONOS (ESTABLE)
+    // =========================
+
     private void cargarIcono(Button boton, String rutaIcono) {
 
-        URL recurso = getClass().getResource(rutaIcono);
+        try {
+            URL recurso = getClass().getResource(rutaIcono);
 
-        if (recurso == null) {
-            System.out.println("No se encontró la imagen: " + rutaIcono);
-            return;
+            if (recurso == null) {
+                System.out.println("❌ No se encontró la imagen: " + rutaIcono);
+                return;
+            }
+
+            Image imagen = new Image(recurso.toExternalForm());
+            ImageView imageView = new ImageView(imagen);
+
+            // 🔥 Tamaño controlado (evita bugs al volver)
+            double size = boton.getWidth() * 0.6;
+
+            if (size <= 0) {
+                size = 120; // fallback seguro
+            }
+
+            imageView.setFitWidth(size);
+            imageView.setPreserveRatio(true);
+
+            boton.setGraphic(imageView);
+            boton.setContentDisplay(ContentDisplay.TOP);
+            boton.setGraphicTextGap(15);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        Image imagen = new Image(recurso.toExternalForm(), true);
-
-        ImageView imageView = new ImageView(imagen);
-
-        // el icono ocupará aprox el 60% del botón
-        imageView.fitWidthProperty().bind(boton.widthProperty().multiply(0.6));
-
-        imageView.setPreserveRatio(true);
-        imageView.setSmooth(true);
-
-        boton.setGraphic(imageView);
-        boton.setContentDisplay(ContentDisplay.TOP);
-        boton.setGraphicTextGap(15);
     }
 
-    // EVENTOS BOTONES
+    // =========================
+    // DASHBOARD → NAVEGACIÓN
+    // =========================
 
     @FXML
-    public void abrirClientes(ActionEvent event) {
-        System.out.println("Abrir Clientes");
+    private void abrirAltaCliente(ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/comercial/pantallaAltaCliente/AltaCliente.fxml");
     }
 
     @FXML
-    public void abrirPresupuestos(ActionEvent event) {
-        System.out.println("Abrir Presupuestos");
+    private void abrirCalculoInstalacion(ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/comercial/calculoInstalacion/CalculoInstalacion.fxml");
+    }
+
+    // =========================
+    // MENÚ LATERAL (SIN LÓGICA AÚN)
+    // =========================
+
+    @FXML
+    private void mostrarClientes(ActionEvent e) {
+        System.out.println("👉 Mostrar tabla CLIENTES");
     }
 
     @FXML
-    public void abrirInstalaciones(ActionEvent event) {
-        System.out.println("Abrir Instalaciones");
+    private void mostrarInstalaciones(ActionEvent e) {
+        System.out.println("👉 Mostrar tabla INSTALACIONES");
+    }
+
+    @FXML
+    private void mostrarPresupuestos(ActionEvent e) {
+        System.out.println("👉 Mostrar tabla PRESUPUESTOS");
+    }
+
+    // =========================
+    // MÉTODO CAMBIO PANTALLA
+    // =========================
+
+    private void cambiarPantalla(Node nodo, String rutaFXML) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) nodo.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

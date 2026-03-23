@@ -6,27 +6,42 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import javafx.stage.Screen;
+import javafx.geometry.Rectangle2D;
+
 /**
  * Main de la pantalla Comercial
  */
 public class NewFXMainComercial extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
 
-        Parent root = FXMLLoader.load(
+        try {
+            FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml")
-        );
+            );
 
-        Scene scene = new Scene(root, 1200, 800);
+            Parent root = loader.load();
 
-        primaryStage.setTitle("Solar Manager - Comercial");
+            //  Tamaño de pantalla real (sin barra de tareas)
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-        // Tamaño fijo como en el FXML
-        primaryStage.setResizable(false);
+            Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
 
-        primaryStage.setScene(scene);
-        primaryStage.show();
+            primaryStage.setTitle("Solar Manager - Comercial");
+
+            // 👇 NO usar maximized
+            primaryStage.setResizable(true);
+
+            primaryStage.setScene(scene);
+
+          
+            primaryStage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

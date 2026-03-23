@@ -7,34 +7,32 @@
 
 <AnchorPane prefHeight="800.0"
             prefWidth="1200.0"
-            maxHeight="800.0"
-            maxWidth="1200.0"
-            minHeight="800.0"
-            minWidth="1200.0"
             styleClass="mainFxmlClass"
             xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="components.pantallas.comercial.pantallaGeneral.PantallaGeneralController">
 
+    <!-- 🔥 IMPORTANTE: CSS -->
     <stylesheets>
         <URL value="@plantillageneral.css"/>
     </stylesheets>
 
     <children>
 
-        <BorderPane AnchorPane.topAnchor="0"
-                    AnchorPane.bottomAnchor="0"
+        <BorderPane AnchorPane.bottomAnchor="0"
                     AnchorPane.leftAnchor="0"
-                    AnchorPane.rightAnchor="0">
+                    AnchorPane.rightAnchor="0"
+                    AnchorPane.topAnchor="0">
 
+            <!-- ===================== -->
             <!-- CABECERA -->
+            <!-- ===================== -->
             <top>
                 <HBox alignment="CENTER_LEFT"
-                      spacing="15"
-                      prefHeight="60"
-                      style="-fx-background-color:#f4f4f4; -fx-padding:10 20 10 20;">
+                      spacing="10"
+                      style="-fx-background-color:#f4f4f4; -fx-padding:10;">
 
-                    <Button text="← Volver" prefHeight="35"/>
+                    <Button text="← Volver"/>
 
                     <Label text="Solar Manager"
                            style="-fx-font-size:18px; -fx-font-weight:bold;"/>
@@ -44,43 +42,64 @@
                 </HBox>
             </top>
 
+            <!-- ===================== -->
             <!-- MENU LATERAL -->
+            <!-- ===================== -->
             <left>
                 <VBox alignment="TOP_CENTER"
                       prefWidth="200"
                       spacing="10"
                       style="
-                        -fx-background-color:#e6e9ef;
-                        -fx-padding:85 15 15 15;
-                        -fx-border-color:#d0d0d0;
-                        -fx-border-width:2;">
+                            -fx-background-color:#e6e9ef;
+                            -fx-padding:85 15 15 15;
+                            -fx-border-color:#d0d0d0;
+                            -fx-border-width:2;
+                            -fx-background-radius:5;
+                            -fx-border-radius:5;">
 
-                    <Label text="Inicio" style="-fx-font-weight:bold;"/>
+                    <BorderPane.margin>
+                        <Insets top="90" right="15" bottom="65" left="15"/>
+                    </BorderPane.margin>
 
-                    <Button text="Clientes" maxWidth="Infinity"/>
-                    <Button text="Instalaciones" maxWidth="Infinity"/>
-                    <Button text="Presupuestos" maxWidth="Infinity"/>
+                    <Label text="Inicio"
+                           style="-fx-font-weight:bold;"/>
+
+                    <Button text="Clientes"
+                            styleClass="menu-button"
+                            maxWidth="Infinity"
+                            onAction="#mostrarClientes"/>
+
+                    <Button text="Instalaciones"
+                            styleClass="menu-button"
+                            maxWidth="Infinity"
+                            onAction="#mostrarInstalaciones"/>
+
+                    <Button text="Presupuestos"
+                            styleClass="menu-button"
+                            maxWidth="Infinity"
+                            onAction="#mostrarPresupuestos"/>
 
                 </VBox>
             </left>
 
+            <!-- ===================== -->
             <!-- CONTENIDO -->
+            <!-- ===================== -->
             <center>
-
                 <VBox spacing="20" style="-fx-padding:20;">
 
                     <!-- TITULO -->
-                    <Label text="Vista General"
+                    <Label text="Área Comercial"
                            style="-fx-font-size:22px; -fx-font-weight:bold;"/>
 
+                    <!-- ===================== -->
                     <!-- DASHBOARD -->
-                    <!-- DASHBOARD -->
-                    <GridPane hgap="30" vgap="30" VBox.vgrow="NEVER">
+                    <!-- ===================== -->
+                    <GridPane hgap="30" vgap="30">
 
                         <columnConstraints>
-                            <ColumnConstraints percentWidth="33.33"/>
-                            <ColumnConstraints percentWidth="33.33"/>
-                            <ColumnConstraints percentWidth="33.33"/>
+                            <ColumnConstraints percentWidth="50"/>
+                            <ColumnConstraints percentWidth="50"/>
                         </columnConstraints>
 
                         <rowConstraints>
@@ -89,51 +108,41 @@
 
                         <!-- CLIENTES -->
                         <Button fx:id="btnClientes"
-                                contentDisplay="TOP"
+                                text="Clientes"
                                 styleClass="dashboard-button"
+                                contentDisplay="TOP"
                                 maxWidth="Infinity"
                                 maxHeight="Infinity"
-                                onAction="#abrirClientes"
+                                onAction="#abrirAltaCliente"
                                 GridPane.columnIndex="0"
-                                GridPane.rowIndex="0"/>
-
-                        <!-- PRESUPUESTOS -->
-                        <Button fx:id="btnPresupuestos"
-                                contentDisplay="TOP"
-                                styleClass="dashboard-button"
-                                maxWidth="Infinity"
-                                maxHeight="Infinity"
-                                onAction="#abrirPresupuestos"
-                                GridPane.columnIndex="1"
                                 GridPane.rowIndex="0"/>
 
                         <!-- INSTALACIONES -->
                         <Button fx:id="btnInstalaciones"
-                                contentDisplay="TOP"
+                                text="Instalaciones"
                                 styleClass="dashboard-button"
+                                contentDisplay="TOP"
                                 maxWidth="Infinity"
                                 maxHeight="Infinity"
-                                onAction="#abrirInstalaciones"
-                                GridPane.columnIndex="2"
+                                onAction="#abrirCalculoInstalacion"
+                                GridPane.columnIndex="1"
                                 GridPane.rowIndex="0"/>
 
                     </GridPane>
 
-                    <!-- TABLA CLIENTES -->
-                    <TableView fx:id="tablaClientes" VBox.vgrow="ALWAYS">
-
-                        <columns>
-                            <TableColumn text="ID" prefWidth="80"/>
-                            <TableColumn text="Nombre" prefWidth="200"/>
-                            <TableColumn text="Teléfono" prefWidth="150"/>
-                            <TableColumn text="Email" prefWidth="200"/>
-                            <TableColumn text="Dirección" prefWidth="250"/>
-                        </columns>
-
-                    </TableView>
+                    <!-- ===================== -->
+                    <!-- PANEL TABLA -->
+                    <!-- ===================== -->
+                    <Pane fx:id="panelTabla"
+                          VBox.vgrow="ALWAYS"
+                          style="
+                            -fx-background-color:white;
+                            -fx-border-color:#d0d0d0;
+                            -fx-border-width:2;
+                            -fx-border-radius:5;
+                            -fx-background-radius:5;"/>
 
                 </VBox>
-
             </center>
 
         </BorderPane>

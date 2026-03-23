@@ -1,49 +1,33 @@
 package components.pantallas.erp.plantillaGeneral;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.event.ActionEvent;
+
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/**
- * Controlador de la pantalla principal del sistema Solar Manager.
- *
- * Esta pantalla actúa como dashboard de la aplicación y permite acceder
- * a los distintos módulos mediante botones con iconos.
- *
- * Los iconos se cargan desde:
- * src/assets/iconos/
- *
- * @author ivang
- */
+import javafx.stage.Stage;
+
 public class PlantillaGeneralController implements Initializable {
 
-    @FXML
-    private Button btnClientes;
+    @FXML private Button btnClientes;
+    @FXML private Button btnComerciales;
+    @FXML private Button btnProveedores;
+    @FXML private Button btnStock;
+    @FXML private Button btnPresupuestos;
+    @FXML private Button btnInformes;
 
-    @FXML
-    private Button btnComerciales;
-
-    @FXML
-    private Button btnProveedores;
-
-    @FXML
-    private Button btnStock;
-
-    @FXML
-    private Button btnPresupuestos;
-
-    @FXML
-    private Button btnInformes;
-
-    /**
-     * Inicializa la pantalla y carga los iconos en los botones.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -53,13 +37,12 @@ public class PlantillaGeneralController implements Initializable {
         cargarIcono(btnStock, "/assets/iconos/stock.jpg");
         cargarIcono(btnPresupuestos, "/assets/iconos/presupuestos.jpg");
         cargarIcono(btnInformes, "/assets/iconos/informes.jpg");
-
     }
 
-    /**
-     * Carga un icono dentro de un botón y lo escala dinámicamente
-     * para que funcione bien en pantalla completa.
-     */
+    // =========================
+    // CARGA ICONOS
+    // =========================
+
     private void cargarIcono(Button boton, String rutaIcono) {
 
         URL recurso = getClass().getResource(rutaIcono);
@@ -70,12 +53,9 @@ public class PlantillaGeneralController implements Initializable {
         }
 
         Image imagen = new Image(recurso.toExternalForm(), true);
-
         ImageView imageView = new ImageView(imagen);
 
-        // el icono ocupará aprox el 60% del botón
         imageView.fitWidthProperty().bind(boton.widthProperty().multiply(0.6));
-
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
 
@@ -84,34 +64,61 @@ public class PlantillaGeneralController implements Initializable {
         boton.setGraphicTextGap(15);
     }
 
+    // =========================
+    // MÉTODO GENERAL DE NAVEGACIÓN
+    // =========================
+
+    private void cambiarPantalla(Node nodo, String rutaFXML) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) nodo.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // =========================
+    // NAVEGACIÓN (MENÚ + DASHBOARD)
+    // =========================
+
     @FXML
-    private void abrirClientes(ActionEvent event) {
-        System.out.println("Abrir pantalla Clientes");
+    private void irClientes(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaClientes/PantallaClientes.fxml");
     }
 
     @FXML
-    private void abrirComerciales(ActionEvent event) {
-        System.out.println("Abrir pantalla Comerciales");
+    private void irComerciales(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml");
     }
 
     @FXML
-    private void abrirProveedores(ActionEvent event) {
-        System.out.println("Abrir pantalla Proveedores");
+    private void irProveedores(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaProveedor/PantallaProveedor.fxml");
     }
 
     @FXML
-    private void abrirStock(ActionEvent event) {
-        System.out.println("Abrir pantalla Stock");
+    private void irStock(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaStock/PantallaStock.fxml");
     }
 
     @FXML
-    private void abrirPresupuestos(ActionEvent event) {
-        System.out.println("Abrir pantalla Presupuestos");
+    private void irPresupuestos(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
 
     @FXML
-    private void abrirInformes(ActionEvent event) {
-        System.out.println("Abrir pantalla Informes");
+    private void irInformes(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
-
 }

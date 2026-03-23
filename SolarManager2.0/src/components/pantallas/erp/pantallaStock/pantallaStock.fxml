@@ -10,18 +10,18 @@
             styleClass="mainFxmlClass"
             xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="components.pantallas.erp.pantallaClientes.PantallaClientesController">
+            fx:controller="components.pantallas.erp.pantallaStock.PantallaStockController">
 
     <stylesheets>
-        <URL value="@plantillageneral.css"/>
+        <URL value="@pantallaStock.css"/>
     </stylesheets>
 
     <children>
 
-        <BorderPane AnchorPane.bottomAnchor="0"
+        <BorderPane AnchorPane.topAnchor="0"
+                    AnchorPane.bottomAnchor="0"
                     AnchorPane.leftAnchor="0"
-                    AnchorPane.rightAnchor="0"
-                    AnchorPane.topAnchor="0">
+                    AnchorPane.rightAnchor="0">
 
             <!-- CABECERA -->
             <top>
@@ -43,6 +43,7 @@
 
             <!-- MENU LATERAL -->
             <left>
+
                 <VBox alignment="TOP_CENTER"
                       prefWidth="200"
                       spacing="10"
@@ -55,7 +56,7 @@
                             -fx-border-radius:5;">
 
                     <BorderPane.margin>
-                        <Insets top="90.0" right="15.0" bottom="65.0" left="15.0"/>
+                        <Insets top="90" right="15" bottom="65" left="15"/>
                     </BorderPane.margin>
 
                     <Label text="Inicio"
@@ -92,23 +93,23 @@
                             onAction="#irInformes"/>
 
                 </VBox>
+
             </left>
 
             <!-- CONTENIDO -->
             <center>
+
                 <VBox spacing="20"
                       style="-fx-padding:20;">
 
-                    <!-- TITULO -->
-                    <Label fx:id="lblTituloPagina"
-                           text="Clientes"
+                    <Label text="Stock"
                            style="-fx-font-size:22px; -fx-font-weight:bold;"/>
 
                     <!-- FILTRO -->
                     <HBox spacing="10">
 
                         <TextField fx:id="txtFiltro"
-                                   promptText="Buscar cliente..."
+                                   promptText="Buscar producto..."
                                    HBox.hgrow="ALWAYS"/>
 
                         <Button fx:id="btnBuscar"
@@ -118,23 +119,18 @@
                     </HBox>
 
                     <!-- TABLA -->
-                    <TableView fx:id="tablaClientes"
+                    <TableView fx:id="tablaProductos"
                                VBox.vgrow="ALWAYS"
                                style="-fx-border-color:#d0d0d0; -fx-border-width:2;">
 
                         <columns>
 
-                            <TableColumn fx:id="colId" prefWidth="70" text="ID"/>
-                            <TableColumn fx:id="colNombre" prefWidth="120" text="Nombre"/>
-                            <TableColumn fx:id="colApellidos" prefWidth="140" text="Apellidos"/>
-                            <TableColumn fx:id="colTelefono" prefWidth="110" text="Teléfono"/>
-                            <TableColumn fx:id="colEmail" prefWidth="160" text="Email"/>
-                            <TableColumn fx:id="colDireccion" prefWidth="160" text="Dirección"/>
-                            <TableColumn fx:id="colTipoCliente" prefWidth="120" text="Tipo Cliente"/>
-                            <TableColumn fx:id="colDni" prefWidth="110" text="DNI"/>
-                            <TableColumn fx:id="colCif" prefWidth="110" text="CIF"/>
-                            <TableColumn fx:id="colObservaciones" prefWidth="180" text="Observaciones"/>
-                            <TableColumn fx:id="colIdComercialAsignado" prefWidth="120" text="ID Comercial"/>
+                            <TableColumn fx:id="colId" text="ID" prefWidth="100"/>
+                            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="220"/>
+                            <TableColumn fx:id="colTipoProducto" text="Tipo Producto" prefWidth="180"/>
+                            <TableColumn fx:id="colPrecio" text="Precio (€)" prefWidth="140"/>
+                            <TableColumn fx:id="colIdProveedor" text="Proveedor" prefWidth="180"/>
+                            <TableColumn fx:id="colStock" text="Stock" prefWidth="120"/>
 
                         </columns>
 
@@ -142,22 +138,16 @@
 
                     <!-- PANEL INFERIOR -->
                     <Pane prefHeight="100"
-                          style="-fx-background-color:white;
-                                 -fx-border-color:#d0d0d0;
-                                 -fx-border-width:2;
-                                 -fx-border-radius:5;
-                                 -fx-background-radius:5;"/>
+                          style="-fx-background-color:white; -fx-border-color:#d0d0d0; -fx-border-width:2; -fx-border-radius:5; -fx-background-radius:5;"/>
 
                     <!-- BOTONES -->
                     <HBox spacing="10">
 
-                        <!-- IZQUIERDA -->
-                        <Button fx:id="btnAñadirCliente"
-                                text="Añadir cliente"/>
+                        <Button fx:id="btnAñadirProducto"
+                                text="Añadir producto"/>
 
                         <Pane HBox.hgrow="ALWAYS"/>
 
-                        <!-- DERECHA -->
                         <Button fx:id="btnGuardar"
                                 text="Guardar"
                                 style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
@@ -168,6 +158,7 @@
                     </HBox>
 
                 </VBox>
+
             </center>
 
         </BorderPane>

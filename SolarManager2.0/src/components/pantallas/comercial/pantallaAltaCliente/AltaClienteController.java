@@ -1,26 +1,44 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package components.pantallas.comercial.pantallaAltaCliente;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
 
-/**
- * FXML Controller class
- *
- * @author ivang
- */
+import javafx.fxml.*;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.event.ActionEvent;
+
 public class AltaClienteController implements Initializable {
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+    }
+
+    private void cambiarPantalla(Node nodo, String rutaFXML) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(rutaFXML));
+
+            Stage stage = (Stage) nodo.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void volverInicio(ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/comercial/pantallaGeneral/PantallaGeneral.fxml");
+    }
+
+    @FXML
+    private void irCalculoInstalacion(ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/comercial/calculoInstalacion/CalculoInstalacion.fxml");
+    }
 }

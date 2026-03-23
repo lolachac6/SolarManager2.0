@@ -1,4 +1,4 @@
-package components.pantallas.erp.pantallaClientes;
+package components.pantallas.erp.pantallaProveedor;
 
 import java.io.IOException;
 import java.net.URL;
@@ -14,7 +14,7 @@ import javafx.scene.Scene;
 
 import javafx.stage.Stage;
 
-public class PantallaClientesController implements Initializable {
+public class PantallaProveedorController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -22,20 +22,20 @@ public class PantallaClientesController implements Initializable {
     }
 
     // =========================
-    // MÉTODO GENERAL DE NAVEGACIÓN
+    // MÉTODO GENERAL DE NAVEGACIÓN (MEJORADO)
     // =========================
 
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
-            URL recurso = getClass().getResource(rutaFXML);
 
-            if (recurso == null) {
-                System.out.println("ERROR: No se encuentra el FXML -> " + rutaFXML);
+            URL resource = getClass().getResource(rutaFXML);
+
+            if (resource == null) {
+                System.out.println("❌ No se encontró: " + rutaFXML);
                 return;
             }
 
-            FXMLLoader loader = new FXMLLoader(recurso);
-            Parent root = loader.load();
+            Parent root = FXMLLoader.load(resource);
 
             Stage stage = (Stage) nodo.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -47,48 +47,49 @@ public class PantallaClientesController implements Initializable {
     }
 
     // =========================
-    // NAVEGACIÓN
+    // BOTONES
     // =========================
 
     @FXML
     private void volverInicio(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
-                "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml");
+            "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml");
     }
 
     @FXML
     private void irClientes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
-                "/components/pantallas/erp/pantallaClientes/PantallaClientes.fxml");
+            "/components/pantallas/erp/pantallaClientes/PantallaClientes.fxml");
     }
 
     @FXML
     private void irComerciales(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
-                "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
+            "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
     }
 
     @FXML
     private void irProveedores(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
-                "/components/pantallas/erp/pantallaProveedor/PantallaProveedor.fxml");
+            "/components/pantallas/erp/pantallaProveedor/PantallaProveedor.fxml");
     }
 
     @FXML
     private void irStock(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
-                "/components/pantallas/erp/pantallaStock/PantallaStock.fxml");
+            "/components/pantallas/erp/pantallaStock/PantallaStock.fxml");
     }
 
     @FXML
     private void irPresupuestos(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
-                "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
+            "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
 
+    // 🔥 ESTE FALTABA
     @FXML
     private void irInformes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
-                "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
+            "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
 }

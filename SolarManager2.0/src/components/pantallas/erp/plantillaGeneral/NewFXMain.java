@@ -46,7 +46,7 @@ public class NewFXMain extends Application {
         primaryStage.setMaximized(true);
 
         // permitir redimensionar
-        primaryStage.setResizable(true);
+        primaryStage.setResizable(false);
 
         primaryStage.setScene(scene);
         primaryStage.show();
