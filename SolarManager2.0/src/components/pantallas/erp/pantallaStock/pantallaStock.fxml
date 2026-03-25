@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="800.0"
+            prefWidth="1200.0"
+            styleClass="mainFxmlClass"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="components.pantallas.erp.pantallaStock.PantallaStockController">
+
+    <stylesheets>
+        <URL value="@pantallaStock.css"/>
+    </stylesheets>
+
+    <children>
+
+        <BorderPane AnchorPane.topAnchor="0"
+                    AnchorPane.bottomAnchor="0"
+                    AnchorPane.leftAnchor="0"
+                    AnchorPane.rightAnchor="0">
+
+            <!-- CABECERA -->
+            <top>
+                <HBox alignment="CENTER_LEFT"
+                      spacing="10"
+                      style="-fx-background-color:#f4f4f4; -fx-padding:10;">
+
+                    <Button fx:id="btnVolver"
+                            text="← Volver"
+                            onAction="#volverInicio"/>
+
+                    <Label text="Solar Manager"
+                           style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+
+                    <Pane HBox.hgrow="ALWAYS"/>
+
+                </HBox>
+            </top>
+
+            <!-- MENU LATERAL -->
+            <left>
+
+                <VBox alignment="TOP_CENTER"
+                      prefWidth="200"
+                      spacing="10"
+                      style="
+                            -fx-background-color:#e6e9ef;
+                            -fx-padding:85 15 15 15;
+                            -fx-border-color:#d0d0d0;
+                            -fx-border-width:2;
+                            -fx-background-radius:5;
+                            -fx-border-radius:5;">
+
+                    <BorderPane.margin>
+                        <Insets top="90" right="15" bottom="65" left="15"/>
+                    </BorderPane.margin>
+
+                    <Label text="Inicio"
+                           style="-fx-font-weight:bold;"/>
+
+                    <Button text="Clientes"
+                            maxWidth="Infinity"
+                            styleClass="menu-button"
+                            onAction="#irClientes"/>
+
+                    <Button text="Comerciales"
+                            maxWidth="Infinity"
+                            styleClass="menu-button"
+                            onAction="#irComerciales"/>
+
+                    <Button text="Proveedores"
+                            maxWidth="Infinity"
+                            styleClass="menu-button"
+                            onAction="#irProveedores"/>
+
+                    <Button text="Stock"
+                            maxWidth="Infinity"
+                            styleClass="menu-button"
+                            onAction="#irStock"/>
+
+                    <Button text="Presupuestos"
+                            maxWidth="Infinity"
+                            styleClass="menu-button"
+                            onAction="#irPresupuestos"/>
+
+                    <Button text="Informes"
+                            maxWidth="Infinity"
+                            styleClass="menu-button"
+                            onAction="#irInformes"/>
+
+                </VBox>
+
+            </left>
+
+            <!-- CONTENIDO -->
+            <center>
+
+                <VBox spacing="20"
+                      style="-fx-padding:20;">
+
+                    <Label text="Stock"
+                           style="-fx-font-size:22px; -fx-font-weight:bold;"/>
+
+                    <!-- FILTRO -->
+                    <HBox spacing="10">
+
+                        <TextField fx:id="txtFiltro"
+                                   promptText="Buscar producto..."
+                                   HBox.hgrow="ALWAYS"/>
+
+                        <Button fx:id="btnBuscar"
+                                text="🔍"
+                                prefWidth="40"/>
+
+                    </HBox>
+
+                    <!-- TABLA -->
+                    <TableView fx:id="tablaProductos"
+                               VBox.vgrow="ALWAYS"
+                               style="-fx-border-color:#d0d0d0; -fx-border-width:2;">
+
+                        <columns>
+
+                            <TableColumn fx:id="colId" text="ID" prefWidth="100"/>
+                            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="220"/>
+                            <TableColumn fx:id="colTipoProducto" text="Tipo Producto" prefWidth="180"/>
+                            <TableColumn fx:id="colPrecio" text="Precio (€)" prefWidth="140"/>
+                            <TableColumn fx:id="colIdProveedor" text="Proveedor" prefWidth="180"/>
+                            <TableColumn fx:id="colStock" text="Stock" prefWidth="120"/>
+
+                        </columns>
+
+                    </TableView>
+
+                    <!-- PANEL INFERIOR -->
+                    <Pane prefHeight="100"
+                          style="-fx-background-color:white; -fx-border-color:#d0d0d0; -fx-border-width:2; -fx-border-radius:5; -fx-background-radius:5;"/>
+
+                    <!-- BOTONES -->
+                    <HBox spacing="10">
+
+                        <Button fx:id="btnAñadirProducto"
+                                text="Añadir producto"/>
+
+                        <Pane HBox.hgrow="ALWAYS"/>
+
+                        <Button fx:id="btnGuardar"
+                                text="Guardar"
+                                style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
+
+                        <Button fx:id="btnModificar" text="Modificar"/>
+                        <Button fx:id="btnCancelar" text="Cancelar"/>
+
+                    </HBox>
+
+                </VBox>
+
+            </center>
+
+        </BorderPane>
+
+    </children>
+
+</AnchorPane>
