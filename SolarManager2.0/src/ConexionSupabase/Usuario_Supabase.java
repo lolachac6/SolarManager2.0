@@ -2,16 +2,16 @@ package ConexionSupabase;
 
 // POJO: representa un usuario como un objeto 
 
-public class Usuario {
+public class Usuario_Supabase {
 
     private String id;
     private String email;
     private String password;
     private String nombre;
 
-    public Usuario() {}
+    public Usuario_Supabase() {}
 
-    public Usuario(String id, String email, String password, String nombre) {
+    public Usuario_Supabase(String id, String email, String password, String nombre) {
         this.id = id;
         this.email = email;
         this.password = password;
