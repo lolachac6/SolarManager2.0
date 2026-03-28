@@ -2,16 +2,14 @@ package ConexionSupabase;
 
 import okhttp3.*;
 
-// Clase que gestiona el acceso directo a la base de datos Supabase mediante operaciones CRUD.
-
 public class UsuarioDAO {
 
     // Crear usuario
-    public static String crearUsuario(String email, String password, String nombre) throws Exception {
+    public static String crearUsuario(String email, String hashedPassword, String nombre) throws Exception {
 
         String json = "{"
                 + "\"email\": \"" + email + "\","
-                + "\"password\": \"" + password + "\","
+                + "\"password_hash\": \"" + hashedPassword + "\","
                 + "\"nombre\": \"" + nombre + "\""
                 + "}";
 
@@ -24,7 +22,7 @@ public class UsuarioDAO {
         return SupabaseClient.execute(request);
     }
 
-    // Buscar usuario por email (para login)
+    // Buscar usuario por email
     public static String buscarPorEmail(String email) throws Exception {
 
         HttpUrl url = HttpUrl.parse(SupabaseClient.BASE_URL + "/rest/v1/usuarios")
@@ -41,11 +39,11 @@ public class UsuarioDAO {
     }
 
     // Actualizar usuario
-    public static String actualizarUsuario(String id, String nuevoPassword, String nuevoNombre) throws Exception {
+    public static String actualizarUsuario(String id, String hashedPassword, String nombre) throws Exception {
 
         String json = "{"
-                + "\"password\": \"" + nuevoPassword + "\","
-                + "\"nombre\": \"" + nuevoNombre + "\""
+                + "\"password_hash\": \"" + hashedPassword + "\","
+                + "\"nombre\": \"" + nombre + "\""
                 + "}";
 
         RequestBody body = RequestBody.create(SupabaseClient.JSON, json);
@@ -68,9 +66,9 @@ public class UsuarioDAO {
     }
 
     // Reset password
-    public static String resetPassword(String email, String nuevaPassword) throws Exception {
+    public static String resetPassword(String email, String hashedPassword) throws Exception {
 
-        String json = "{ \"password\": \"" + nuevaPassword + "\" }";
+        String json = "{ \"password_hash\": \"" + hashedPassword + "\" }";
 
         RequestBody body = RequestBody.create(SupabaseClient.JSON, json);
 

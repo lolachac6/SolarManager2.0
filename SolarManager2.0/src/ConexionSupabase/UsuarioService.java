@@ -1,10 +1,7 @@
 package ConexionSupabase;
 
-//Es la lógica: decide si un login es correcto, etc.
-// Clase que aplica la lógica de negocio y valida datos antes de llamar al DAO.
-
-import okhttp3.HttpUrl;
-import okhttp3.Request;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class UsuarioService {
 
@@ -15,111 +12,88 @@ public class UsuarioService {
 
         String respuesta = UsuarioDAO.buscarPorEmail(email);
 
-        if (respuesta.equals("[]")) {
-            System.out.println("Usuario no encontrado");
-            return false;
+        JSONArray arr = new JSONArray(respuesta);
+
+        if (arr.length() == 0) {
+            return false; // No existe el usuario
         }
 
-        // Extraer el hash del JSON
-        String hashedPassword = extraerPasswordDeJson(respuesta);
+        JSONObject usuario = arr.getJSONObject(0);
 
-        boolean ok = PasswordUtil.checkPassword(password, hashedPassword);
+        String hash = usuario.getString("password_hash");
+        
 
-        if (!ok) {
-            System.out.println("Contraseña incorrecta");
-        }
-
-        return ok;
+        return PasswordUtil.checkPassword(password, hash);
+        
+        
     }
+    // -------------------------
+    // DEVOLVER EL ROL
+    // -------------------------
+    
+    public JSONObject obtenerUsuarioPorEmail(String email) throws Exception {
+    String respuesta = UsuarioDAO.buscarPorEmail(email);
+    JSONArray arr = new JSONArray(respuesta);
 
+    if (arr.length() == 0) return null;
 
+    return arr.getJSONObject(0);
+}
     // -------------------------
     // REGISTRAR
     // -------------------------
     public boolean registrar(String email, String password, String nombre) throws Exception {
 
-        // VALIDACIONES PRIMERO
-        if (email == null || email.trim().isEmpty()) {
-            System.out.println("Email vacío");
-            return false;
-        }
+        if (email == null || email.trim().isEmpty()) return false;
+        if (!email.contains("@")) return false;
+        if (password == null || password.length() < 8) return false;
+        if (nombre == null || nombre.trim().isEmpty()) return false;
 
-        if (!email.contains("@")) {
-            System.out.println("Email no válido");
-            return false;
-        }
+        String hashed = PasswordUtil.hashPassword(password);
 
-        if (password == null || password.length() < 8) {
-            System.out.println("Password demasiado corta (mínimo 8 caracteres)");
-            return false;
-        }
+        String respuesta = UsuarioDAO.crearUsuario(email, hashed, nombre);
 
-        if (nombre == null || nombre.trim().isEmpty()) {
-            System.out.println("Nombre vacío");
-            return false;
-        }
-
-        // Hash de la contraseña
-        String hashedPassword = PasswordUtil.hashPassword(password);
-
-        // Llamada al DAO
-        String respuesta = UsuarioDAO.crearUsuario(email, hashedPassword, nombre);
-
-        if (respuesta.contains("duplicate key")) {
-            System.out.println("El email ya está registrado");
-            return false;
-        }
-
-        return true;
+        return !respuesta.contains("duplicate key");
     }
-
 
     // -------------------------
     // RESET PASSWORD
     // -------------------------
     public boolean resetPassword(String email, String nuevaPassword) throws Exception {
-        String hashed = PasswordUtil.hashPassword(nuevaPassword);
-        String respuesta = UsuarioDAO.resetPassword(email, hashed);
+
+        String hash = PasswordUtil.hashPassword(nuevaPassword);
+
+        String respuesta = UsuarioDAO.resetPassword(email, hash);
+
         return !respuesta.contains("error");
     }
-
 
     // -------------------------
     // ACTUALIZAR
     // -------------------------
     public boolean actualizar(String id, String password, String nombre) throws Exception {
 
-        String hashed = PasswordUtil.hashPassword(password);
+        String hash = PasswordUtil.hashPassword(password);
 
-        String respuesta = UsuarioDAO.actualizarUsuario(id, hashed, nombre);
+        String respuesta = UsuarioDAO.actualizarUsuario(id, hash, nombre);
+
         return !respuesta.contains("error");
     }
-
 
     // -------------------------
     // ELIMINAR
     // -------------------------
     public boolean eliminar(String id) throws Exception {
+
         String respuesta = UsuarioDAO.eliminarUsuario(id);
+
         return !respuesta.contains("error");
     }
-
 
     // -------------------------
     // LISTAR
     // -------------------------
     public String listar() throws Exception {
         return UsuarioDAO.listarUsuarios();
-    }
-
-
-    // -------------------------
-    // EXTRAER PASSWORD DEL JSON
-    // -------------------------
-    private String extraerPasswordDeJson(String json) {
-        // MUY SIMPLE: busca el campo "password":"..."
-        int start = json.indexOf("\"password\":\"") + 12;
-        int end = json.indexOf("\"", start);
-        return json.substring(start, end);
     }
 }
