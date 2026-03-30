@@ -27,22 +27,14 @@ public class PantallaPresupuestoController implements Initializable {
 
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
-
-            URL resource = getClass().getResource(rutaFXML);
-
-            if (resource == null) {
-                System.out.println("❌ ERROR: No se encontró el FXML -> " + rutaFXML);
-                return;
-            }
-
-            Parent root = FXMLLoader.load(resource);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            Parent root = loader.load();
 
             Stage stage = (Stage) nodo.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.centerOnScreen();
 
         } catch (IOException e) {
-            System.out.println("❌ ERROR cargando pantalla: " + rutaFXML);
             e.printStackTrace();
         }
     }

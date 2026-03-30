@@ -27,14 +27,7 @@ public class PantallaClientesController implements Initializable {
 
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
-            URL recurso = getClass().getResource(rutaFXML);
-
-            if (recurso == null) {
-                System.out.println("ERROR: No se encuentra el FXML -> " + rutaFXML);
-                return;
-            }
-
-            FXMLLoader loader = new FXMLLoader(recurso);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
             Parent root = loader.load();
 
             Stage stage = (Stage) nodo.getScene().getWindow();
