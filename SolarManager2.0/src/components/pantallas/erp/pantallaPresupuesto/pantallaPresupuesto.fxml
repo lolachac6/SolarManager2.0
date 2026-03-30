@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="800.0"
+<AnchorPane prefHeight="700.00"
             prefWidth="1200.0"
             styleClass="mainFxmlClass"
             xmlns="http://javafx.com/javafx/8"
@@ -151,6 +151,8 @@
 
                     <!-- BOTONES -->
                     <HBox spacing="10">
+                        <Button fx:id="btnnuevoPresupeusto"
+                                text="➕ Añadir Presupuesto"/>
 
                         <Button fx:id="btnHacerFactura"
                                 text="Hacer factura"/>
@@ -161,7 +163,9 @@
                                 text="Guardar"
                                 style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
 
+                        
                         <Button fx:id="btnModificar" text="Modificar"/>
+                        
                         <Button fx:id="btnCancelar" text="Cancelar"/>
 
                     </HBox>

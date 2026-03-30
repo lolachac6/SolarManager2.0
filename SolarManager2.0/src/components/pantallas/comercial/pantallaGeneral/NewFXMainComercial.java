@@ -31,7 +31,7 @@ public class NewFXMainComercial extends Application {
 
             primaryStage.setTitle("Solar Manager - Comercial");
 
-            // 👇 NO usar maximized
+           
             primaryStage.setResizable(true);
 
             primaryStage.setScene(scene);

@@ -27,25 +27,52 @@ public class PantallaStockController implements Initializable {
 
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
-
-            URL resource = getClass().getResource(rutaFXML);
-
-            if (resource == null) {
-                System.out.println("❌ No se encontró el FXML: " + rutaFXML);
-                return;
-            }
-
-            Parent root = FXMLLoader.load(resource);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            Parent root = loader.load();
 
             Stage stage = (Stage) nodo.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.centerOnScreen();
 
         } catch (IOException e) {
-            System.out.println("❌ Error cargando: " + rutaFXML);
             e.printStackTrace();
         }
     }
+    @FXML
+private void abrirAltaProducto(javafx.event.ActionEvent e) {
+
+    try {
+
+        URL resource = getClass().getResource(
+            "/components/pantallas/erp/pantallaAltaProducto/PantallaAltaProducto.fxml"
+        );
+
+        if (resource == null) {
+            System.out.println("❌ No se encontró el FXML de alta de producto");
+            return;
+        }
+
+        FXMLLoader loader = new FXMLLoader(resource);
+        Parent root = loader.load();
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+
+        stage.setTitle("Alta Producto");
+        stage.setResizable(false);
+
+        // 🔥 Modal (bloquea pantalla de fondo)
+        stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+
+        stage.centerOnScreen();
+
+        stage.showAndWait(); // 🔥 espera a que se cierre
+
+    } catch (IOException ex) {
+        System.out.println("❌ Error abriendo alta de producto");
+        ex.printStackTrace();
+    }
+}
 
     // =========================
     // BOTONES

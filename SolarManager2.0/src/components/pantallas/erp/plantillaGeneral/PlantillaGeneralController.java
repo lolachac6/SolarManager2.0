@@ -74,8 +74,11 @@ public class PlantillaGeneralController implements Initializable {
             Parent root = loader.load();
 
             Stage stage = (Stage) nodo.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            
+            stage.setResizable(true);
+            stage.setMaximized(true);
             stage.centerOnScreen();
+            stage.setScene(new Scene(root));
 
         } catch (IOException e) {
             e.printStackTrace();

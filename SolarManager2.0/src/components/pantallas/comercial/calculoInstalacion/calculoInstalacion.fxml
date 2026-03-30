@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="800.0"
+<AnchorPane prefHeight="700.0"
             prefWidth="1200.0"
             styleClass="mainFxmlClass"
             xmlns="http://javafx.com/javafx/8"

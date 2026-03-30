@@ -25,17 +25,10 @@ public class PantallaProveedorController implements Initializable {
     // MÉTODO GENERAL DE NAVEGACIÓN (MEJORADO)
     // =========================
 
-    private void cambiarPantalla(Node nodo, String rutaFXML) {
+   private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
-
-            URL resource = getClass().getResource(rutaFXML);
-
-            if (resource == null) {
-                System.out.println("❌ No se encontró: " + rutaFXML);
-                return;
-            }
-
-            Parent root = FXMLLoader.load(resource);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            Parent root = loader.load();
 
             Stage stage = (Stage) nodo.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -45,6 +38,33 @@ public class PantallaProveedorController implements Initializable {
             e.printStackTrace();
         }
     }
+    @FXML
+        private void abrirAltaProveedor(javafx.event.ActionEvent e) {
+
+    try {
+
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("/components/pantallas/erp/pantallaAltaProveedor/PantallaAltaProveedor.fxml")
+        );
+
+        Parent root = loader.load();
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+
+        stage.setTitle("Alta Proveedor");
+        stage.setResizable(false);
+
+        stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+
+        stage.centerOnScreen();
+        stage.showAndWait();
+
+    } catch (Exception ex) {
+        System.out.println("❌ ERROR abriendo ventana:");
+        ex.printStackTrace();
+    }
+}
 
     // =========================
     // BOTONES
@@ -86,7 +106,7 @@ public class PantallaProveedorController implements Initializable {
             "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
 
-    // 🔥 ESTE FALTABA
+    
     @FXML
     private void irInformes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
