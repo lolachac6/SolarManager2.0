@@ -56,11 +56,11 @@
                     defaultButton="true"
                     onAction="#handleAceptar"/>
 
-            <Button fx:id="btnCancelar"
-                text="Cancelar"
+            <Button fx:id="btnBorrar"
+                text="Borrar"
                 prefWidth="110"
                 defaultButton="true"
-                onAction="#handleCancelar"/>
+                onAction="#handleBorrar"/>
 
         </HBox>
         

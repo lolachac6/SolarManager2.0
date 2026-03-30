@@ -82,11 +82,11 @@ public class PantallaLoginController implements Initializable {
 
             // ADMIN
             if (rol.equalsIgnoreCase("admin")) {
-                cargarPantalla("/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml");
+                cargarPantalla("/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml");
             }
             // COMERCIAL
             else if (rol.equalsIgnoreCase("comercial")) {
-                cargarPantalla("/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml");
+                cargarPantalla("/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml");
             }
             else {
                 lblMensaje.setText("Rol desconocido: " + rol);
@@ -99,7 +99,7 @@ public class PantallaLoginController implements Initializable {
     }
 
     @FXML
-    private void handleCancelar() {
+    private void handleBorrar() {
         txtUsuario.clear();
         txtPassword.clear();
         lblMensaje.setText("");
