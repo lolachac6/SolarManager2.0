@@ -2,18 +2,12 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-<<<<<<< HEAD
         <group>
-            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/erp/erp/pantallaAltaPresupuesto/PantallaAltaPresupuestoController.java</file>
-            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Usuario.java</file>
-            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaAltaComercial/pantallaAltaComercial.fxml</file>
-            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Producto.java</file>
-            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Comercial.java</file>
-            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Proveedor.java</file>
-            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Cliente.java</file>
+            <file>file:/Users/lolachaconcarrion/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Comercial.java</file>
+            <file>file:/Users/lolachaconcarrion/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comun/pantallaLogin/NewFXMainLogin.java</file>
+            <file>file:/Users/lolachaconcarrion/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaAltaComercial/PantallaAltaComercialController.java</file>
+            <file>file:/Users/lolachaconcarrion/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaComerciales/pantallaComercialesController.java</file>
+            <file>file:/Users/lolachaconcarrion/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Direccion.java</file>
         </group>
-=======
-        <group/>
->>>>>>> 2Paula
     </open-files>
 </project-private>

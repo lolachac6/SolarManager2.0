@@ -133,7 +133,6 @@ public class PantallaGeneralController implements Initializable {
             stage.centerOnScreen();
 
         } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
 }

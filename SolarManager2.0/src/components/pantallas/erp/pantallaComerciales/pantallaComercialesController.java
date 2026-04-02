@@ -84,4 +84,10 @@ public class pantallaComercialesController implements Initializable {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
+    
+    @FXML
+    private void anadirComercial(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaAltaComercial/pantallaAltaComercial.fxml");
+    }
 }
