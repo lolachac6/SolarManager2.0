@@ -61,13 +61,13 @@ public class PantallaAltaComercialController implements Initializable {
 @FXML
 private void guardarComercial(ActionEvent event) {
 
-    // 1. VALIDACIONES
+    
     if (!validarCampos()) {
         return;
     }
 
     try {
-        // 2. CREAR OBJETO COMERCIAL
+        
         Comercial nuevoComercial = new Comercial();
         nuevoComercial.setNombre(txtNombre.getText());
         nuevoComercial.setApellidos(txtApellidos.getText());
@@ -88,7 +88,7 @@ private void guardarComercial(ActionEvent event) {
         nuevoComercial.setActivo(chkActivo.isSelected());
         nuevoComercial.setTipoContrato(cmbTipoContrato.getValue());
 
-        // 3. CONVERTIR A DOCUMENT PARA MONGO
+        
         org.bson.Document doc = new org.bson.Document()
                 .append("nombre", nuevoComercial.getNombre())
                 .append("apellidos", nuevoComercial.getApellidos())
@@ -110,12 +110,12 @@ private void guardarComercial(ActionEvent event) {
                         ? nuevoComercial.getTipoContrato().toString()
                         : "NO_ASIGNADO");
 
-        // 4. GUARDAR EN MONGO
+        
         MongoDatabase db = MongoConnection.conectar();
         MongoCollection<org.bson.Document> coleccion = db.getCollection("Comerciales");
         coleccion.insertOne(doc);
 
-        // 5. MENSAJE Y REDIRECCIÓN
+        
         mostrarAlerta("Comercial guardado correctamente", AlertType.INFORMATION);
         cambiarPantalla(event, "/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml");
 
