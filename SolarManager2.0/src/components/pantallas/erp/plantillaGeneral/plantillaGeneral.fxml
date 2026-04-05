@@ -100,6 +100,11 @@
                             styleClass="menu-button"
                             maxWidth="Infinity"
                             onAction="#irInformes"/>
+                    
+                    <Button text="Instalaciones"
+                            styleClass="menu-button"
+                            maxWidth="Infinity"
+                            onAction="#irInstalaciones"/>
 
                 </VBox>
             </left>

@@ -85,6 +85,11 @@
                     <Button text="Informes" maxWidth="Infinity"
                             styleClass="menu-button"
                             onAction="#irInformes"/>
+                    
+                    <Button text="Instalaciones"
+                            styleClass="menu-button"
+                            maxWidth="Infinity"
+                            onAction="#irInstalaciones"/>
 
                 </VBox>
 
@@ -144,8 +149,8 @@
                                 text="Guardar"
                                 style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
 
-                        <Button fx:id="btnModificar" text="Modificar"/>
-                        <Button fx:id="btnCancelar" text="Cancelar"/>
+                        <Button fx:id="btnModificar" text="Modificar" onAction="#modificar"/>
+                        <Button fx:id="btnCancelar" text="Cancelar" onAction="#cancelar"/>
 
                     </HBox>
 
