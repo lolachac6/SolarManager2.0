@@ -93,8 +93,7 @@
                             </columnConstraints>
 
                             <!-- BOTÓN CLIENTES -->
-                            <Button fx:id="btnClientes"
-                                    text="Clientes"
+                            <Button fx:id="btnClientes"  
                                     styleClass="dashboard-button"
                                     contentDisplay="TOP"
                                     prefWidth="220"
@@ -104,7 +103,6 @@
 
                             <!-- BOTÓN INSTALACIONES -->
                             <Button fx:id="btnInstalaciones"
-                                    text="Instalaciones"
                                     styleClass="dashboard-button"
                                     contentDisplay="TOP"
                                     prefWidth="220"

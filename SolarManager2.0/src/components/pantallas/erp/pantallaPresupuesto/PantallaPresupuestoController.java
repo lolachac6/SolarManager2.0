@@ -31,8 +31,8 @@ public class PantallaPresupuestoController implements Initializable {
             Parent root = loader.load();
 
             Stage stage = (Stage) nodo.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
+            stage.setResizable(true);
+            stage.setMaximized(true);
 
         } catch (IOException e) {
             e.printStackTrace();

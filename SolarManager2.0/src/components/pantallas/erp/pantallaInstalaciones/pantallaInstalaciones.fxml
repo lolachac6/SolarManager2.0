@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="700.0"
+            prefWidth="1200.0"
+            styleClass="mainFxmlClass"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="components.pantallas.erp.pantallaInstalaciones.PantallaInstalacionesController">
+
+    <stylesheets>
+        <URL value="@pantallainstalaciones.css"/>
+    </stylesheets>
+
+    <children>
+
+        <BorderPane AnchorPane.topAnchor="0"
+                    AnchorPane.bottomAnchor="0"
+                    AnchorPane.leftAnchor="0"
+                    AnchorPane.rightAnchor="0">
+
+            <!-- CABECERA -->
+            <top>
+                <HBox alignment="CENTER_LEFT"
+                      spacing="10"
+                      style="-fx-background-color:#f4f4f4; -fx-padding:10;">
+
+                    <Button text="← Volver"
+                            onAction="#volverInicio"/>
+
+                    <Label text="Solar Manager"
+                           style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+
+                    <Pane HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </top>
+
+            <!-- MENU LATERAL -->
+            <left>
+                <VBox alignment="TOP_CENTER"
+                      prefWidth="200"
+                      spacing="10"
+                      style="-fx-background-color:#e6e9ef;
+                             -fx-padding:85 15 15 15;
+                             -fx-border-color:#d0d0d0;
+                             -fx-border-width:2;
+                             -fx-background-radius:5;
+                             -fx-border-radius:5;">
+
+                    <BorderPane.margin>
+                        <Insets top="90" right="15" bottom="65" left="15"/>
+                    </BorderPane.margin>
+
+                    <Label text="Inicio"
+                           style="-fx-font-weight:bold;"/>
+
+                    <Button text="Clientes" maxWidth="Infinity" onAction="#irClientes"/>
+                    <Button text="Comerciales" maxWidth="Infinity" onAction="#irComerciales"/>
+                    <Button text="Proveedores" maxWidth="Infinity" onAction="#irProveedores"/>
+                    <Button text="Stock" maxWidth="Infinity" onAction="#irStock"/>
+                    <Button text="Presupuestos" maxWidth="Infinity" onAction="#irPresupuestos"/>
+                    <Button text="Informes" maxWidth="Infinity" onAction="#irInformes"/>
+
+                </VBox>
+            </left>
+
+            <!-- CONTENIDO -->
+            <center>
+                <VBox spacing="20" style="-fx-padding:20;">
+
+                    <Label text="Instalaciones Fotovoltaicas"
+                           style="-fx-font-size:22px; -fx-font-weight:bold;"/>
+
+                    <!-- BUSCADOR -->
+                    <HBox spacing="10">
+                        <TextField fx:id="txtFiltro"
+                                   promptText="Buscar instalación..."
+                                   HBox.hgrow="ALWAYS"/>
+                        <Button text="🔍" onAction="#buscar"/>
+                    </HBox>
+
+                    <!-- TABLA -->
+                    <TableView fx:id="tablaInstalaciones" VBox.vgrow="ALWAYS">
+
+                        <columns>
+                            <TableColumn fx:id="colId" text="ID" prefWidth="200"/>
+                            <TableColumn fx:id="colIdCliente" text="Id Cliente" prefWidth="150"/>
+                            <TableColumn fx:id="colPotencia" text="Potencia (kW)" prefWidth="120"/>
+                            <TableColumn fx:id="colPaneles" text="Paneles" prefWidth="100"/>
+                            <TableColumn fx:id="colProduccion" text="Producción" prefWidth="150"/>
+                            <TableColumn fx:id="colAhorro" text="Ahorro" prefWidth="150"/>
+                            <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="250"/>
+                        </columns>
+
+                    </TableView>
+
+                    <!-- BOTONES -->
+                    <HBox spacing="10">
+
+                        <Button text="➕ Añadir instalación"
+                                onAction="#añadirInstalacion"/>
+
+                        <Button text="Modificar"
+                                onAction="#modificar"/>
+
+                        <Button text="Cancelar"
+                                onAction="#confirmarSalida"/>
+
+                        <Pane HBox.hgrow="ALWAYS"/>
+
+                    </HBox>
+
+                </VBox>
+            </center>
+
+        </BorderPane>
+
+    </children>
+
+</AnchorPane>
