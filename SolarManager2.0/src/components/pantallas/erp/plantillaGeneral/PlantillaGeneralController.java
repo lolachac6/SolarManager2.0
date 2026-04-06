@@ -26,7 +26,7 @@ public class PlantillaGeneralController implements Initializable {
     @FXML private Button btnProveedores;
     @FXML private Button btnStock;
     @FXML private Button btnPresupuestos;
-    @FXML private Button btnInformes;
+    @FXML private Button btnInstalaciones;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -36,7 +36,7 @@ public class PlantillaGeneralController implements Initializable {
         cargarIcono(btnProveedores, "/assets/iconos/proveedores.jpg");
         cargarIcono(btnStock, "/assets/iconos/stock.jpg");
         cargarIcono(btnPresupuestos, "/assets/iconos/presupuestos.jpg");
-        cargarIcono(btnInformes, "/assets/iconos/informes.jpg");
+        cargarIcono(btnInstalaciones, "/assets/iconos/instalaciones.jpg");
     }
 
     // =========================
@@ -77,7 +77,6 @@ public class PlantillaGeneralController implements Initializable {
             
             stage.setResizable(true);
             stage.setMaximized(true);
-            stage.centerOnScreen();
             stage.setScene(new Scene(root));
 
         } catch (IOException e) {
@@ -123,5 +122,11 @@ public class PlantillaGeneralController implements Initializable {
     private void irInformes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
+    }
+    
+    @FXML
+    private void irInstalaciones(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
     }
 }

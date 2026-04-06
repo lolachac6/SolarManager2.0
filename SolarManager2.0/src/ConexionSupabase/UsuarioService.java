@@ -21,24 +21,22 @@ public class UsuarioService {
         JSONObject usuario = arr.getJSONObject(0);
 
         String hash = usuario.getString("password_hash");
-        
 
         return PasswordUtil.checkPassword(password, hash);
-        
-        
     }
+
     // -------------------------
-    // DEVOLVER EL ROL
+    // DEVOLVER EL USUARIO
     // -------------------------
-    
     public JSONObject obtenerUsuarioPorEmail(String email) throws Exception {
-    String respuesta = UsuarioDAO.buscarPorEmail(email);
-    JSONArray arr = new JSONArray(respuesta);
+        String respuesta = UsuarioDAO.buscarPorEmail(email);
+        JSONArray arr = new JSONArray(respuesta);
 
-    if (arr.length() == 0) return null;
+        if (arr.length() == 0) return null;
 
-    return arr.getJSONObject(0);
-}
+        return arr.getJSONObject(0);
+    }
+
     // -------------------------
     // REGISTRAR
     // -------------------------

@@ -13,10 +13,10 @@
             xmlns="http://javafx.com/javafx/8"
             fx:controller="components.pantallas.erp.pantallaComerciales.pantallaComercialesController">
 
-    <stylesheets>
-        <!-- CORREGIDO -->
+    
+       <stylesheets>
         <URL value="@pantallacomerciales.css"/>
-    </stylesheets>
+        </stylesheets>
 
     <children>
 
