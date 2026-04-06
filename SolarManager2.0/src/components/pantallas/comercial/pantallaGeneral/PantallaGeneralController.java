@@ -22,6 +22,8 @@ import javafx.scene.image.ImageView;
 
 import javafx.application.Platform;
 
+import javafx.scene.layout.AnchorPane;
+
 /**
  * Controller de la pantalla general comercial
  */
@@ -30,18 +32,20 @@ public class PantallaGeneralController implements Initializable {
     // =========================
     // BOTONES DASHBOARD
     // =========================
-
     @FXML private Button btnClientes;
     @FXML private Button btnInstalaciones;
 
     // =========================
+    // PANEL DINÁMICO
+    // =========================
+    @FXML private AnchorPane panelTabla;
+
+    // =========================
     // INITIALIZE
     // =========================
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        // 🔥 IMPORTANTE: esperar a que la UI esté renderizada
         Platform.runLater(() -> {
             cargarIcono(btnClientes, "/assets/iconos/clientes.jpg");
             cargarIcono(btnInstalaciones, "/assets/iconos/instalaciones.jpg");
@@ -49,9 +53,8 @@ public class PantallaGeneralController implements Initializable {
     }
 
     // =========================
-    // CARGA ICONOS (ESTABLE)
+    // ICONOS
     // =========================
-
     private void cargarIcono(Button boton, String rutaIcono) {
 
         try {
@@ -65,12 +68,9 @@ public class PantallaGeneralController implements Initializable {
             Image imagen = new Image(recurso.toExternalForm());
             ImageView imageView = new ImageView(imagen);
 
-            // 🔥 Tamaño controlado (evita bugs al volver)
             double size = boton.getWidth() * 0.6;
 
-            if (size <= 0) {
-                size = 120; // fallback seguro
-            }
+            if (size <= 0) size = 120;
 
             imageView.setFitWidth(size);
             imageView.setPreserveRatio(true);
@@ -85,9 +85,8 @@ public class PantallaGeneralController implements Initializable {
     }
 
     // =========================
-    // DASHBOARD → NAVEGACIÓN
+    // DASHBOARD
     // =========================
-
     @FXML
     private void abrirAltaCliente(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
@@ -101,32 +100,67 @@ public class PantallaGeneralController implements Initializable {
     }
 
     // =========================
-    // MENÚ LATERAL (SIN LÓGICA AÚN)
+    // MENU LATERAL → CARGA COMPONENTES
     // =========================
-
     @FXML
     private void mostrarClientes(ActionEvent e) {
-        System.out.println("👉 Mostrar tabla CLIENTES");
+        cargarEnPanel("/components/tablaClientes/tablaClientes.fxml");
     }
 
     @FXML
     private void mostrarInstalaciones(ActionEvent e) {
-        System.out.println("👉 Mostrar tabla INSTALACIONES");
+        System.out.println("👉 Instalaciones aún no implementado");
     }
 
     @FXML
     private void mostrarPresupuestos(ActionEvent e) {
-        System.out.println("👉 Mostrar tabla PRESUPUESTOS");
+        cargarEnPanel("/components/tablaPresupuestos/tablaPresupuestos.fxml");
     }
 
     // =========================
-    // MÉTODO CAMBIO PANTALLA
+    // CARGAR COMPONENTE EN PANEL
     // =========================
+    private void cargarEnPanel(String rutaFXML) {
+        try {
 
+            URL resource = getClass().getResource(rutaFXML);
+
+            if (resource == null) {
+                System.out.println("❌ No se encontró el FXML: " + rutaFXML);
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(resource);
+            Node contenido = loader.load();
+
+            panelTabla.getChildren().clear();
+            panelTabla.getChildren().add(contenido);
+
+            
+            AnchorPane.setTopAnchor(contenido, 0.0);
+            AnchorPane.setBottomAnchor(contenido, 0.0);
+            AnchorPane.setLeftAnchor(contenido, 0.0);
+            AnchorPane.setRightAnchor(contenido, 0.0);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    // =========================
+    // CAMBIO DE PANTALLA
+    // =========================
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
-            Parent root = loader.load();
+
+            URL resource = getClass().getResource(rutaFXML);
+
+            if (resource == null) {
+                System.out.println("❌ Ruta incorrecta: " + rutaFXML);
+                return;
+            }
+
+            Parent root = FXMLLoader.load(resource);
 
             Stage stage = (Stage) nodo.getScene().getWindow();
             stage.setScene(new Scene(root));

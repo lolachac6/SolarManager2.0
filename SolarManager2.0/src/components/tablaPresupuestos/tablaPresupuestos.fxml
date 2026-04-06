@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10"
+      style="-fx-padding:15;"
+      xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="components.tablaPresupuestos.TablaPresupuestosController">
+
+    <Label text="Listado de Presupuestos"
+           style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+
+    <TableView fx:id="tablaPresupuestos" VBox.vgrow="ALWAYS">
+
+        <columns>
+
+            <TableColumn fx:id="colId" text="ID"/>
+            <TableColumn fx:id="colCliente" text="Cliente"/>
+            <TableColumn fx:id="colFecha" text="Fecha"/>
+            <TableColumn fx:id="colEstado" text="Estado"/>
+            <TableColumn fx:id="colTotal" text="Total"/>
+
+        </columns>
+
+    </TableView>
+
+</VBox>

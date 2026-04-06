@@ -18,6 +18,7 @@ package modelo;
  *
  * La instalación se compone de:
  * <ul>
+ * <li>Id Cliente</li>
  * <li>Potencia total instalada</li>
  * <li>Número de paneles solares</li>
  * <li>Producción energética estimada</li>
@@ -28,7 +29,9 @@ package modelo;
  * @author ivang
  */
 public class InstalacionFotovoltaica {
-
+    
+    /** Id Cliente de referencia de la instalacion */
+    private String IdCliente;
     /** Potencia total instalada en kW */
     private double potenciaInstalada;
 
@@ -57,21 +60,31 @@ public class InstalacionFotovoltaica {
     /**
      * Constructor completo que inicializa todos los atributos de la instalación.
      *
+     * @param IdCliente Cliente de referencia 
      * @param potenciaInstalada potencia total instalada
      * @param numeroPaneles número de paneles solares
      * @param produccionEstimada producción energética estimada
      * @param ahorroEstimado ahorro económico estimado
      * @param direccion dirección de la instalación
      */
-    public InstalacionFotovoltaica(double potenciaInstalada, int numeroPaneles,
+    public InstalacionFotovoltaica(String IdCliente, double potenciaInstalada, int numeroPaneles,
                                    double produccionEstimada, double ahorroEstimado,
                                    Direccion direccion) {
 
+        this.IdCliente = IdCliente;
         this.potenciaInstalada = potenciaInstalada;
         this.numeroPaneles = numeroPaneles;
         this.produccionEstimada = produccionEstimada;
         this.ahorroEstimado = ahorroEstimado;
         this.direccion = direccion;
+    }
+
+    public String getIdCliente() {
+        return IdCliente;
+    }
+
+    public void setIdCliente(String IdCliente) {
+        this.IdCliente = IdCliente;
     }
 
     /**
@@ -174,7 +187,8 @@ public class InstalacionFotovoltaica {
      */
     @Override
     public String toString() {
-        return "Instalación FV | Potencia: " + potenciaInstalada + " kW" +
+        return "Instalación FV | IdCliente: " + IdCliente
+                + "Potencia: " + potenciaInstalada + " kW" +
                " | Paneles: " + numeroPaneles +
                " | Producción estimada: " + produccionEstimada +
                " | Ahorro estimado: " + ahorroEstimado +

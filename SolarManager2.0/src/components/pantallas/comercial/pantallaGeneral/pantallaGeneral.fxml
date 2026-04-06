@@ -12,7 +12,6 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="components.pantallas.comercial.pantallaGeneral.PantallaGeneralController">
 
-    <!-- 🔥 IMPORTANTE: CSS -->
     <stylesheets>
         <URL value="@plantillageneral.css"/>
     </stylesheets>
@@ -43,39 +42,26 @@
             </top>
 
             <!-- ===================== -->
-            <!-- MENU LATERAL -->
+            <!-- MENU -->
             <!-- ===================== -->
             <left>
                 <VBox alignment="TOP_CENTER"
                       prefWidth="200"
                       spacing="10"
-                      style="
-                            -fx-background-color:#e6e9ef;
-                            -fx-padding:85 15 15 15;
-                            -fx-border-color:#d0d0d0;
-                            -fx-border-width:2;
-                            -fx-background-radius:5;
-                            -fx-border-radius:5;">
-
-                    <BorderPane.margin>
-                        <Insets top="90" right="15" bottom="65" left="15"/>
-                    </BorderPane.margin>
+                      style="-fx-background-color:#e6e9ef; -fx-padding:85 15 15 15;">
 
                     <Label text="Inicio"
                            style="-fx-font-weight:bold;"/>
 
                     <Button text="Clientes"
-                            styleClass="menu-button"
                             maxWidth="Infinity"
                             onAction="#mostrarClientes"/>
 
                     <Button text="Instalaciones"
-                            styleClass="menu-button"
                             maxWidth="Infinity"
                             onAction="#mostrarInstalaciones"/>
 
                     <Button text="Presupuestos"
-                            styleClass="menu-button"
                             maxWidth="Infinity"
                             onAction="#mostrarPresupuestos"/>
 
@@ -95,52 +81,49 @@
                     <!-- ===================== -->
                     <!-- DASHBOARD -->
                     <!-- ===================== -->
-                    <GridPane hgap="30" vgap="30">
+                    <StackPane VBox.vgrow="ALWAYS">
 
-                        <columnConstraints>
-                            <ColumnConstraints percentWidth="50"/>
-                            <ColumnConstraints percentWidth="50"/>
-                        </columnConstraints>
+                        <GridPane alignment="CENTER"
+                                  hgap="80"
+                                  maxWidth="600">
 
-                        <rowConstraints>
-                            <RowConstraints percentHeight="100"/>
-                        </rowConstraints>
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50" halignment="CENTER"/>
+                                <ColumnConstraints percentWidth="50" halignment="CENTER"/>
+                            </columnConstraints>
 
-                        <!-- CLIENTES -->
-                        <Button fx:id="btnClientes"
-                                text="Clientes"
-                                styleClass="dashboard-button"
-                                contentDisplay="TOP"
-                                maxWidth="Infinity"
-                                maxHeight="Infinity"
-                                onAction="#abrirAltaCliente"
-                                GridPane.columnIndex="0"
-                                GridPane.rowIndex="0"/>
+                            <!-- BOTÓN CLIENTES -->
+                            <Button fx:id="btnClientes"  
+                                    styleClass="dashboard-button"
+                                    contentDisplay="TOP"
+                                    prefWidth="220"
+                                    prefHeight="220"
+                                    onAction="#abrirAltaCliente"
+                                    GridPane.columnIndex="0"/>
 
-                        <!-- INSTALACIONES -->
-                        <Button fx:id="btnInstalaciones"
-                                text="Instalaciones"
-                                styleClass="dashboard-button"
-                                contentDisplay="TOP"
-                                maxWidth="Infinity"
-                                maxHeight="Infinity"
-                                onAction="#abrirCalculoInstalacion"
-                                GridPane.columnIndex="1"
-                                GridPane.rowIndex="0"/>
+                            <!-- BOTÓN INSTALACIONES -->
+                            <Button fx:id="btnInstalaciones"
+                                    styleClass="dashboard-button"
+                                    contentDisplay="TOP"
+                                    prefWidth="220"
+                                    prefHeight="220"
+                                    onAction="#abrirCalculoInstalacion"
+                                    GridPane.columnIndex="1"/>
 
-                    </GridPane>
+                        </GridPane>
+
+                    </StackPane>
 
                     <!-- ===================== -->
-                    <!-- PANEL TABLA -->
+                    <!-- PANEL DINÁMICO (CLAVE) -->
                     <!-- ===================== -->
-                    <Pane fx:id="panelTabla"
-                          VBox.vgrow="ALWAYS"
-                          style="
-                            -fx-background-color:white;
-                            -fx-border-color:#d0d0d0;
-                            -fx-border-width:2;
-                            -fx-border-radius:5;
-                            -fx-background-radius:5;"/>
+                    <AnchorPane fx:id="panelTabla"
+                                VBox.vgrow="ALWAYS"
+                                style="-fx-background-color:white;
+                                       -fx-border-color:#d0d0d0;
+                                       -fx-border-width:2;
+                                       -fx-border-radius:5;
+                                       -fx-background-radius:5;"/>
 
                 </VBox>
             </center>

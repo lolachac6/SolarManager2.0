@@ -2,18 +2,41 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-<<<<<<< HEAD
         <group>
-            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/erp/erp/pantallaAltaPresupuesto/PantallaAltaPresupuestoController.java</file>
-            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Usuario.java</file>
-            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaAltaComercial/pantallaAltaComercial.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comun/pantallaLogin/PantallaLoginController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaClientes/PantallaClientesController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/pantallaGeneral/PantallaGeneralController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/APIGoogleSolar/ConexionAPIGS.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/pantallaAltaCliente/AltaClienteController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaPresupuesto/pantallaPresupuesto.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/pantallaGeneral/NewFXMainComercial.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/pantallaAltaCliente/altaCliente.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/ConexionSupabase/SupabaseClient.java</file>
             <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Producto.java</file>
-            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Comercial.java</file>
-            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Proveedor.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/solarmanager/SolarManager.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comun/pantallaLogin/pantallaLogin.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/tablaPresupuestos/tablaPresupuestos.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/calculoInstalacion/calculoInstalacion.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/ConexionSupabase/UsuarioDAO.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/tablaClientes/TablaClientesController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaComerciales/pantallaComercialesController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/ConexionSupabase/PasswordUtil.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/tablaPresupuestos/TablaPresupuestosController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/ConexionSupabase/UsuarioService.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/calculoInstalacion/CalculoInstalacionController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/plantillaGeneral/PlantillaGeneralController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/InstalacionFotovoltaica.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/plantillaGeneral/NewFXMain.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/ConexionSupabase/Usuario_Supabase.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/tablaClientes/tablaClientes.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaClientes/pantallaClientes.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Presupuesto.java</file>
             <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/modelo/Cliente.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/ConexionSupabase/SessionManager.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/DB/MongoConnection.java</file>
         </group>
-=======
-        <group/>
->>>>>>> 2Paula
     </open-files>
 </project-private>

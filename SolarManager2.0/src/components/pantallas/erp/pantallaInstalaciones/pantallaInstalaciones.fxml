@@ -10,10 +10,10 @@
             styleClass="mainFxmlClass"
             xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="components.pantallas.erp.pantallaClientes.PantallaClientesController">
+            fx:controller="components.pantallas.erp.pantallaInstalaciones.PantallaInstalacionesController">
 
     <stylesheets>
-        <URL value="@pantallaclientes.css"/>
+        <URL value="@pantallainstalaciones.css"/>
     </stylesheets>
 
     <children>
@@ -72,32 +72,28 @@
             <center>
                 <VBox spacing="20" style="-fx-padding:20;">
 
-                    <Label text="Clientes"
+                    <Label text="Instalaciones Fotovoltaicas"
                            style="-fx-font-size:22px; -fx-font-weight:bold;"/>
 
                     <!-- BUSCADOR -->
                     <HBox spacing="10">
                         <TextField fx:id="txtFiltro"
-                                   promptText="Buscar cliente..."
+                                   promptText="Buscar instalación..."
                                    HBox.hgrow="ALWAYS"/>
                         <Button text="🔍" onAction="#buscar"/>
                     </HBox>
 
                     <!-- TABLA -->
-                    <TableView fx:id="tablaClientes" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="tablaInstalaciones" VBox.vgrow="ALWAYS">
 
                         <columns>
-                            <TableColumn fx:id="colId" text="ID" prefWidth="120"/>
-                            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="120"/>
-                            <TableColumn fx:id="colApellidos" text="Apellidos" prefWidth="150"/>
-                            <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="120"/>
-                            <TableColumn fx:id="colEmail" text="Email" prefWidth="180"/>
-                            <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="200"/>
-                            <TableColumn fx:id="colTipoCliente" text="Tipo" prefWidth="100"/>
-                            <TableColumn fx:id="colDni" text="DNI" prefWidth="120"/>
-                            <TableColumn fx:id="colCif" text="CIF" prefWidth="120"/>
-                            <TableColumn fx:id="colObservaciones" text="Observaciones" prefWidth="200"/>
-                            <TableColumn fx:id="colIdComercialAsignado" text="Comercial" prefWidth="120"/>
+                            <TableColumn fx:id="colId" text="ID" prefWidth="200"/>
+                            <TableColumn fx:id="colIdCliente" text="Id Cliente" prefWidth="150"/>
+                            <TableColumn fx:id="colPotencia" text="Potencia (kW)" prefWidth="120"/>
+                            <TableColumn fx:id="colPaneles" text="Paneles" prefWidth="100"/>
+                            <TableColumn fx:id="colProduccion" text="Producción" prefWidth="150"/>
+                            <TableColumn fx:id="colAhorro" text="Ahorro" prefWidth="150"/>
+                            <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="250"/>
                         </columns>
 
                     </TableView>
@@ -105,18 +101,16 @@
                     <!-- BOTONES -->
                     <HBox spacing="10">
 
-                        <Button text="➕ Añadir cliente"
-                                onAction="#añadirCliente"/>
+                        <Button text="➕ Añadir instalación"
+                                onAction="#añadirInstalacion"/>
 
                         <Button text="Modificar"
                                 onAction="#modificar"/>
-                        
+
                         <Button text="Cancelar"
                                 onAction="#confirmarSalida"/>
 
                         <Pane HBox.hgrow="ALWAYS"/>
-
-                        
 
                     </HBox>
 
