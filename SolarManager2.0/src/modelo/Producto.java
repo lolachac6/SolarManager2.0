@@ -50,6 +50,9 @@ public class Producto {
 
     /** Cantidad disponible en stock */
     private int stock;
+    
+    /** Descripcion del producto */
+    private String descripcion;
 
     /**
      * Constructor vacío.
@@ -69,9 +72,10 @@ public class Producto {
      * @param precio precio unitario
      * @param idProveedor identificador del proveedor
      * @param stock cantidad disponible en stock
+     * @param descripcion descripción del producto
      */
     public Producto(String id, String nombre, TipoProducto tipoProducto,
-                    double precio, String idProveedor, int stock) {
+                    double precio, String idProveedor, int stock, String descripcion) {
 
         this.id = id;
         this.nombre = nombre;
@@ -79,6 +83,7 @@ public class Producto {
         this.precio = precio;
         this.idProveedor = idProveedor;
         this.stock = stock;
+        this.descripcion = descripcion;
     }
 
     /**
@@ -115,6 +120,14 @@ public class Producto {
      */
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     /**
