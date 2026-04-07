@@ -81,10 +81,17 @@
                     <Button text="Presupuestos" maxWidth="Infinity"
                             styleClass="menu-button"
                             onAction="#irPresupuestos"/>
+                    
+                    <Button text="Instalaciones"
+                            styleClass="menu-button"
+                            maxWidth="Infinity"
+                            onAction="#irInstalaciones"/>
 
                     <Button text="Informes" maxWidth="Infinity"
                             styleClass="menu-button"
                             onAction="#irInformes"/>
+                    
+                    
 
                 </VBox>
 
@@ -140,12 +147,12 @@
 
                         <Pane HBox.hgrow="ALWAYS"/>
 
-                        <Button fx:id="btnGuardar"
-                                text="Guardar"
-                                style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
+                        <Button fx:id="btnActualizar"
+                                text="Actualizar"
+                                onAction="#actualizar"/>
 
-                        <Button fx:id="btnModificar" text="Modificar"/>
-                        <Button fx:id="btnCancelar" text="Cancelar"/>
+                        <Button fx:id="btnDetalle" text="Detalle" onAction="#detalle"/>
+                        <Button fx:id="btnCancelar" text="Cancelar" onAction="#cancelar"/>
 
                     </HBox>
 

@@ -103,7 +103,7 @@ public class PlantillaGeneralController implements Initializable {
     @FXML
     private void irProveedores(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
-            "/components/pantallas/erp/pantallaProveedor/PantallaProveedor.fxml");
+            "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml");
     }
 
     @FXML
@@ -116,6 +116,12 @@ public class PlantillaGeneralController implements Initializable {
     private void irPresupuestos(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
+    }
+    
+    @FXML
+    private void irInstalaciones(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
     }
 
     @FXML
