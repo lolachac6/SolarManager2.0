@@ -87,9 +87,12 @@
 
                             <Label text="Código Postal:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                             <TextField fx:id="txtCodigoPostal" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                            
+                            <Label text="Id Cliente:" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                            <TextField fx:id="txtIdCliente" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
 
-                            <Label text="Consumo anual (kWh):" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                            <TextField fx:id="txtConsumoAnual" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                            <Label text="Consumo anual (kWh):" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                            <TextField fx:id="txtConsumoAnual" GridPane.columnIndex="1" GridPane.rowIndex="3" editable="false" focusTraversable="false" />
 
                         </GridPane>
 
@@ -149,9 +152,10 @@
 
                     <Pane HBox.hgrow="ALWAYS"/>
 
-                    <Button text="Calcular" fx:id="btnCalcular"/>
-                    <Button text="Limpiar" fx:id="btnLimpiar"/>
-                    <Button text="Cancelar" fx:id="btnCancelar"/>
+                    <Button text="Calcular" fx:id="btnCalcular" onAction="#calcularInstalacion"/>
+                    <Button text="Guardar" fx:id="btnGuardar" onAction="#guardarInstalacion"/>
+                    <Button text="Limpiar" fx:id="btnLimpiar" onAction="#limpiarCampos"/>
+                    <Button text="Cancelar" fx:id="btnCancelar" onAction="#cancelar"/>
 
                 </HBox>
 

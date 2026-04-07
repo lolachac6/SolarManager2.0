@@ -7,37 +7,30 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Clase principal que inicia la aplicación Solar Manager.
- * Carga la plantilla general del dashboard.
+ * Arranque de la aplicación
  */
 public class SolarManager extends Application {
 
-    /**
-     * Método que inicia JavaFX
-     */
     @Override
     public void start(Stage stage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml")
+            getClass().getResource(
+                "/components/pantallas/comun/pantallaLogin/PantallaLogin.fxml"
+            )
         );
 
         Parent root = loader.load();
 
         Scene scene = new Scene(root);
 
-        stage.setTitle("Solar Manager");
-        stage.setMaximized(true);   // abre en pantalla completa
+        stage.setTitle("Solar Manager - Login");
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }
 
-    /**
-     * Método main que lanza la aplicación
-     * @param args
-     */
     public static void main(String[] args) {
         launch(args);
     }
-
 }

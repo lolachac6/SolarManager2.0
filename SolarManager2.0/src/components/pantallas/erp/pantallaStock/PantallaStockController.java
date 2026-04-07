@@ -31,8 +31,9 @@ public class PantallaStockController implements Initializable {
             Parent root = loader.load();
 
             Stage stage = (Stage) nodo.getScene().getWindow();
+            stage.setResizable(true);
+            stage.setMaximized(true);
             stage.setScene(new Scene(root));
-            stage.centerOnScreen();
 
         } catch (IOException e) {
             e.printStackTrace();
