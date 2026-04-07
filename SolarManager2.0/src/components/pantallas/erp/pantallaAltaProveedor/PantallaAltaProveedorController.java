@@ -4,6 +4,7 @@ import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
+import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import modelo.Direccion;
 import modelo.Proveedor;
 import org.bson.Document;
@@ -73,80 +75,95 @@ public class PantallaAltaProveedorController {
         modoEdicion = false;
         bloquearFormulario(true);
     }
+    
+/**
+ * Guarda o actualiza un proveedor.
+ */
+@FXML
+private void guardarProveedor(ActionEvent e) {
 
-    /**
-     * Guarda o actualiza un proveedor.
-     */
-    @FXML
-    private void guardarProveedor(ActionEvent e) {
+    // NO permite guardar si no está en modo edición
+    if (!modoEdicion) {
+        mostrarAlerta("Pulsa primero el botón EDITAR", AlertType.WARNING);
+        return;
+    }
 
-        // ❌ NO permite guardar si no está en modo edición
-        if (!modoEdicion) {
-            mostrarAlerta("Pulsa primero el botón EDITAR", AlertType.WARNING);
-            return;
-        }
+    if (!validarCampos()) {
+        return;
+    }
 
-        if (!validarCampos()) {
-            return;
-        }
+    // ===== CONFIRMACIÓN =====
+    Alert confirmacion = new Alert(AlertType.CONFIRMATION);
+    confirmacion.setTitle("Confirmar guardado");
+    confirmacion.setHeaderText("Guardar proveedor");
+    confirmacion.setContentText("¿Deseas guardar los cambios del proveedor?");
 
-        try {
-            Proveedor nuevoProveedor = new Proveedor();
-            nuevoProveedor.setNombre(txtNombre.getText());
-            nuevoProveedor.setTelefono(txtTelefono.getText());
-            nuevoProveedor.setEmail(txtEmail.getText());
-            nuevoProveedor.setDireccion(new Direccion());
-            nuevoProveedor.setNombreEmpresa(txtEmpresa.getText());
-            nuevoProveedor.setObservaciones(txtObservaciones.getText());
+    Optional<ButtonType> resultado = confirmacion.showAndWait();
 
-            Document direccionDoc = new Document()
-                    .append("calle", txtDireccion.getText())
-                    .append("numero", "")
-                    .append("codigoPostal", "")
-                    .append("municipio", "")
-                    .append("provincia", "");
+    // SOLO continúa si pulsa OK
+    if (!resultado.isPresent() || resultado.get() != ButtonType.OK) {
+        return;
+    }
 
-            Document doc = new Document()
-                    .append("nombre", nuevoProveedor.getNombre())
-                    .append("telefono", nuevoProveedor.getTelefono())
-                    .append("email", nuevoProveedor.getEmail())
-                    .append("direccion", direccionDoc)
-                    .append("nombreEmpresa", nuevoProveedor.getNombreEmpresa())
-                    .append("observaciones", nuevoProveedor.getObservaciones());
+    // ===== GUARDADO =====
+    try {
+        Proveedor nuevoProveedor = new Proveedor();
+        nuevoProveedor.setNombre(txtNombre.getText());
+        nuevoProveedor.setTelefono(txtTelefono.getText());
+        nuevoProveedor.setEmail(txtEmail.getText());
+        nuevoProveedor.setDireccion(new Direccion());
+        nuevoProveedor.setNombreEmpresa(txtEmpresa.getText());
+        nuevoProveedor.setObservaciones(txtObservaciones.getText());
 
-            MongoDatabase db = MongoConnection.conectar();
-            MongoCollection<Document> coleccion = db.getCollection("Proveedor");
+        Document direccionDoc = new Document()
+                .append("calle", txtDireccion.getText())
+                .append("numero", "")
+                .append("codigoPostal", "")
+                .append("municipio", "")
+                .append("provincia", "");
 
-            if (proveedorId != null) {
+        Document doc = new Document()
+                .append("nombre", nuevoProveedor.getNombre())
+                .append("telefono", nuevoProveedor.getTelefono())
+                .append("email", nuevoProveedor.getEmail())
+                .append("direccion", direccionDoc)
+                .append("nombreEmpresa", nuevoProveedor.getNombreEmpresa())
+                .append("observaciones", nuevoProveedor.getObservaciones());
+
+        MongoDatabase db = MongoConnection.conectar();
+        MongoCollection<Document> coleccion = db.getCollection("Proveedor");
+
+        if (proveedorId != null) {
+            coleccion.updateOne(
+                    new Document("_id", proveedorId),
+                    new Document("$set", doc)
+            );
+        } else {
+            Document existente = coleccion.find(
+                    new Document("nombre", txtNombre.getText())
+            ).first();
+
+            if (existente != null) {
                 coleccion.updateOne(
-                        new Document("_id", proveedorId),
+                        new Document("nombre", txtNombre.getText()),
                         new Document("$set", doc)
                 );
             } else {
-                Document existente = coleccion.find(
-                        new Document("nombre", txtNombre.getText())
-                ).first();
-
-                if (existente != null) {
-                    coleccion.updateOne(
-                            new Document("nombre", txtNombre.getText()),
-                            new Document("$set", doc)
-                    );
-                } else {
-                    coleccion.insertOne(doc);
-                }
+                coleccion.insertOne(doc);
             }
-
-            mostrarAlerta("Proveedor guardado correctamente", AlertType.INFORMATION);
-
-            cambiarPantalla((Node) e.getSource(),
-                    "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml");
-
-        } catch (Exception ex) {
-            mostrarAlerta("Error al guardar proveedor: " + ex.getMessage(), AlertType.ERROR);
         }
-    }
 
+        mostrarAlerta("Proveedor guardado correctamente", AlertType.INFORMATION);
+
+        cambiarPantalla(
+                (Node) e.getSource(),
+                "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
+        );
+
+    } catch (Exception ex) {
+        mostrarAlerta("Error al guardar proveedor: " + ex.getMessage(), AlertType.ERROR);
+    }
+}
     /**
      * Valida campos obligatorios.
      */
@@ -197,44 +214,81 @@ public class PantallaAltaProveedorController {
         mostrarAlerta("Modo edición activado", AlertType.INFORMATION);
     }
 
-    /**
-     * Elimina el proveedor de la base de datos.
-     */
-    @FXML
-    private void eliminarProveedor(ActionEvent e) {
+/**
+ * Elimina el proveedor de la base de datos.
+ */
+@FXML
+private void eliminarProveedor(ActionEvent e) {
 
-        // ❌ NO permite eliminar si no está en modo edición
-        if (!modoEdicion) {
-            mostrarAlerta("Pulsa primero el botón EDITAR", AlertType.WARNING);
-            return;
-        }
-
-        if (txtNombre.getText().isEmpty()) {
-            mostrarAlerta("Introduce el nombre del proveedor", Alert.AlertType.WARNING);
-            return;
-        }
-
-        try {
-            MongoDatabase db = MongoConnection.conectar();
-            MongoCollection<Document> coleccion = db.getCollection("Proveedor");
-
-            coleccion.deleteOne(new Document("nombre", txtNombre.getText()));
-
-            mostrarAlerta("Proveedor eliminado correctamente", AlertType.INFORMATION);
-
-            cambiarPantalla((Node) e.getSource(),
-                    "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml");
-
-        } catch (Exception ex) {
-            mostrarAlerta("Error al eliminar: " + ex.getMessage(), AlertType.ERROR);
-        }
+    // ❌ NO permite eliminar si no está en modo edición
+    if (!modoEdicion) {
+        mostrarAlerta("Pulsa primero el botón EDITAR", AlertType.WARNING);
+        return;
     }
 
-    @FXML
-    private void cancelar(ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
-                "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml");
+    if (txtNombre.getText().isEmpty()) {
+        mostrarAlerta("Introduce el nombre del proveedor", AlertType.WARNING);
+        return;
     }
+
+    // ===== CONFIRMACIÓN =====
+    Alert confirmacion = new Alert(AlertType.CONFIRMATION);
+    confirmacion.setTitle("Confirmar eliminación");
+    confirmacion.setHeaderText("Eliminar proveedor");
+    confirmacion.setContentText(
+        "¿Estás seguro de que deseas eliminar este proveedor?\n\n" +
+        "Esta acción no se puede deshacer."
+    );
+
+    Optional<ButtonType> resultado = confirmacion.showAndWait();
+
+    // ✅ SOLO continúa si pulsa OK
+    if (!resultado.isPresent() || resultado.get() != ButtonType.OK) {
+        return;
+    }
+
+    // ===== ELIMINACIÓN =====
+    try {
+        MongoDatabase db = MongoConnection.conectar();
+        MongoCollection<Document> coleccion = db.getCollection("Proveedor");
+
+        coleccion.deleteOne(new Document("nombre", txtNombre.getText()));
+
+        mostrarAlerta("Proveedor eliminado correctamente", AlertType.INFORMATION);
+
+        cambiarPantalla(
+            (Node) e.getSource(),
+            "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
+        );
+
+    } catch (Exception ex) {
+        mostrarAlerta("Error al eliminar: " + ex.getMessage(), AlertType.ERROR);
+    }
+}
+
+@FXML
+private void cancelar(ActionEvent e) {
+
+    Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+    confirmacion.setTitle("Cancelar cambios");
+    confirmacion.setHeaderText("Salir sin guardar");
+    confirmacion.setContentText(
+        "¿Deseas cancelar y volver a la lista de proveedores?\n\n" +
+        "Los cambios no guardados se perderán."
+    );
+
+    Optional<ButtonType> resultado = confirmacion.showAndWait();
+
+    // ✅ SOLO continúa si pulsa OK
+    if (!resultado.isPresent() || resultado.get() != ButtonType.OK) {
+        return;
+    }
+
+    cambiarPantalla(
+        (Node) e.getSource(),
+        "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
+    );
+}
 
     @FXML
     private void volver(ActionEvent e) {

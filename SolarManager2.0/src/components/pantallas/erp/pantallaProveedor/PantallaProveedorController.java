@@ -28,6 +28,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import modelo.Direccion;
 import modelo.Proveedor;
 import components.pantallas.erp.pantallaAltaProveedor.PantallaAltaProveedorController;
+import javafx.scene.control.Alert;
 
 public class PantallaProveedorController implements Initializable {
 
@@ -99,14 +100,9 @@ public class PantallaProveedorController implements Initializable {
             );
 
             Parent root = loader.load();
-
-            Stage stage = new Stage();
+            
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Alta Proveedor");
-            stage.setResizable(false);
-            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            stage.centerOnScreen();
-            stage.showAndWait();
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -114,7 +110,7 @@ public class PantallaProveedorController implements Initializable {
     }
     
         @FXML
-    private void modificar(ActionEvent e) {
+    private void detalle(ActionEvent e) {
 
         Proveedor seleccionado = tablaProveedores.getSelectionModel().getSelectedItem();
 
@@ -141,24 +137,45 @@ public class PantallaProveedorController implements Initializable {
             ex.printStackTrace();
         }
     }
+    
+    
+@FXML
+private void actualizar(ActionEvent e) {
+    try {
+        // Limpiamos el filtro
+        txtFiltro.clear();
+
+        // Recargamos los datos desde Mongo
+        obtenerProveedoresTabla();
+
+        // Refrescamos la tabla
+        tablaProveedores.refresh();
+
+        // Alerta de confirmación
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle("Actualización");
+        alerta.setHeaderText(null);
+        alerta.setContentText("La lista de proveedores se ha actualizado correctamente.");
+        alerta.showAndWait();
+
+    } catch (IOException ex) {
+        ex.printStackTrace();
+
+        // Alerta de error (opcional pero recomendable)
+        Alert error = new Alert(Alert.AlertType.ERROR);
+        error.setTitle("Error");
+        error.setHeaderText("Error al actualizar");
+        error.setContentText("No se han podido cargar los proveedores desde la base de datos.");
+        error.showAndWait();
+    }
+}
+
+   
 
     @FXML
     private void cancelar(ActionEvent e) {
-
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml")
-            );
-
-            Parent root = loader.load();
-
-            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        stage.close();
     }
 
     // =========================
@@ -201,17 +218,18 @@ public class PantallaProveedorController implements Initializable {
                 "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
 
+        @FXML
+    private void irInstalaciones(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
+    }
+    
     @FXML
     private void irInformes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
                 "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
     
-    @FXML
-    private void irInstalaciones(javafx.event.ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
-            "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
-    }
     
 
     // =========================
