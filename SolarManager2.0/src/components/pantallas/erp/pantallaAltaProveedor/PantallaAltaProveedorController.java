@@ -1,12 +1,37 @@
 package components.pantallas.erp.pantallaAltaProveedor;
 
+import DB.MongoConnection;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import java.io.IOException;
+import java.util.Optional;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import modelo.Direccion;
+import modelo.Proveedor;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
+/**
+ * Controlador de alta, edición y eliminación de proveedores.
+ */
 public class PantallaAltaProveedorController {
+
+    /** ID real de MongoDB del proveedor */
+    private ObjectId proveedorId;
+
+    /** Controla si estamos en modo edición */
+    private boolean modoEdicion = false;
 
     @FXML private TextField txtNombre;
     @FXML private TextField txtEmpresa;
@@ -15,6 +40,29 @@ public class PantallaAltaProveedorController {
     @FXML private TextField txtDireccion;
     @FXML private TextArea txtObservaciones;
 
+    /**
+     * Inicializa la pantalla bloqueando el formulario.
+     */
+    @FXML
+    public void initialize() {
+        bloquearFormulario(true);
+    }
+
+    /**
+     * Bloquea o desbloquea el formulario.
+     */
+    private void bloquearFormulario(boolean bloquear) {
+        txtNombre.setDisable(bloquear);
+        txtEmpresa.setDisable(bloquear);
+        txtTelefono.setDisable(bloquear);
+        txtEmail.setDisable(bloquear);
+        txtDireccion.setDisable(bloquear);
+        txtObservaciones.setDisable(bloquear);
+    }
+
+    /**
+     * Limpia el formulario.
+     */
     @FXML
     private void nuevoProveedor() {
         txtNombre.clear();
@@ -23,27 +71,279 @@ public class PantallaAltaProveedorController {
         txtEmail.clear();
         txtDireccion.clear();
         txtObservaciones.clear();
+        proveedorId = null;
+        modoEdicion = false;
+        bloquearFormulario(true);
+    }
+    
+/**
+ * Guarda o actualiza un proveedor.
+ */
+@FXML
+private void guardarProveedor(ActionEvent e) {
+
+    // NO permite guardar si no está en modo edición
+    if (!modoEdicion) {
+        mostrarAlerta("Pulsa primero el botón EDITAR", AlertType.WARNING);
+        return;
     }
 
-    @FXML
-    private void guardarProveedor() {
-        System.out.println("Proveedor guardado");
-        // aquí irá BD
+    if (!validarCampos()) {
+        return;
     }
 
+    // ===== CONFIRMACIÓN =====
+    Alert confirmacion = new Alert(AlertType.CONFIRMATION);
+    confirmacion.setTitle("Confirmar guardado");
+    confirmacion.setHeaderText("Guardar proveedor");
+    confirmacion.setContentText("¿Deseas guardar los cambios del proveedor?");
+
+    Optional<ButtonType> resultado = confirmacion.showAndWait();
+
+    // SOLO continúa si pulsa OK
+    if (!resultado.isPresent() || resultado.get() != ButtonType.OK) {
+        return;
+    }
+
+    // ===== GUARDADO =====
+    try {
+        Proveedor nuevoProveedor = new Proveedor();
+        nuevoProveedor.setNombre(txtNombre.getText());
+        nuevoProveedor.setTelefono(txtTelefono.getText());
+        nuevoProveedor.setEmail(txtEmail.getText());
+        nuevoProveedor.setDireccion(new Direccion());
+        nuevoProveedor.setNombreEmpresa(txtEmpresa.getText());
+        nuevoProveedor.setObservaciones(txtObservaciones.getText());
+
+        Document direccionDoc = new Document()
+                .append("calle", txtDireccion.getText())
+                .append("numero", "")
+                .append("codigoPostal", "")
+                .append("municipio", "")
+                .append("provincia", "");
+
+        Document doc = new Document()
+                .append("nombre", nuevoProveedor.getNombre())
+                .append("telefono", nuevoProveedor.getTelefono())
+                .append("email", nuevoProveedor.getEmail())
+                .append("direccion", direccionDoc)
+                .append("nombreEmpresa", nuevoProveedor.getNombreEmpresa())
+                .append("observaciones", nuevoProveedor.getObservaciones());
+
+        MongoDatabase db = MongoConnection.conectar();
+        MongoCollection<Document> coleccion = db.getCollection("Proveedor");
+
+        if (proveedorId != null) {
+            coleccion.updateOne(
+                    new Document("_id", proveedorId),
+                    new Document("$set", doc)
+            );
+        } else {
+            Document existente = coleccion.find(
+                    new Document("nombre", txtNombre.getText())
+            ).first();
+
+            if (existente != null) {
+                coleccion.updateOne(
+                        new Document("nombre", txtNombre.getText()),
+                        new Document("$set", doc)
+                );
+            } else {
+                coleccion.insertOne(doc);
+            }
+        }
+
+        mostrarAlerta("Proveedor guardado correctamente", AlertType.INFORMATION);
+
+        cambiarPantalla(
+                (Node) e.getSource(),
+                "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
+        );
+
+    } catch (Exception ex) {
+        mostrarAlerta("Error al guardar proveedor: " + ex.getMessage(), AlertType.ERROR);
+    }
+}
+    /**
+     * Valida campos obligatorios.
+     */
+    private boolean validarCampos() {
+
+        if (txtNombre.getText().isEmpty()) {
+            mostrarAlerta("El nombre es obligatorio", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        if (txtTelefono.getText().isEmpty()) {
+            mostrarAlerta("El teléfono es obligatorio", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        if (txtEmail.getText().isEmpty()) {
+            mostrarAlerta("El email es obligatorio", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        if (!txtEmail.getText().contains("@")) {
+            mostrarAlerta("El email no es válido", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        if (txtDireccion.getText().isEmpty()) {
+            mostrarAlerta("La calle es obligatoria", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        if (txtEmpresa.getText().isEmpty()) {
+            mostrarAlerta("La empresa es obligatoria", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Activa modo edición (DESBLOQUEA FORMULARIO).
+     */
     @FXML
     private void editarProveedor() {
-        System.out.println("Editar proveedor");
+
+        modoEdicion = true;
+        bloquearFormulario(false);
+
+        mostrarAlerta("Modo edición activado", AlertType.INFORMATION);
     }
 
-    @FXML
-    private void eliminarProveedor() {
-        System.out.println("Eliminar proveedor");
+/**
+ * Elimina el proveedor de la base de datos.
+ */
+@FXML
+private void eliminarProveedor(ActionEvent e) {
+
+    // ❌ NO permite eliminar si no está en modo edición
+    if (!modoEdicion) {
+        mostrarAlerta("Pulsa primero el botón EDITAR", AlertType.WARNING);
+        return;
     }
 
+    if (txtNombre.getText().isEmpty()) {
+        mostrarAlerta("Introduce el nombre del proveedor", AlertType.WARNING);
+        return;
+    }
+
+    // ===== CONFIRMACIÓN =====
+    Alert confirmacion = new Alert(AlertType.CONFIRMATION);
+    confirmacion.setTitle("Confirmar eliminación");
+    confirmacion.setHeaderText("Eliminar proveedor");
+    confirmacion.setContentText(
+        "¿Estás seguro de que deseas eliminar este proveedor?\n\n" +
+        "Esta acción no se puede deshacer."
+    );
+
+    Optional<ButtonType> resultado = confirmacion.showAndWait();
+
+    // ✅ SOLO continúa si pulsa OK
+    if (!resultado.isPresent() || resultado.get() != ButtonType.OK) {
+        return;
+    }
+
+    // ===== ELIMINACIÓN =====
+    try {
+        MongoDatabase db = MongoConnection.conectar();
+        MongoCollection<Document> coleccion = db.getCollection("Proveedor");
+
+        coleccion.deleteOne(new Document("nombre", txtNombre.getText()));
+
+        mostrarAlerta("Proveedor eliminado correctamente", AlertType.INFORMATION);
+
+        cambiarPantalla(
+            (Node) e.getSource(),
+            "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
+        );
+
+    } catch (Exception ex) {
+        mostrarAlerta("Error al eliminar: " + ex.getMessage(), AlertType.ERROR);
+    }
+}
+
+@FXML
+private void cancelar(ActionEvent e) {
+
+    Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+    confirmacion.setTitle("Cancelar cambios");
+    confirmacion.setHeaderText("Salir sin guardar");
+    confirmacion.setContentText(
+        "¿Deseas cancelar y volver a la lista de proveedores?\n\n" +
+        "Los cambios no guardados se perderán."
+    );
+
+    Optional<ButtonType> resultado = confirmacion.showAndWait();
+
+    // ✅ SOLO continúa si pulsa OK
+    if (!resultado.isPresent() || resultado.get() != ButtonType.OK) {
+        return;
+    }
+
+    cambiarPantalla(
+        (Node) e.getSource(),
+        "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
+    );
+}
+
     @FXML
-    private void cancelar(javafx.event.ActionEvent e) {
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        stage.close();
+    private void volver(ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+                "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml");
+    }
+
+    private void cambiarPantalla(Node nodo, String rutaFXML) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) nodo.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void cargarProveedor(Proveedor p) {
+
+        txtNombre.setText(p.getNombre());
+        txtTelefono.setText(p.getTelefono());
+        txtEmail.setText(p.getEmail());
+        txtEmpresa.setText(p.getNombreEmpresa());
+        txtObservaciones.setText(p.getObservaciones());
+
+        if (p.getDireccion() != null) {
+            txtDireccion.setText(p.getDireccion().toString());
+        }
+
+        // IMPORTANTE: sigue bloqueado hasta pulsar editar
+        bloquearFormulario(true);
+        modoEdicion = false;
+    }
+
+    private void mostrarAlerta(String mensaje, AlertType tipo) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle("Solar Manager");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    private void limpiarFormulario() {
+        txtNombre.clear();
+        txtEmpresa.clear();
+        txtTelefono.clear();
+        txtEmail.clear();
+        txtDireccion.clear();
+        txtObservaciones.clear();
+        proveedorId = null;
+        modoEdicion = false;
+        bloquearFormulario(true);
     }
 }
