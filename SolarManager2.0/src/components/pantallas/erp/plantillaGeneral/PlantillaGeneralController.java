@@ -129,10 +129,5 @@ public class PlantillaGeneralController implements Initializable {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
-    
-    @FXML
-    private void irInstalaciones(javafx.event.ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
-            "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
-    }
 }
+   
