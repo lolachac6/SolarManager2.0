@@ -31,7 +31,7 @@
                 <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color:#f4f4f4; -fx-padding:10;">
                     <children>
                         <Button onAction="#volver" text="← Volver" />
-                        <Label style="-fx-font-size:18px; -fx-font-weight:bold;" text="Alta Comercial" />
+                        <Label fx:id="txtTituloAltaModificacion" style="-fx-font-size:18px; -fx-font-weight:bold;" text="Alta Comercial" />
                         <Pane HBox.hgrow="ALWAYS" />
                     </children>
                 </HBox>

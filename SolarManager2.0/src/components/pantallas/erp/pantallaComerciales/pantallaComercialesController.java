@@ -3,6 +3,7 @@ package components.pantallas.erp.pantallaComerciales;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import components.pantallas.erp.pantallaAltaComercial.PantallaAltaComercialController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -26,6 +27,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 
 public class pantallaComercialesController implements Initializable {
@@ -110,7 +114,6 @@ public class pantallaComercialesController implements Initializable {
         try {
             obtenerComercialesTabla();
         } catch (IOException e) {
-            e.printStackTrace();
         }
 
         txtFiltro.textProperty().addListener((obs, oldVal, newVal) -> {
@@ -131,7 +134,6 @@ public class pantallaComercialesController implements Initializable {
             stage.centerOnScreen();
 
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -262,12 +264,50 @@ public class pantallaComercialesController implements Initializable {
                     || (c.getDni() != null && c.getDni().toLowerCase().contains(filtro))
                     || (c.getTelefono() != null && c.getTelefono().toLowerCase().contains(filtro))
                     || tipoContrato.contains(filtro)
-                    || activoTexto.contains(filtro) 
-                    ) {
+                    || activoTexto.contains(filtro)) {
                 filtrada.add(c);
             }
         }
 
         tablaComerciales.setItems(filtrada);
     }
+
+    @FXML
+
+    public void modificarComercial(ActionEvent event) {
+        Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            mostrarAlerta("Atención", "Por favor, selecciona un comercial de la tabla para modificar.", AlertType.WARNING);
+            return;
+        }
+
+        try {
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/pantallas/erp/pantallaAltaComercial/pantallaAltaComercial.fxml"));
+            Parent root = loader.load();
+
+            PantallaAltaComercialController controller = loader.getController();
+
+            controller.cargarDatos(seleccionado);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.centerOnScreen(); // Opcional, para que quede bien posicionada
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Error", "No se pudo cargar la pantalla de edición: " + e.getMessage(), AlertType.ERROR);
+        }
+    }
+
+    private void mostrarAlerta(String mensaje, String por_favor_selecciona_un_comercial_de_la_t, AlertType tipo) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle("Solar Manager");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
 }
