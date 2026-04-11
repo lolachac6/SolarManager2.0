@@ -2,6 +2,7 @@ package components.pantallas.comun.pantallaLogin;
 
 import ConexionSupabase.UsuarioService;
 import ConexionSupabase.SessionManager;
+import components.navigation.SessionContext; 
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -42,10 +43,9 @@ public class PantallaLoginController implements Initializable {
         imgLogo.setImage(logo);
     }
 
-    
     @FXML
     private void handleAceptar() {
-        
+
         String email = txtUsuario.getText().trim();
         String password = txtPassword.getText().trim();
 
@@ -66,29 +66,31 @@ public class PantallaLoginController implements Initializable {
 
             // Obtener usuario completo (incluye el rol)
             JSONObject usuario = service.obtenerUsuarioPorEmail(email);
-            
 
             if (usuario == null) {
                 lblMensaje.setText("Error inesperado: usuario no encontrado.");
                 return;
-                
             }
 
             // Guardar sesión
             SessionManager.setUsuario(usuario);
 
             String rol = usuario.getString("rol");
-            
 
-            // ADMIN
+            // 🔥 AQUÍ ES LO QUE FALTABA
             if (rol.equalsIgnoreCase("admin")) {
+
+                SessionContext.setRol(SessionContext.Rol.ADMIN);
+
                 cargarPantalla("/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml");
-            }
-            // COMERCIAL
-            else if (rol.equalsIgnoreCase("comercial")) {
+
+            } else if (rol.equalsIgnoreCase("comercial")) {
+
+                SessionContext.setRol(SessionContext.Rol.COMERCIAL);
+
                 cargarPantalla("/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml");
-            }
-            else {
+
+            } else {
                 lblMensaje.setText("Rol desconocido: " + rol);
             }
 
@@ -105,9 +107,6 @@ public class PantallaLoginController implements Initializable {
         lblMensaje.setText("");
     }
 
-    // ---------------------------------------------------------
-    // MÉTODO DE CAMBIO DE PANTALLA — AHORA SÍ DENTRO DE LA CLASE
-    // ---------------------------------------------------------
     private void cargarPantalla(String rutaFXML) {
         try {
             URL archivoFXML = getClass().getResource(rutaFXML);
