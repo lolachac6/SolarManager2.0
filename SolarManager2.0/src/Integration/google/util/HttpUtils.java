@@ -23,10 +23,14 @@ public class HttpUtils {
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
+        conn.setConnectTimeout(15000);
+        conn.setReadTimeout(15000);
+
+        int responseCode = conn.getResponseCode();
 
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(
-                        conn.getResponseCode() >= 200 && conn.getResponseCode() < 300
+                        responseCode >= 200 && responseCode < 300
                                 ? conn.getInputStream()
                                 : conn.getErrorStream()
                 )
@@ -40,6 +44,11 @@ public class HttpUtils {
         }
 
         reader.close();
+
+        if (responseCode < 200 || responseCode >= 300) {
+            throw new RuntimeException("Error HTTP " + responseCode + ": " + response.toString());
+        }
+
         return response.toString();
     }
 }
