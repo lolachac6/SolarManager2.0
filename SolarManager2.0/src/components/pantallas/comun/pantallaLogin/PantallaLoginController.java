@@ -77,7 +77,6 @@ public class PantallaLoginController implements Initializable {
 
             String rol = usuario.getString("rol");
 
-            // 🔥 AQUÍ ES LO QUE FALTABA
             if (rol.equalsIgnoreCase("admin")) {
 
                 SessionContext.setRol(SessionContext.Rol.ADMIN);
