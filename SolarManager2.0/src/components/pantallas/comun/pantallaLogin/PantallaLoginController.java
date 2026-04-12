@@ -49,76 +49,69 @@ public class PantallaLoginController implements Initializable {
     }
 
     @FXML
-    private void handleAceptar() {
+private void handleAceptar() {
 
-        String email = txtUsuario.getText().trim();
-        String password = txtPassword.getText().trim();
+    String email = txtUsuario.getText().trim();
+    String password = txtPassword.getText().trim();
 
-        if (email.isEmpty() || password.isEmpty()) {
-            lblMensaje.setText("Introduce el usuario y la contraseña.");
+    if (email.isEmpty() || password.isEmpty()) {
+        lblMensaje.setText("Introduce el usuario y la contraseña.");
+        return;
+    }
+
+    try {
+        UsuarioService service = new UsuarioService();
+
+        boolean ok = service.login(email, password);
+
+        if (!ok) {
+            lblMensaje.setText("Credenciales incorrectas.");
             return;
         }
 
-        try {
-            UsuarioService service = new UsuarioService();
+        JSONObject usuario = service.obtenerUsuarioPorEmail(email);
 
-            boolean ok = service.login(email, password);
+        if (usuario == null) {
+            lblMensaje.setText("Error: usuario no encontrado.");
+            return;
+        }
 
-            if (!ok) {
-                lblMensaje.setText("Credenciales incorrectas.");
-                return;
-            }
+        String rol = usuario.getString("rol");
 
-            JSONObject usuario = service.obtenerUsuarioPorEmail(email);
+        // Guardar usuario en sesión (una sola vez)
+        SessionManager.setUsuario(usuario);
 
-            if (usuario == null) {
-                lblMensaje.setText("Error: usuario no encontrado.");
-                return;
-            }
+        // 🔹 ADMIN
+        if (rol.equalsIgnoreCase("admin")) {
 
-            String rol = usuario.getString("rol");
-            
-            
-            if (rol.equalsIgnoreCase("admin")) {
+            SessionContext.setRol(SessionContext.Rol.ADMIN);
+            cargarPantalla("/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml");
+            return;
+        }
 
-                SessionManager.setUsuario(usuario);
-            if (rol.equalsIgnoreCase("admin")) {
+        // 🔹 COMERCIAL
+        if (rol.equalsIgnoreCase("comercial")) {
 
-                SessionContext.setRol(SessionContext.Rol.ADMIN);
-
-                cargarPantalla("/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml");
-                return;
-            }
-            
-            
             boolean activo = comprobarActivoMongo(email);
 
             if (!activo) {
                 lblMensaje.setText("Usuario desactivado. Contacta con administración.");
                 return;
             }
-            
-            
-            SessionManager.setUsuario(usuario);
 
-            if (rol.equalsIgnoreCase("comercial")) {
-
-            } else if (rol.equalsIgnoreCase("comercial")) {
-
-                SessionContext.setRol(SessionContext.Rol.COMERCIAL);
-
-                cargarPantalla("/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml");
-            } else {
-
-            } else {
-                lblMensaje.setText("Rol desconocido: " + rol);
-            }
-
-        } catch (Exception e) {
-            lblMensaje.setText("Error: " + e.getMessage());
-            e.printStackTrace();
+            SessionContext.setRol(SessionContext.Rol.COMERCIAL);
+            cargarPantalla("/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml");
+            return;
         }
+
+        // 🔹 OTRO ROL
+        lblMensaje.setText("Rol desconocido: " + rol);
+
+    } catch (Exception e) {
+        lblMensaje.setText("Error: " + e.getMessage());
+        e.printStackTrace();
     }
+}
 
     private boolean comprobarActivoMongo(String email) {
         try {
