@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1200.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.pantallas.erp.pantallaStock.PantallaStockController">
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.pantallas.erp.pantallaStock.PantallaStockController">
 
     <stylesheets>
         <URL value="@pantallaStock.css" />
@@ -97,15 +97,12 @@
                     <!-- BOTONES -->
                     <HBox spacing="10">
 
-                        <Button fx:id="btnAñadirProducto" onAction="#abrirAltaProducto" text="➕ Añadir Producto" />
+                        <Button fx:id="btnAñadirProducto" onAction="#abrirAltaProducto" style="-fx-background-color: #2f6fda; -fx-text-fill: white;" text="➕ Añadir Producto" />
 
                         <Pane HBox.hgrow="ALWAYS" />
-
-                        <Button fx:id="btnGuardar" style="-fx-background-color:#2f6fda; -fx-text-fill:white;" text="Guardar" />
+                        <Button fx:id="btnEliminar" onAction="#eliminarProducto" text="Eliminar" />
 
                         <Button fx:id="btnModificar" onAction="#modificarProducto" text="Modificar" />
-                        <Button fx:id="btnEliminar" onAction="#eliminarProducto" text="Eliminar" />
-                        <Button fx:id="btnCancelar" onAction="#volverInicio" text="Cancelar" />
 
                     </HBox>
 

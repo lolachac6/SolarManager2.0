@@ -178,6 +178,7 @@ public class CalculoInstalacionController implements Initializable {
             mostrarAlerta("Error al guardar instalación", Alert.AlertType.ERROR);
         }
     }
+    
 
     // =========================
     // LIMPIAR CAMPOS
@@ -238,5 +239,45 @@ public class CalculoInstalacionController implements Initializable {
         Alert alert = new Alert(tipo);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    private static class txtNombre {
+
+        private static void setText(String string) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        public txtNombre() {
+        }
+    }
+
+    private static class txtApellidos {
+
+        private static void setText(String string) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        public txtApellidos() {
+        }
+    }
+
+    private static class txtTelefono {
+
+        private static void setText(String string) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        public txtTelefono() {
+        }
+    }
+
+    private static class txtEmail {
+
+        private static void setText(String string) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        public txtEmail() {
+        }
     }
 }

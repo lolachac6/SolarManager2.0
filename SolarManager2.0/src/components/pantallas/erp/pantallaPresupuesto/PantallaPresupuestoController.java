@@ -84,4 +84,5 @@ public class PantallaPresupuestoController implements Initializable {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
+    
 }

@@ -213,6 +213,47 @@ public class PantallaClientesController implements Initializable {
             mostrarAlerta("Error al abrir pantalla de edición", Alert.AlertType.ERROR);
         }
     }
+    
+    
+    @FXML
+    private void eliminarCliente() {
+        Cliente seleccionado = tablaClientes.getSelectionModel().getSelectedItem();
+
+        if (seleccionado == null) {
+            mostrarAlerta("Selecciona un cliente de la tabla para eliminar", Alert.AlertType.WARNING);
+            return;
+        }
+
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar eliminación");
+        confirmacion.setHeaderText("Eliminar Cliente");
+        confirmacion.setContentText("¿Seguro que deseas eliminar el cliente: " + seleccionado.getNombre() + "?");
+
+        ButtonType aceptar = new ButtonType("Eliminar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        confirmacion.getButtonTypes().setAll(aceptar, cancelar);
+
+        if (confirmacion.showAndWait().orElse(cancelar) != aceptar) {
+            return;
+        }
+
+        try {
+            MongoDatabase db = MongoConnection.conectar();
+            MongoCollection<Document> coleccion = db.getCollection("Clientes");
+
+            coleccion.deleteOne(new Document("_id", new org.bson.types.ObjectId(seleccionado.getId())));
+
+            mostrarAlerta("Cliente eliminado correctamente", Alert.AlertType.INFORMATION);
+
+            cargarClientes();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarAlerta("Error al eliminar Cliente: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+        
 
     @FXML
     private void buscar() {
@@ -280,4 +321,7 @@ public class PantallaClientesController implements Initializable {
         alert.setContentText(msg);
         alert.showAndWait();
     }
+    
+    
+    
 }
