@@ -3,40 +3,55 @@ package modelo;
 /**
  * Representa un comercial del sistema Solar Manager.
  * <p>
- * Un comercial es una persona que trabaja para la empresa y gestiona clientes
- * o presupuestos dentro del sistema.
- * 
+ * Un comercial es una persona que trabaja para la empresa y gestiona clientes o
+ * presupuestos dentro del sistema.
+ *
  * La clase hereda de {@link Persona}, por lo que dispone de los atributos
  * comunes como nombre, apellidos, teléfono, email y dirección.
- * 
+ *
  * Cada comercial tiene un tipo de contrato y un centro de trabajo asignado.
- * 
+ *
  * @author ivang
  */
 public class Comercial extends Persona {
 
-    /** Identificador único del comercial */
+    /**
+     * Identificador único del comercial
+     */
     private String id;
 
-    /** Tipo de contrato del comercial */
+    /**
+     * Tipo de contrato del comercial
+     */
     private TipoContrato tipoContrato;
 
-    /** Documento de identidad del comercial */
+    /**
+     * Documento de identidad del comercial
+     */
     private String dni;
-    
-    /** Password */
+
+    /**
+     * Password
+     */
     private String password;
 
-    /** Número de cuenta bancaria */
+    /**
+     * Número de cuenta bancaria
+     */
     private String numeroCuenta;
 
-    /** Centro de trabajo asignado */
+    /**
+     * Centro de trabajo asignado
+     */
     private String centroTrabajo;
 
-    /** Observaciones o notas adicionales */
+    /**
+     * Observaciones o notas adicionales
+     */
     private String observaciones;
-    
+
     private boolean activo;
+    private String supabaseId;
 
     /**
      * Constructor vacío.
@@ -65,18 +80,18 @@ public class Comercial extends Persona {
      * @param activo si continua trabajando
      */
     public Comercial(String id,
-                     String nombre,
-                     String apellidos,
-                     String telefono,
-                     String email,
-                     String password, 
-                     Direccion direccion,
-                     TipoContrato tipoContrato,
-                     String dni,
-                     String numeroCuenta,
-                     String centroTrabajo,
-                     String observaciones,
-                     Boolean activo) {
+            String nombre,
+            String apellidos,
+            String telefono,
+            String email,
+            String password,
+            Direccion direccion,
+            TipoContrato tipoContrato,
+            String dni,
+            String numeroCuenta,
+            String centroTrabajo,
+            String observaciones,
+            Boolean activo) {
 
         super(nombre, apellidos, telefono, email, direccion);
 
@@ -197,42 +212,53 @@ public class Comercial extends Persona {
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
     }
-    
+
     /**
      *
      * @return
      */
-    public boolean getActivo(){
-       return this.activo;
+    public boolean getActivo() {
+        return this.activo;
     }
 
     /**
      *
      * @param activo
      */
-    public void setActivo ( Boolean activo){
+    public void setActivo(Boolean activo) {
         this.activo = activo;
-        
+
     }
-    
-    public void setPassword (String password){
-        this.password = password;   
+
+    public void setPassword(String password) {
+        this.password = password;
     }
-    
+
     public String getPassword() {
-    return password;
-}
-    
+        return password;
+    }
+
     /**
      * Enumeración que define los tipos de contrato posibles.
      */
     public enum TipoContrato {
 
-        /** Jornada completa */
+        /**
+         * Jornada completa
+         */
         COMPLETA,
-
-        /** Jornada media */
+        /**
+         * Jornada media
+         */
         MEDIA
 
+    }
+
+    public String getSupabaseId() {
+        return supabaseId;
+    }
+
+    public void setSupabaseId(String supabaseId) {
+        this.supabaseId = supabaseId;
     }
 }

@@ -7,31 +7,27 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-
-import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-
+import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import modelo.Comercial;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.net.HttpURLConnection;
+import java.io.OutputStream;
+import java.util.Scanner;
+
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import com.mongodb.client.model.Filters;
+
 public class PantallaAltaComercialController implements Initializable {
 
-    // =========================
-    // CAMPOS FXML
-    // =========================
     @FXML
     private TextField txtNombre;
     @FXML
@@ -69,240 +65,336 @@ public class PantallaAltaComercialController implements Initializable {
 
     private boolean modoEdicion = false;
     private String idComercialSeleccionado;
+    private String idSupabaseSeleccionado;
+    private final String SUPABASE_URL = "https://yhwsvqefbaefaxdfekzo.supabase.co";
+    private final String SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlod3N2cWVmYmFlZmF4ZGZla3pvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjgxNjc2MCwiZXhwIjoyMDg4MzkyNzYwfQ.B6jgKqTKjwMOnRbDaqRUI1GbliH2eSEZUFPOQ-os27A";
 
-    // =========================
-    // INIT
-    // =========================
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         chkActivo.setSelected(true);
         cmbTipoContrato.getItems().setAll(Comercial.TipoContrato.values());
+
+        try {
+            MongoDatabase db = MongoConnection.conectar();
+            MongoCollection<Document> coleccion = db.getCollection("Comerciales");
+
+            coleccion.createIndex(
+                    com.mongodb.client.model.Indexes.ascending("email"),
+                    new com.mongodb.client.model.IndexOptions().unique(true)
+            );
+        } catch (IOException e) {
+            System.out.println("El índice ya existe o hay duplicados: " + e.getMessage());
+        }
+
     }
 
     @FXML
-    private void guardarComercial(ActionEvent event) {
+    private void guardarComercial(ActionEvent event) throws IOException {
+
         if (!validarCampos()) {
             return;
         }
 
+        MongoDatabase db = MongoConnection.conectar();
+        MongoCollection<Document> coleccion = db.getCollection("Comerciales");
+
+        String passwordPlana = txtPassword.getText();
+        String passwordHasheada = null;
+
+        if (!passwordPlana.isEmpty()) {
+            passwordHasheada = BCrypt.hashpw(passwordPlana, BCrypt.gensalt(12));
+        }
+
+        Document doc = new Document()
+                .append("nombre", txtNombre.getText())
+                .append("apellidos", txtApellidos.getText())
+                .append("telefono", txtTelefono.getText())
+                .append("email", txtEmail.getText())
+                .append("direccion", new Document()
+                        .append("calle", txtCalle.getText())
+                        .append("numero", txtNumero.getText())
+                        .append("codigoPostal", txtCodigoPostal.getText())
+                        .append("municipio", txtMunicipio.getText())
+                        .append("provincia", txtProvincia.getText()))
+                .append("dni", txtDni.getText())
+                .append("numeroCuenta", txtNumeroCuenta.getText())
+                .append("centroTrabajo", txtCentroTrabajo.getText())
+                .append("observaciones", txtObservaciones.getText())
+                .append("activo", chkActivo.isSelected())
+                .append("tipoContrato",
+                        cmbTipoContrato.getValue() != null ? cmbTipoContrato.getValue().toString() : "NO_ASIGNADO");
+
+        if (passwordHasheada != null) {
+            doc.append("password", passwordHasheada);
+        }
+
         try {
-            String passwordPlana = txtPassword.getText();
-            String passwordHasheada;
-
-            if (modoEdicion && passwordPlana.isEmpty()) {
-                passwordHasheada = null;
-            } else {
-                passwordHasheada = BCrypt.hashpw(passwordPlana, BCrypt.gensalt(12));
-            }
-
-            org.bson.Document doc = new org.bson.Document()
-                    .append("nombre", txtNombre.getText())
-                    .append("apellidos", txtApellidos.getText())
-                    .append("telefono", txtTelefono.getText())
-                    .append("email", txtEmail.getText())
-                    .append("direccion", new org.bson.Document()
-                            .append("calle", txtCalle.getText())
-                            .append("numero", txtNumero.getText())
-                            .append("codigoPostal", txtCodigoPostal.getText())
-                            .append("municipio", txtMunicipio.getText())
-                            .append("provincia", txtProvincia.getText()))
-                    .append("dni", txtDni.getText())
-                    .append("numeroCuenta", txtNumeroCuenta.getText())
-                    .append("centroTrabajo", txtCentroTrabajo.getText())
-                    .append("observaciones", txtObservaciones.getText())
-                    .append("activo", chkActivo.isSelected())
-                    .append("tipoContrato", cmbTipoContrato.getValue() != null
-                            ? cmbTipoContrato.getValue().toString() : "NO_ASIGNADO");
-
-            if (passwordHasheada != null) {
-                doc.append("password", passwordHasheada);
-            }
-
-            MongoDatabase db = MongoConnection.conectar();
-            MongoCollection<org.bson.Document> coleccion = db.getCollection("Comerciales");
 
             if (modoEdicion) {
-                coleccion.updateOne(
-                        com.mongodb.client.model.Filters.eq("_id", new org.bson.types.ObjectId(idComercialSeleccionado)),
-                        new org.bson.Document("$set", doc)
-                );
-                mostrarAlerta("Comercial actualizado correctamente", AlertType.INFORMATION);
+                if (emailExiste(txtEmail.getText().trim())) {
+                    mostrarAlerta("No se puede actualizar: El email ya está en uso.", Alert.AlertType.ERROR);
+                    return;
+                }
+                ObjectId objectId = new ObjectId(idComercialSeleccionado);
+
+                coleccion.updateOne(Filters.eq("_id", objectId), new Document("$set", doc));
+
+                if (idSupabaseSeleccionado != null) {
+
+                    actualizarUsuarioSupabase(idSupabaseSeleccionado, txtEmail.getText(), passwordPlana);
+                    actualizarTablaUsuariosSupabase(idSupabaseSeleccionado, txtEmail.getText(), txtNombre.getText(), passwordHasheada);
+                }
+
+                mostrarAlerta("Comercial actualizado correctamente", Alert.AlertType.INFORMATION);
             } else {
+
+                String supabaseId = crearUsuarioSupabase(txtEmail.getText(), passwordPlana);
+
+                insertarEnTablaUsuariosSupabase(supabaseId, txtEmail.getText(), txtNombre.getText(), passwordHasheada);
+
+                doc.append("supabase_id", supabaseId);
                 coleccion.insertOne(doc);
-                mostrarAlerta("Comercial guardado correctamente", AlertType.INFORMATION);
+
+                mostrarAlerta("Comercial creado correctamente", Alert.AlertType.INFORMATION);
             }
 
             cambiarPantalla(event, "/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml");
 
         } catch (IOException e) {
-            mostrarAlerta("Error en la operación: " + e.getMessage(), AlertType.ERROR);
+            mostrarAlerta("Error: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
-    public void cargarDatos(Comercial comercial) {
-        this.modoEdicion = true;
-        this.idComercialSeleccionado = comercial.getId();
-        txtTituloAltaModificacion.setText("Modificar Comercial");
-        txtNombre.setText(comercial.getNombre());
-        txtApellidos.setText(comercial.getApellidos());
-        txtTelefono.setText(comercial.getTelefono());
-        txtEmail.setText(comercial.getEmail());
-        txtDni.setText(comercial.getDni());
-        txtNumeroCuenta.setText(comercial.getNumeroCuenta());
-        txtCentroTrabajo.setText(comercial.getCentroTrabajo());
-        txtObservaciones.setText(comercial.getObservaciones());
-        chkActivo.setSelected(comercial.getActivo());
-        cmbTipoContrato.setValue(comercial.getTipoContrato());
+    private String crearUsuarioSupabase(String email, String password) throws IOException {
+        URL url = new URL(SUPABASE_URL + "/auth/v1/admin/users");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        configurarHeadersBase(conn);
 
+        String json = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\",\"email_confirm\":true}";
+
+        try (OutputStream os = conn.getOutputStream()) {
+            os.write(json.getBytes("utf-8"));
+        }
+
+        int code = conn.getResponseCode();
+        if (code == 200 || code == 201) {
+            try (Scanner sc = new Scanner(conn.getInputStream())) {
+                String response = sc.useDelimiter("\\A").next();
+                return response.split("\"id\":\"")[1].split("\"")[0];
+            }
+        }
+        throw new RuntimeException("Error Auth Supabase. Código: " + code);
+    }
+
+    private void insertarEnTablaUsuariosSupabase(String uuid, String email, String nombre, String passwordHash) throws IOException {
+        URL url = new URL(SUPABASE_URL + "/rest/v1/usuarios");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        configurarHeadersBase(conn);
+
+        String json = "{\"id\":\"" + uuid + "\",\"email\":\"" + email + "\",\"nombre\":\"" + nombre + "\","
+                + "\"password_hash\":\"" + passwordHash + "\",\"rol\":\"comercial\"}";
+
+        try (OutputStream os = conn.getOutputStream()) {
+            os.write(json.getBytes("utf-8"));
+        }
+
+        if (conn.getResponseCode() >= 300) {
+            throw new RuntimeException("Error insert tabla usuarios Supabase: " + conn.getResponseCode());
+        }
+    }
+
+    private void actualizarUsuarioSupabase(String uuid, String email, String password) {
+
+        try {
+            URL url = new URL(SUPABASE_URL + "/auth/v1/admin/users/" + uuid);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("PUT");
+            conn.setDoOutput(true);
+            configurarHeadersBase(conn);
+
+            String json = "{\"email\":\"" + email + "\""
+                    + (password != null && !password.isEmpty()
+                    ? ",\"password\":\"" + password + "\""
+                    : "")
+                    + "}";
+
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(json.getBytes("utf-8"));
+            }
+
+            int code = conn.getResponseCode();
+
+            if (code >= 300) {
+                mostrarAlerta("No se pudo guardar el comercial.\nPosible email duplicado o error en Supabase.",
+                        Alert.AlertType.ERROR
+                );
+            }
+
+        } catch (IOException e) {
+            mostrarAlerta("Fallo al actualizar usuario en Supabase:\n" + e.getMessage(),
+                    Alert.AlertType.ERROR
+            );
+
+            System.err.println("Supabase error: " + e.getMessage());
+        }
+    }
+
+    private void actualizarTablaUsuariosSupabase(String uuid, String email, String nombre, String passwordHash) {
+
+        try {
+            System.out.println("aqui es el actualizarTablaUsuariosSupabase " + uuid);
+
+            URL url = new URL(SUPABASE_URL + "/rest/v1/usuarios?id=eq." + uuid);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+
+            configurarHeadersBase(conn);
+
+            conn.setRequestProperty("Prefer", "resolution=merge-duplicates");
+            conn.setDoOutput(true);
+
+            String json = "{\"id\":\"" + uuid + "\",\"email\":\"" + email + "\",\"nombre\":\"" + nombre + "\""
+                    + (passwordHash != null ? ",\"password_hash\":\"" + passwordHash + "\"" : "") + "}";
+
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(json.getBytes("utf-8"));
+            }
+
+            int code = conn.getResponseCode();
+
+            if (code >= 300) {
+                mostrarAlerta("No se pudo actualizar la tabla de usuarios.\nCódigo HTTP: " + code,
+                        Alert.AlertType.ERROR
+                );
+            }
+
+        } catch (IOException e) {
+            mostrarAlerta("Fallo al actualizar usuario:\n" + e.getMessage(),
+                    Alert.AlertType.ERROR
+            );
+
+        }
+    }
+
+    private void configurarHeadersBase(HttpURLConnection conn) {
+        conn.setRequestProperty("apikey", SERVICE_ROLE_KEY);
+        conn.setRequestProperty("Authorization", "Bearer " + SERVICE_ROLE_KEY);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
+    }
+
+    public void cargarDatos(Comercial c) {
+        this.modoEdicion = true;
+        this.idComercialSeleccionado = c.getId();
+        this.idSupabaseSeleccionado = c.getSupabaseId(); 
+        
+        txtTituloAltaModificacion.setText("Modificar Comercial");
+        txtNombre.setText(c.getNombre());
+        txtApellidos.setText(c.getApellidos());
+        txtTelefono.setText(c.getTelefono());
+        txtEmail.setText(c.getEmail());
+        txtDni.setText(c.getDni());
+        txtNumeroCuenta.setText(c.getNumeroCuenta());
+        txtCentroTrabajo.setText(c.getCentroTrabajo());
+        txtObservaciones.setText(c.getObservaciones());
+        chkActivo.setSelected(c.getActivo());
+        cmbTipoContrato.setValue(c.getTipoContrato());
         txtPassword.setText("");
 
-        if (comercial.getDireccion() != null) {
-            txtCalle.setText(comercial.getDireccion().getCalle());
-            txtNumero.setText(comercial.getDireccion().getNumero());
-            txtCodigoPostal.setText(comercial.getDireccion().getCodigoPostal());
-            txtMunicipio.setText(comercial.getDireccion().getMunicipio());
-            txtProvincia.setText(comercial.getDireccion().getProvincia());
+        if (c.getDireccion() != null) {
+            txtCalle.setText(c.getDireccion().getCalle());
+            txtNumero.setText(c.getDireccion().getNumero());
+            txtCodigoPostal.setText(c.getDireccion().getCodigoPostal());
+            txtMunicipio.setText(c.getDireccion().getMunicipio());
+            txtProvincia.setText(c.getDireccion().getProvincia());
         }
     }
 
-    // =========================
-    // VALIDACIONES
-    // =========================
-    private boolean validarCampos() {
+    
+    private boolean validarCampos() throws IOException {
 
         if (txtNombre.getText().isEmpty()) {
-            mostrarAlerta("El nombre es obligatorio", Alert.AlertType.WARNING);
-            return false;
+            return alerta("Nombre obligatorio");
         }
 
         if (txtApellidos.getText().isEmpty()) {
-            mostrarAlerta("Los apellidos son obligatorios", Alert.AlertType.WARNING);
-            return false;
-        }
-
-        if (txtTelefono.getText().isEmpty()) {
-            mostrarAlerta("El teléfono es obligatorio", Alert.AlertType.WARNING);
-            return false;
+            return alerta("Apellidos obligatorios");
         }
 
         if (txtEmail.getText().isEmpty()) {
-            mostrarAlerta("El email es obligatorio", Alert.AlertType.WARNING);
-            return false;
+            return alerta("Email obligatorio");
         }
 
         if (!txtEmail.getText().contains("@")) {
-            mostrarAlerta("El email no es válido", Alert.AlertType.WARNING);
-            return false;
+            return alerta("Email inválido");
         }
 
-        if (txtCalle.getText().isEmpty()) {
-            mostrarAlerta("La calle es obligatoria", Alert.AlertType.WARNING);
-            return false;
-        }
-
-        if (txtNumero.getText().isEmpty()) {
-            mostrarAlerta("El número es obligatorio", Alert.AlertType.WARNING);
-            return false;
-        }
-
-        if (txtCodigoPostal.getText().isEmpty()) {
-            mostrarAlerta("El código postal es obligatorio", Alert.AlertType.WARNING);
-            return false;
-        }
-
-        if (txtMunicipio.getText().isEmpty()) {
-            mostrarAlerta("El municipio es obligatorio", Alert.AlertType.WARNING);
-            return false;
-        }
-
-        if (txtProvincia.getText().isEmpty()) {
-            mostrarAlerta("La provincia es obligatoria", Alert.AlertType.WARNING);
-            return false;
-        }
-
-        if (txtDni.getText().isEmpty()) {
-            mostrarAlerta("El DNI es obligatorio", Alert.AlertType.WARNING);
-            return false;
+        if (emailExiste(txtEmail.getText().trim()) && !modoEdicion) {
+            return alerta("Ya existe un comercial con este email");
         }
 
         if (!modoEdicion && txtPassword.getText().isEmpty()) {
-            mostrarAlerta("La contraseña es obligatoria para nuevos registros", Alert.AlertType.WARNING);
-            return false;
-        }
-
-        if (txtNumeroCuenta.getText().isEmpty()) {
-            mostrarAlerta("El número de cuenta es obligatorio", Alert.AlertType.WARNING);
-            return false;
-        }
-
-        if (cmbTipoContrato.getValue() == null) {
-            mostrarAlerta("Debe seleccionar un tipo de contrato", Alert.AlertType.WARNING);
-            return false;
+            return alerta("Password obligatoria");
         }
 
         return true;
     }
 
-    // =========================
-    // LIMPIAR FORMULARIO
-    // =========================
-    private void limpiarFormulario() {
-        txtNombre.clear();
-        txtApellidos.clear();
-        txtTelefono.clear();
-        txtEmail.clear();
-        txtCalle.clear();
-        txtNumero.clear();
-        txtCodigoPostal.clear();
-        txtMunicipio.clear();
-        txtProvincia.clear();
-        txtDni.clear();
-        txtPassword.clear();
-        txtNumeroCuenta.clear();
-        txtCentroTrabajo.clear();
-        txtObservaciones.clear();
-        chkActivo.setSelected(true);
-        cmbTipoContrato.getSelectionModel().clearSelection();
+    private boolean emailExiste(String email) throws IOException {
+        MongoDatabase db = MongoConnection.conectar();
+        MongoCollection<Document> coleccion = db.getCollection("Comerciales");
+
+        Document filtro;
+
+        if (modoEdicion && idComercialSeleccionado != null) {
+            
+            filtro = new Document("email", email.trim())
+                    .append("_id", new Document("$ne", new ObjectId(idComercialSeleccionado)));
+        } else {
+            
+            filtro = new Document("email", email.trim());
+        }
+
+        return coleccion.find(filtro).first() != null;
     }
 
-    // =========================
-    // CANCELAR
-    // =========================
+    private boolean alerta(String msg) {
+        mostrarAlerta(msg, Alert.AlertType.WARNING);
+        return false;
+    }
+
+  
+    private void cambiarPantalla(ActionEvent event, String ruta) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource(ruta));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+    }
+
     @FXML
-    private void cancelar(ActionEvent event) {
-        volver(event);
+    private void cancelar(ActionEvent e) throws IOException {
+        volver(e);
     }
 
-    // =========================
-    // MÉTODO DE NAVEGACIÓN
-    // =========================
-    private void cambiarPantalla(ActionEvent event, String rutaFXML) {
+    @FXML
+    public void volver(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(rutaFXML));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
+            cambiarPantalla(event, "/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml");
         } catch (IOException e) {
-            mostrarAlerta("Error al cambiar de pantalla", AlertType.ERROR);
+            mostrarAlerta("Error al volver: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-    // =========================
-    // VOLVER
-    // =========================
 
-    @FXML
-    private void volver(ActionEvent event) {
-        cambiarPantalla(event, "/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml");
-    }
-
-    // =========================
-    // ALERTAS
-    // =========================
-    private void mostrarAlerta(String mensaje, AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle("Solar Manager");
+    private void mostrarAlerta(String msg, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle("Sistema");
         alert.setHeaderText(null);
-        alert.setContentText(mensaje);
+        alert.setContentText(msg);
         alert.showAndWait();
     }
 }
