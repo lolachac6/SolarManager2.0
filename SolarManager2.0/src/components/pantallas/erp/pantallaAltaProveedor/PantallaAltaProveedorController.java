@@ -218,7 +218,7 @@ private void guardarProveedor(ActionEvent e) {
 /**
  * Elimina el proveedor de la base de datos.
  */
-@FXML
+/**@FXML
 private void eliminarProveedor(ActionEvent e) {
 
     // ❌ NO permite eliminar si no está en modo edición
@@ -265,7 +265,7 @@ private void eliminarProveedor(ActionEvent e) {
     } catch (Exception ex) {
         mostrarAlerta("Error al eliminar: " + ex.getMessage(), AlertType.ERROR);
     }
-}
+}*/
 
 @FXML
 private void cancelar(ActionEvent e) {

@@ -2,41 +2,36 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="800.00"
-            prefWidth="1200.0"
-            styleClass="mainFxmlClass"
-            xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="components.pantallas.erp.pantallaPresupuesto.PantallaPresupuestoController">
+<AnchorPane prefHeight="800.00" prefWidth="1200.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.pantallas.erp.pantallaPresupuesto.PantallaPresupuestoController">
 
     <stylesheets>
-        <URL value="@pantallapresupuesto.css"/>
+        <URL value="@pantallapresupuesto.css" />
     </stylesheets>
 
     <children>
 
-        <BorderPane AnchorPane.topAnchor="0"
-                    AnchorPane.bottomAnchor="0"
-                    AnchorPane.leftAnchor="0"
-                    AnchorPane.rightAnchor="0">
+        <BorderPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
             <!-- CABECERA -->
             <top>
-                <HBox alignment="CENTER_LEFT"
-                      spacing="10"
-                      style="-fx-background-color:#f4f4f4; -fx-padding:10;">
+                <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color:#f4f4f4; -fx-padding:10;">
 
-                    <Button fx:id="btnVolver"
-                            text="← Volver"
-                            onAction="#volverInicio"/>
+                    <Button fx:id="btnVolver" onAction="#volverInicio" text="← Volver" />
 
-                    <Label text="Solar Manager"
-                           style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+                    <Label style="-fx-font-size:18px; -fx-font-weight:bold;" text="Solar Manager" />
 
-                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Pane HBox.hgrow="ALWAYS" />
 
                 </HBox>
             </top>
@@ -44,53 +39,25 @@
             <!-- MENU LATERAL -->
             <left>
 
-                <VBox alignment="TOP_CENTER"
-                      prefWidth="200"
-                      spacing="10"
-                      style="
-                            -fx-background-color:#e6e9ef;
-                            -fx-padding:85 15 15 15;
-                            -fx-border-color:#d0d0d0;
-                            -fx-border-width:2;
-                            -fx-background-radius:5;
-                            -fx-border-radius:5;">
+                <VBox alignment="TOP_CENTER" prefWidth="200" spacing="10" style="                             -fx-background-color:#e6e9ef;                             -fx-padding:85 15 15 15;                             -fx-border-color:#d0d0d0;                             -fx-border-width:2;                             -fx-background-radius:5;                             -fx-border-radius:5;">
 
                     <BorderPane.margin>
-                        <Insets top="90" right="15" bottom="65" left="15"/>
+                        <Insets bottom="65" left="15" right="15" top="90" />
                     </BorderPane.margin>
 
-                    <Label text="Inicio"
-                           style="-fx-font-weight:bold;"/>
+                    <Label style="-fx-font-weight:bold;" text="Inicio" />
 
-                    <Button text="Clientes"
-                            maxWidth="Infinity"
-                            styleClass="menu-button"
-                            onAction="#irClientes"/>
+                    <Button maxWidth="Infinity" onAction="#irClientes" styleClass="menu-button" text="Clientes" />
 
-                    <Button text="Comerciales"
-                            maxWidth="Infinity"
-                            styleClass="menu-button"
-                            onAction="#irComerciales"/>
+                    <Button maxWidth="Infinity" onAction="#irComerciales" styleClass="menu-button" text="Comerciales" />
 
-                    <Button text="Proveedores"
-                            maxWidth="Infinity"
-                            styleClass="menu-button"
-                            onAction="#irProveedores"/>
+                    <Button maxWidth="Infinity" onAction="#irProveedores" styleClass="menu-button" text="Proveedores" />
 
-                    <Button text="Stock"
-                            maxWidth="Infinity"
-                            styleClass="menu-button"
-                            onAction="#irStock"/>
+                    <Button maxWidth="Infinity" onAction="#irStock" styleClass="menu-button" text="Stock" />
 
-                    <Button text="Presupuestos"
-                            maxWidth="Infinity"
-                            styleClass="menu-button"
-                            onAction="#irPresupuestos"/>
+                    <Button maxWidth="Infinity" onAction="#irPresupuestos" styleClass="menu-button" text="Presupuestos" />
 
-                    <Button text="Informes"
-                            maxWidth="Infinity"
-                            styleClass="menu-button"
-                            onAction="#irInformes"/>
+                    <Button maxWidth="Infinity" onAction="#irInformes" styleClass="menu-button" text="Informes" />
 
                 </VBox>
 
@@ -102,71 +69,51 @@
                 <VBox spacing="20" style="-fx-padding:20;">
 
                     <!-- TITULO -->
-                    <Label text="Presupuestos"
-                           style="-fx-font-size:22px; -fx-font-weight:bold;"/>
+                    <Label style="-fx-font-size:22px; -fx-font-weight:bold;" text="Presupuestos" />
 
                     <!-- FILTRO -->
                     <HBox spacing="10">
 
-                        <TextField fx:id="txtFiltro"
-                                   promptText="Buscar presupuesto..."
-                                   HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="txtFiltro" promptText="Buscar presupuesto..." HBox.hgrow="ALWAYS" />
 
-                        <Button fx:id="btnBuscar"
-                                text="🔍"
-                                prefWidth="40"/>
+                        <Button fx:id="btnBuscar" prefWidth="40" text="🔍" />
 
                     </HBox>
 
                     <!-- TABLA -->
-                    <TableView fx:id="tablaPresupuestos"
-                               VBox.vgrow="ALWAYS"
-                               style="
-                                    -fx-border-color:#d0d0d0;
-                                    -fx-border-width:2;">
+                    <TableView fx:id="tablaPresupuestos" style="                                     -fx-border-color:#d0d0d0;                                     -fx-border-width:2;" VBox.vgrow="ALWAYS">
 
                         <columns>
 
-                            <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
-                            <TableColumn fx:id="colIdCliente" text="Cliente" prefWidth="300"/>
-                            <TableColumn fx:id="colIdComercial" text="Comercial" prefWidth="180"/>
-                            <TableColumn fx:id="colFechaCreacion" text="Fecha" prefWidth="100"/>
-                            <TableColumn fx:id="colEstado" text="Estado" prefWidth="100"/>
-                            <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="120"/>
-                            <TableColumn fx:id="colIva" text="IVA" prefWidth="80"/>
-                            <TableColumn fx:id="colTotal" text="Total" prefWidth="120"/>
+                            <TableColumn fx:id="colId" prefWidth="70" text="ID" />
+                            <TableColumn fx:id="colIdCliente" prefWidth="300" text="Cliente" />
+                            <TableColumn fx:id="colIdComercial" prefWidth="180" text="Comercial" />
+                            <TableColumn fx:id="colFechaCreacion" prefWidth="100" text="Fecha" />
+                            <TableColumn fx:id="colEstado" prefWidth="100" text="Estado" />
+                            <TableColumn fx:id="colSubtotal" prefWidth="120" text="Subtotal" />
+                            <TableColumn fx:id="colIva" prefWidth="80" text="IVA" />
+                            <TableColumn fx:id="colTotal" prefWidth="120" text="Total" />
 
                         </columns>
 
                     </TableView>
 
                     <!-- PANEL INFERIOR -->
-                    <Pane prefHeight="100"
-                          style="
-                                -fx-background-color:white;
-                                -fx-border-color:#d0d0d0;
-                                -fx-border-width:2;
-                                -fx-border-radius:5;
-                                -fx-background-radius:5;"/>
+                    <Pane prefHeight="100" style="                                 -fx-background-color:white;                                 -fx-border-color:#d0d0d0;                                 -fx-border-width:2;                                 -fx-border-radius:5;                                 -fx-background-radius:5;" />
 
                     <!-- BOTONES -->
                     <HBox spacing="10">
-                        <Button fx:id="btnnuevoPresupeusto"
-                                text="➕ Añadir Presupuesto"/>
+                        <Button fx:id="btnnuevoPresupeusto" style="-fx-background-color: #2f6fda; -fx-text-fill: white;" text="➕ Añadir Presupuesto" />
 
-                        <Button fx:id="btnHacerFactura"
-                                text="Hacer factura"/>
+                        <Button fx:id="btnHacerFactura" text="Hacer factura" />
 
-                        <Pane HBox.hgrow="ALWAYS"/>
+                        <Pane HBox.hgrow="ALWAYS" />
 
-                        <Button fx:id="btnGuardar"
-                                text="Guardar"
-                                style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
+                        <Button fx:id="btnGuardar" text="Guardar" />
 
                         
-                        <Button fx:id="btnModificar" text="Modificar"/>
-                        
-                        <Button fx:id="btnCancelar" text="Cancelar"/>
+                        <Button fx:id="btnModificar" text="Modificar" />
+                  <Button text="Eliminar" />
 
                     </HBox>
 

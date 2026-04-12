@@ -21,6 +21,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
+import javafx.scene.control.*;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
@@ -170,6 +171,51 @@ private void actualizar(ActionEvent e) {
     }
 }
 
+
+
+
+   
+@FXML
+    private void eliminarProveedor() {
+        Proveedor seleccionado = tablaProveedores.getSelectionModel().getSelectedItem();
+
+        if (seleccionado == null) {
+            mostrarAlerta("Selecciona un Proveedor de la tabla para eliminar", Alert.AlertType.WARNING);
+            return;
+        }
+
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar eliminación");
+        confirmacion.setHeaderText("Eliminar Proveedor");
+        confirmacion.setContentText("¿Seguro que deseas eliminar el proveedor: " + seleccionado.getNombre() + "?");
+
+        ButtonType aceptar = new ButtonType("Eliminar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        confirmacion.getButtonTypes().setAll(aceptar, cancelar);
+
+        if (confirmacion.showAndWait().orElse(cancelar) != aceptar) {
+            return;
+        }
+
+        try {
+            MongoDatabase db = MongoConnection.conectar();
+            MongoCollection<Document> coleccion = db.getCollection("Proveedor");
+
+            coleccion.deleteOne(new Document("_id", new org.bson.types.ObjectId(seleccionado.getId())));
+
+            mostrarAlerta("Proveedor eliminado correctamente", Alert.AlertType.INFORMATION);
+
+            obtenerProveedoresTabla();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarAlerta("Error al eliminar proveedor: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }     
+
+
+        
    
 
     @FXML
@@ -312,6 +358,11 @@ private void actualizar(ActionEvent e) {
     tablaProveedores.setItems(filtrada);
 }
 
+     private void mostrarAlerta(String msg, Alert.AlertType tipo) {
+        Alert alert = new Alert(tipo);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
 }
 
     

@@ -2,68 +2,55 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="700.0"
-            prefWidth="1200.0"
-            styleClass="mainFxmlClass"
-            xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="components.pantallas.erp.pantallaInstalaciones.PantallaInstalacionesController">
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.pantallas.erp.pantallaInstalaciones.PantallaInstalacionesController">
 
     <stylesheets>
-        <URL value="@pantallainstalaciones.css"/>
+        <URL value="@pantallainstalaciones.css" />
     </stylesheets>
 
     <children>
 
-        <BorderPane AnchorPane.topAnchor="0"
-                    AnchorPane.bottomAnchor="0"
-                    AnchorPane.leftAnchor="0"
-                    AnchorPane.rightAnchor="0">
+        <BorderPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
             <!-- CABECERA -->
             <top>
-                <HBox alignment="CENTER_LEFT"
-                      spacing="10"
-                      style="-fx-background-color:#f4f4f4; -fx-padding:10;">
+                <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color:#f4f4f4; -fx-padding:10;">
 
-                    <Button text="← Volver"
-                            onAction="#volverInicio"/>
+                    <Button onAction="#volverInicio" text="← Volver" />
 
-                    <Label text="Solar Manager"
-                           style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+                    <Label style="-fx-font-size:18px; -fx-font-weight:bold;" text="Solar Manager" />
 
-                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Pane HBox.hgrow="ALWAYS" />
                 </HBox>
             </top>
 
             <!-- MENU LATERAL -->
             <left>
-                <VBox alignment="TOP_CENTER"
-                      prefWidth="200"
-                      spacing="10"
-                      style="-fx-background-color:#e6e9ef;
-                             -fx-padding:85 15 15 15;
-                             -fx-border-color:#d0d0d0;
-                             -fx-border-width:2;
-                             -fx-background-radius:5;
-                             -fx-border-radius:5;">
+                <VBox alignment="TOP_CENTER" prefWidth="200" spacing="10" style="-fx-background-color:#e6e9ef;                              -fx-padding:85 15 15 15;                              -fx-border-color:#d0d0d0;                              -fx-border-width:2;                              -fx-background-radius:5;                              -fx-border-radius:5;">
 
                     <BorderPane.margin>
-                        <Insets top="90" right="15" bottom="65" left="15"/>
+                        <Insets bottom="65" left="15" right="15" top="90" />
                     </BorderPane.margin>
 
-                    <Label text="Inicio"
-                           style="-fx-font-weight:bold;"/>
+                    <Label style="-fx-font-weight:bold;" text="Inicio" />
 
-                    <Button text="Clientes" maxWidth="Infinity" onAction="#irClientes"/>
-                    <Button text="Comerciales" maxWidth="Infinity" onAction="#irComerciales"/>
-                    <Button text="Proveedores" maxWidth="Infinity" onAction="#irProveedores"/>
-                    <Button text="Stock" maxWidth="Infinity" onAction="#irStock"/>
-                    <Button text="Presupuestos" maxWidth="Infinity" onAction="#irPresupuestos"/>
-                    <Button text="Informes" maxWidth="Infinity" onAction="#irInformes"/>
+                    <Button maxWidth="Infinity" onAction="#irClientes" text="Clientes" />
+                    <Button maxWidth="Infinity" onAction="#irComerciales" text="Comerciales" />
+                    <Button maxWidth="Infinity" onAction="#irProveedores" text="Proveedores" />
+                    <Button maxWidth="Infinity" onAction="#irStock" text="Stock" />
+                    <Button maxWidth="Infinity" onAction="#irPresupuestos" text="Presupuestos" />
+                    <Button maxWidth="Infinity" onAction="#irInformes" text="Informes" />
 
                 </VBox>
             </left>
@@ -72,28 +59,25 @@
             <center>
                 <VBox spacing="20" style="-fx-padding:20;">
 
-                    <Label text="Instalaciones Fotovoltaicas"
-                           style="-fx-font-size:22px; -fx-font-weight:bold;"/>
+                    <Label style="-fx-font-size:22px; -fx-font-weight:bold;" text="Instalaciones Fotovoltaicas" />
 
                     <!-- BUSCADOR -->
                     <HBox spacing="10">
-                        <TextField fx:id="txtFiltro"
-                                   promptText="Buscar instalación..."
-                                   HBox.hgrow="ALWAYS"/>
-                        <Button text="🔍" onAction="#buscar"/>
+                        <TextField fx:id="txtFiltro" promptText="Buscar instalación..." HBox.hgrow="ALWAYS" />
+                        <Button onAction="#buscar" text="🔍" />
                     </HBox>
 
                     <!-- TABLA -->
                     <TableView fx:id="tablaInstalaciones" VBox.vgrow="ALWAYS">
 
                         <columns>
-                            <TableColumn fx:id="colId" text="ID" prefWidth="200"/>
-                            <TableColumn fx:id="colIdCliente" text="Id Cliente" prefWidth="150"/>
-                            <TableColumn fx:id="colPotencia" text="Potencia (kW)" prefWidth="120"/>
-                            <TableColumn fx:id="colPaneles" text="Paneles" prefWidth="100"/>
-                            <TableColumn fx:id="colProduccion" text="Producción" prefWidth="150"/>
-                            <TableColumn fx:id="colAhorro" text="Ahorro" prefWidth="150"/>
-                            <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="250"/>
+                            <TableColumn fx:id="colId" prefWidth="200" text="ID" />
+                            <TableColumn fx:id="colIdCliente" prefWidth="150" text="Id Cliente" />
+                            <TableColumn fx:id="colPotencia" prefWidth="120" text="Potencia (kW)" />
+                            <TableColumn fx:id="colPaneles" prefWidth="100" text="Paneles" />
+                            <TableColumn fx:id="colProduccion" prefWidth="150" text="Producción" />
+                            <TableColumn fx:id="colAhorro" prefWidth="150" text="Ahorro" />
+                            <TableColumn fx:id="colDireccion" prefWidth="250" text="Dirección" />
                         </columns>
 
                     </TableView>
@@ -101,16 +85,12 @@
                     <!-- BOTONES -->
                     <HBox spacing="10">
 
-                        <Button text="➕ Añadir instalación"
-                                onAction="#añadirInstalacion"/>
+                        <Button onAction="#añadirInstalacion" style="-fx-background-color: #2f6fda; -fx-text-fill: white;" text="➕ Añadir instalación" />
 
-                        <Button text="Modificar"
-                                onAction="#modificar"/>
+                        <Pane HBox.hgrow="ALWAYS" />
 
-                        <Button text="Cancelar"
-                                onAction="#confirmarSalida"/>
-
-                        <Pane HBox.hgrow="ALWAYS"/>
+                        <Button onAction="#modificar" text="Modificar" />
+                        <Button text="Eliminar" />
 
                     </HBox>
 
