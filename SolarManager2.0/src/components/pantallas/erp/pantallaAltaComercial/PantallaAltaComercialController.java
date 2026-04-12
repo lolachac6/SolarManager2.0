@@ -291,8 +291,8 @@ public class PantallaAltaComercialController implements Initializable {
     public void cargarDatos(Comercial c) {
         this.modoEdicion = true;
         this.idComercialSeleccionado = c.getId();
-        this.idSupabaseSeleccionado = c.getSupabaseId(); 
-        
+        this.idSupabaseSeleccionado = c.getSupabaseId();
+
         txtTituloAltaModificacion.setText("Modificar Comercial");
         txtNombre.setText(c.getNombre());
         txtApellidos.setText(c.getApellidos());
@@ -315,23 +315,55 @@ public class PantallaAltaComercialController implements Initializable {
         }
     }
 
-    
     private boolean validarCampos() throws IOException {
 
         if (txtNombre.getText().isEmpty()) {
             return alerta("Nombre obligatorio");
         }
 
+        if (!txtNombre.getText().matches("^[A-Za-zÁÉÍÓÚáéíóúñÑ ]{2,}$")) {
+            return alerta("Nombre inválido");
+        }
+
         if (txtApellidos.getText().isEmpty()) {
             return alerta("Apellidos obligatorios");
+        }
+
+        if (!txtApellidos.getText().matches("^[A-Za-zÁÉÍÓÚáéíóúñÑ ]{2,}$")) {
+            return alerta("Apellidos inválidos");
         }
 
         if (txtEmail.getText().isEmpty()) {
             return alerta("Email obligatorio");
         }
 
-        if (!txtEmail.getText().contains("@")) {
+        
+        if (!txtEmail.getText().matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
             return alerta("Email inválido");
+        }
+
+        
+        if (!txtTelefono.getText().isEmpty()
+                && !txtTelefono.getText().matches("^\\d{9}$")) {
+            return alerta("Teléfono inválido (9 dígitos)");
+        }
+
+        
+        if (!txtDni.getText().isEmpty()
+                && !txtDni.getText().matches("^\\d{8}[A-Za-z]$")) {
+            return alerta("DNI inválido");
+        }
+
+        
+        if (!txtCodigoPostal.getText().isEmpty()
+                && !txtCodigoPostal.getText().matches("^\\d{5}$")) {
+            return alerta("Código postal inválido");
+        }
+
+        
+        if (!txtNumeroCuenta.getText().isEmpty()
+                && !txtNumeroCuenta.getText().matches("^ES\\d{22}$")) {
+            return alerta("Cuenta bancaria inválida (IBAN)");
         }
 
         if (emailExiste(txtEmail.getText().trim()) && !modoEdicion) {
@@ -340,6 +372,12 @@ public class PantallaAltaComercialController implements Initializable {
 
         if (!modoEdicion && txtPassword.getText().isEmpty()) {
             return alerta("Password obligatoria");
+        }
+
+        
+        if (!txtPassword.getText().isEmpty()
+                && !txtPassword.getText().matches("^(?=.*[A-Z])(?=.*\\d).{8,}$")) {
+            return alerta("Password débil (mín 8 caracteres, 1 mayúscula y 1 número)");
         }
 
         return true;
@@ -352,11 +390,11 @@ public class PantallaAltaComercialController implements Initializable {
         Document filtro;
 
         if (modoEdicion && idComercialSeleccionado != null) {
-            
+
             filtro = new Document("email", email.trim())
                     .append("_id", new Document("$ne", new ObjectId(idComercialSeleccionado)));
         } else {
-            
+
             filtro = new Document("email", email.trim());
         }
 
@@ -368,7 +406,6 @@ public class PantallaAltaComercialController implements Initializable {
         return false;
     }
 
-  
     private void cambiarPantalla(ActionEvent event, String ruta) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource(ruta));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
