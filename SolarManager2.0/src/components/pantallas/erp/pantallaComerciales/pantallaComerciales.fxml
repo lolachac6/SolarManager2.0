@@ -14,9 +14,9 @@
             fx:controller="components.pantallas.erp.pantallaComerciales.pantallaComercialesController">
 
     
-       <stylesheets>
+    <stylesheets>
         <URL value="@pantallacomerciales.css"/>
-        </stylesheets>
+    </stylesheets>
 
     <children>
 
@@ -143,7 +143,7 @@
 
                     </TableView>
 
-                     <!-- PANEL INFERIOR -->
+                    <!-- PANEL INFERIOR -->
                     <Pane prefHeight="100"
                           style="-fx-background-color:white;
                                  -fx-border-color:#d0d0d0;
@@ -156,17 +156,17 @@
 
                         <!-- IZQUIERDA -->
                         <Button fx:id="btnAñadirComercial"
-                                text="➕ Añadir Comercial"  onAction="#anadirComercial"/>
+                                text="➕ Añadir Comercial"  onAction="#anadirComercial" style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
                                
                         <Pane HBox.hgrow="ALWAYS"/>
 
                         <!-- DERECHA -->
-                        <Button fx:id="btnGuardar"
-                                text="Guardar"
-                                style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
+                        <Button fx:id="btnModificar" text="Modificar" onAction="#modificarComercial" />
+                        <Button fx:id="btnEliminar" text="Eliminar" onAction="#eliminarComercial" />
+                        <Button fx:id="btnReactivar" text="Reactivar comercial" onAction="#reactivarComercial" />
 
-                        <Button fx:id="btnModificar" text="Modificar" onAction="#modificarComercial"/>
-                        <Button fx:id="btnCancelar" text="Cancelar"/>
+                        
+                        
 
                     </HBox>
 

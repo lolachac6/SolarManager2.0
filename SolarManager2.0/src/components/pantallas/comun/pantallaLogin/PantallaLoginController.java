@@ -2,6 +2,10 @@ package components.pantallas.comun.pantallaLogin;
 
 import ConexionSupabase.UsuarioService;
 import ConexionSupabase.SessionManager;
+import DB.MongoConnection;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import java.io.IOException;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,6 +23,7 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import org.bson.Document;
 
 public class PantallaLoginController implements Initializable {
 
@@ -42,10 +47,9 @@ public class PantallaLoginController implements Initializable {
         imgLogo.setImage(logo);
     }
 
-    
     @FXML
     private void handleAceptar() {
-        
+
         String email = txtUsuario.getText().trim();
         String password = txtPassword.getText().trim();
 
@@ -64,37 +68,62 @@ public class PantallaLoginController implements Initializable {
                 return;
             }
 
-            // Obtener usuario completo (incluye el rol)
             JSONObject usuario = service.obtenerUsuarioPorEmail(email);
-            
 
             if (usuario == null) {
-                lblMensaje.setText("Error inesperado: usuario no encontrado.");
+                lblMensaje.setText("Error: usuario no encontrado.");
                 return;
-                
             }
-
-            // Guardar sesión
-            SessionManager.setUsuario(usuario);
 
             String rol = usuario.getString("rol");
             
-
-            // ADMIN
+            
             if (rol.equalsIgnoreCase("admin")) {
+
+                SessionManager.setUsuario(usuario);
                 cargarPantalla("/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml");
+                return;
             }
-            // COMERCIAL
-            else if (rol.equalsIgnoreCase("comercial")) {
+            
+            
+            boolean activo = comprobarActivoMongo(email);
+
+            if (!activo) {
+                lblMensaje.setText("Usuario desactivado. Contacta con administración.");
+                return;
+            }
+            
+            
+            SessionManager.setUsuario(usuario);
+
+            if (rol.equalsIgnoreCase("comercial")) {
                 cargarPantalla("/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml");
-            }
-            else {
+            } else {
                 lblMensaje.setText("Rol desconocido: " + rol);
             }
 
         } catch (Exception e) {
             lblMensaje.setText("Error: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private boolean comprobarActivoMongo(String email) {
+        try {
+            MongoDatabase db = MongoConnection.conectar();
+            MongoCollection<Document> coleccion = db.getCollection("Comerciales");
+
+            Document doc = coleccion.find(new Document("email", email)).first();
+
+            if (doc == null) {
+                return false;
+            }
+
+            return doc.getBoolean("activo", true);
+
+        } catch (IOException e) {
+            System.err.println("Error comprobando activo: " + e.getMessage());
+            return false;
         }
     }
 
@@ -105,9 +134,6 @@ public class PantallaLoginController implements Initializable {
         lblMensaje.setText("");
     }
 
-    // ---------------------------------------------------------
-    // MÉTODO DE CAMBIO DE PANTALLA — AHORA SÍ DENTRO DE LA CLASE
-    // ---------------------------------------------------------
     private void cargarPantalla(String rutaFXML) {
         try {
             URL archivoFXML = getClass().getResource(rutaFXML);

@@ -1,5 +1,6 @@
 package components.pantallas.erp.pantallaAltaComercial;
 
+import ConexionSupabase.config;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -66,12 +67,12 @@ public class PantallaAltaComercialController implements Initializable {
     private boolean modoEdicion = false;
     private String idComercialSeleccionado;
     private String idSupabaseSeleccionado;
-    private final String SUPABASE_URL = "https://yhwsvqefbaefaxdfekzo.supabase.co";
-    private final String SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlod3N2cWVmYmFlZmF4ZGZla3pvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjgxNjc2MCwiZXhwIjoyMDg4MzkyNzYwfQ.B6jgKqTKjwMOnRbDaqRUI1GbliH2eSEZUFPOQ-os27A";
-
+       private final String SUPABASE_URL = config.get("supabase.key");
+    private final String SERVICE_ROLE_KEY = config.get("supabase.url");
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         chkActivo.setSelected(true);
+        chkActivo.setDisable(true);
         cmbTipoContrato.getItems().setAll(Comercial.TipoContrato.values());
 
         try {
@@ -120,12 +121,14 @@ public class PantallaAltaComercialController implements Initializable {
                 .append("numeroCuenta", txtNumeroCuenta.getText())
                 .append("centroTrabajo", txtCentroTrabajo.getText())
                 .append("observaciones", txtObservaciones.getText())
-                .append("activo", chkActivo.isSelected())
                 .append("tipoContrato",
                         cmbTipoContrato.getValue() != null ? cmbTipoContrato.getValue().toString() : "NO_ASIGNADO");
 
         if (passwordHasheada != null) {
             doc.append("password", passwordHasheada);
+        }
+        if (!modoEdicion) {
+            doc.append("activo", true);
         }
 
         try {
@@ -302,7 +305,8 @@ public class PantallaAltaComercialController implements Initializable {
         txtNumeroCuenta.setText(c.getNumeroCuenta());
         txtCentroTrabajo.setText(c.getCentroTrabajo());
         txtObservaciones.setText(c.getObservaciones());
-        chkActivo.setSelected(c.getActivo());
+        chkActivo.setSelected(true);
+        chkActivo.setDisable(true);
         cmbTipoContrato.setValue(c.getTipoContrato());
         txtPassword.setText("");
 
@@ -337,30 +341,25 @@ public class PantallaAltaComercialController implements Initializable {
             return alerta("Email obligatorio");
         }
 
-        
         if (!txtEmail.getText().matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
             return alerta("Email inválido");
         }
 
-        
         if (!txtTelefono.getText().isEmpty()
                 && !txtTelefono.getText().matches("^\\d{9}$")) {
             return alerta("Teléfono inválido (9 dígitos)");
         }
 
-        
         if (!txtDni.getText().isEmpty()
                 && !txtDni.getText().matches("^\\d{8}[A-Za-z]$")) {
             return alerta("DNI inválido");
         }
 
-        
         if (!txtCodigoPostal.getText().isEmpty()
                 && !txtCodigoPostal.getText().matches("^\\d{5}$")) {
             return alerta("Código postal inválido");
         }
 
-        
         if (!txtNumeroCuenta.getText().isEmpty()
                 && !txtNumeroCuenta.getText().matches("^ES\\d{22}$")) {
             return alerta("Cuenta bancaria inválida (IBAN)");
@@ -374,7 +373,6 @@ public class PantallaAltaComercialController implements Initializable {
             return alerta("Password obligatoria");
         }
 
-        
         if (!txtPassword.getText().isEmpty()
                 && !txtPassword.getText().matches("^(?=.*[A-Z])(?=.*\\d).{8,}$")) {
             return alerta("Password débil (mín 8 caracteres, 1 mayúscula y 1 número)");
