@@ -20,6 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 
 import Integration.google.service.SolarService;
+import components.navigation.SessionContext;
 import modelo.ResultadoSolar;
 
 /**
@@ -77,13 +78,21 @@ public class CalculoInstalacionController implements Initializable {
     }
 
     /**
-     * Vuelve a la pantalla principal.
+     * Vuelve a la pantalla principal. NUEVO
      */
-    @FXML
-    private void volverInicio(ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
-            "/components/pantallas/comercial/pantallaGeneral/PantallaGeneral.fxml");
+@FXML
+private void volverInicio(ActionEvent e) {
+
+    String destino;
+
+    if (SessionContext.isAdmin()) {
+        destino = "/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml";
+    } else {
+        destino = "/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml";
     }
+
+    cambiarPantalla((Node) e.getSource(), destino);
+}
 
     // =========================
     // CALCULAR INSTALACIÓN

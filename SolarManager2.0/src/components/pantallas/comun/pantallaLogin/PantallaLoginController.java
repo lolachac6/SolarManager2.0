@@ -6,6 +6,7 @@ import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
+import components.navigation.SessionContext; 
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -81,6 +82,10 @@ public class PantallaLoginController implements Initializable {
             if (rol.equalsIgnoreCase("admin")) {
 
                 SessionManager.setUsuario(usuario);
+            if (rol.equalsIgnoreCase("admin")) {
+
+                SessionContext.setRol(SessionContext.Rol.ADMIN);
+
                 cargarPantalla("/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml");
                 return;
             }
@@ -97,7 +102,14 @@ public class PantallaLoginController implements Initializable {
             SessionManager.setUsuario(usuario);
 
             if (rol.equalsIgnoreCase("comercial")) {
+
+            } else if (rol.equalsIgnoreCase("comercial")) {
+
+                SessionContext.setRol(SessionContext.Rol.COMERCIAL);
+
                 cargarPantalla("/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml");
+            } else {
+
             } else {
                 lblMensaje.setText("Rol desconocido: " + rol);
             }

@@ -3,6 +3,7 @@ package components.pantallas.comercial.pantallaAltaCliente;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import components.navigation.SessionContext;
 
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
@@ -160,29 +161,22 @@ public class AltaClienteController implements Initializable {
     }
 
     // =========================
-    // VOLVER / CANCELAR
+    // VOLVER NUEVO / CANCELAR
     // =========================
     @FXML
-    private void volverInicio(ActionEvent event) {
-        confirmarSalida(event);
-    }
+    private void volverInicio(ActionEvent e) {
 
-    private void confirmarSalida(ActionEvent event) {
+        String destino;
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setContentText("¿Desea salir sin guardar?");
+        if (SessionContext.isAdmin()) {
+            destino = "/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml";
+        } else {
+            destino = "/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml";
+        }
 
-        ButtonType si = new ButtonType("Sí");
-        ButtonType no = new ButtonType("No");
+    cambiarPantalla((Node) e.getSource(), destino);
+}
 
-        alert.getButtonTypes().setAll(si, no);
-
-        alert.showAndWait().ifPresent(r -> {
-            if (r == si) {
-                volver(event);
-            }
-        });
-    }
 
     private void volver(ActionEvent event) {
         cambiarPantalla((Node) event.getSource(),
