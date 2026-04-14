@@ -83,7 +83,13 @@ public class PantallaInformesController implements Initializable {
             "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
 
-    // 🔥 ESTE ES EL QUE FALTABA
+    
+         @FXML
+    private void irInstalaciones(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
+    }
+    
     @FXML
     private void irInformes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),

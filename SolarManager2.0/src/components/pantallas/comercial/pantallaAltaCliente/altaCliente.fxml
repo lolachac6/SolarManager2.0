@@ -169,13 +169,14 @@
                 <HBox spacing="15"
                     style="-fx-background-color:#f4f4f4; -fx-padding:10;">
 
-                  <Button fx:id="btnGuardar" text="Guardar"/>
+                  
                   <Button fx:id="btnCalcular" text="Calcular Instalación"/>
 
                   <Pane HBox.hgrow="ALWAYS"/>
 
                   <Button fx:id="btnCancelar" text="Cancelar"/>
-
+                  <Button fx:id="btnGuardar" text="Guardar"/>
+                  
               </HBox>
 
             </bottom>

@@ -111,7 +111,7 @@ public class PantallaProveedorController implements Initializable {
     }
     
         @FXML
-    private void detalle(ActionEvent e) {
+    private void modificar(ActionEvent e) {
 
         Proveedor seleccionado = tablaProveedores.getSelectionModel().getSelectedItem();
 
@@ -139,40 +139,6 @@ public class PantallaProveedorController implements Initializable {
         }
     }
     
-    
-@FXML
-private void actualizar(ActionEvent e) {
-    try {
-        // Limpiamos el filtro
-        txtFiltro.clear();
-
-        // Recargamos los datos desde Mongo
-        obtenerProveedoresTabla();
-
-        // Refrescamos la tabla
-        tablaProveedores.refresh();
-
-        // Alerta de confirmación
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle("Actualización");
-        alerta.setHeaderText(null);
-        alerta.setContentText("La lista de proveedores se ha actualizado correctamente.");
-        alerta.showAndWait();
-
-    } catch (IOException ex) {
-        ex.printStackTrace();
-
-        // Alerta de error (opcional pero recomendable)
-        Alert error = new Alert(Alert.AlertType.ERROR);
-        error.setTitle("Error");
-        error.setHeaderText("Error al actualizar");
-        error.setContentText("No se han podido cargar los proveedores desde la base de datos.");
-        error.showAndWait();
-    }
-}
-
-
-
 
    
 @FXML

@@ -294,6 +294,11 @@ public class PantallaClientesController implements Initializable {
     @FXML private void irPresupuestos(ActionEvent event) {
         cambiarPantalla(event, "/components/pantallas/erp/pantallaPresupuesto/pantallaPresupuesto.fxml");
     }
+    
+    @FXML private void irInstalaciones(ActionEvent event) {
+        cambiarPantalla(event, "/components/pantallas/erp/pantallaInstalaciones/pantallaInstalaciones.fxml");
+    }
+    
 
     @FXML private void irInformes(ActionEvent event) {
         mostrarAlerta("Pantalla en desarrollo", Alert.AlertType.INFORMATION);

@@ -18,7 +18,7 @@ public class PantallaPresupuestoController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Solo UI
+        
     }
 
     // =========================
@@ -78,6 +78,13 @@ public class PantallaPresupuestoController implements Initializable {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
+    
+         @FXML
+    private void irInstalaciones(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
+    }
+    
 
     @FXML
     private void irInformes(javafx.event.ActionEvent e) {

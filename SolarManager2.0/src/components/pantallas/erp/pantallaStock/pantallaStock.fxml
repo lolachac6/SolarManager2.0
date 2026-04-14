@@ -47,7 +47,7 @@
 
                     <Label style="-fx-font-weight:bold;" text="Inicio" />
 
-                    <Button maxWidth="Infinity" onAction="#irClientes" styleClass="menu-button" text="Clientes" />
+                     <Button maxWidth="Infinity" onAction="#irClientes" styleClass="menu-button" text="Clientes" />
 
                     <Button maxWidth="Infinity" onAction="#irComerciales" styleClass="menu-button" text="Comerciales" />
 
@@ -56,8 +56,12 @@
                     <Button maxWidth="Infinity" onAction="#irStock" styleClass="menu-button" text="Stock" />
 
                     <Button maxWidth="Infinity" onAction="#irPresupuestos" styleClass="menu-button" text="Presupuestos" />
+                    
+                    <Button maxWidth="Infinity" onAction="#irInstalaciones" styleClass="menu-button" text="Instalaciones" />
 
                     <Button maxWidth="Infinity" onAction="#irInformes" styleClass="menu-button" text="Informes" />
+                    
+                    
 
                 </VBox>
 
@@ -100,9 +104,12 @@
                         <Button fx:id="btnAñadirProducto" onAction="#abrirAltaProducto" style="-fx-background-color: #2f6fda; -fx-text-fill: white;" text="➕ Añadir Producto" />
 
                         <Pane HBox.hgrow="ALWAYS" />
+                        
+                        <Button fx:id="btnModificar" onAction="#modificarProducto" text="Modificar" />
+                        
                         <Button fx:id="btnEliminar" onAction="#eliminarProducto" text="Eliminar" />
 
-                        <Button fx:id="btnModificar" onAction="#modificarProducto" text="Modificar" />
+                       
 
                     </HBox>
 

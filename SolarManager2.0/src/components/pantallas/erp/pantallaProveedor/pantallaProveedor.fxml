@@ -108,9 +108,7 @@
 
                         <Pane HBox.hgrow="ALWAYS" />
 
-                        <Button fx:id="btnActualizar" onAction="#actualizar" text="Actualizar" />
-
-                        <Button fx:id="btnDetalle" onAction="#detalle" text="Detalle" />
+                        <Button fx:id="btnModificar" onAction="#modificar" text="Modificar" />
                   <Button onAction="#eliminarProveedor" text="Eliminar" />
 
                     </HBox>

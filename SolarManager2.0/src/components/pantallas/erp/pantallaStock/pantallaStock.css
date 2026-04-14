@@ -1,6 +1,19 @@
-/*
- * Empty Stylesheet file.
- */
+/* ========================= */
+/* BOTONES MENÚ LATERAL */
+/* ========================= */
+
+.menu-button {
+    -fx-background-color: white;
+    -fx-border-color: #d0d0d0;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-pref-height: 35px;
+    -fx-font-size: 13px;
+}
+
+.menu-button:hover {
+    -fx-background-color: #e0e0e0;
+}
 
 .mainFxmlClass {
 

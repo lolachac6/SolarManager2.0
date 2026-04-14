@@ -227,6 +227,7 @@ public class PantallaInstalacionesController implements Initializable {
     @FXML private void irProveedores(ActionEvent event) {}
     @FXML private void irStock(ActionEvent event) {}
     @FXML private void irPresupuestos(ActionEvent event) {}
+    @FXML private void irInstalaciones(ActionEvent event) {}
     @FXML private void irInformes(ActionEvent event) {}
 
     @FXML

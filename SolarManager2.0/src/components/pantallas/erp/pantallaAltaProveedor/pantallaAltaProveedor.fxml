@@ -112,10 +112,6 @@
                                 styleClass="btn-cancelar"
                                 onAction="#cancelar"/>
 
-                        
-
-                        <Button text="Editar"
-                                onAction="#editarProveedor"/>
 
                         <Button text="Guardar"
                                 styleClass="btn-guardar"

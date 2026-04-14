@@ -56,8 +56,12 @@
                     <Button maxWidth="Infinity" onAction="#irStock" styleClass="menu-button" text="Stock" />
 
                     <Button maxWidth="Infinity" onAction="#irPresupuestos" styleClass="menu-button" text="Presupuestos" />
+                    
+                    <Button maxWidth="Infinity" onAction="#irInstalaciones" styleClass="menu-button" text="Instalaciones" />
 
                     <Button maxWidth="Infinity" onAction="#irInformes" styleClass="menu-button" text="Informes" />
+                    
+                    
 
                 </VBox>
 
