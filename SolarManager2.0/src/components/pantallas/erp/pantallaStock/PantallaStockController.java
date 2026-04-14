@@ -7,23 +7,18 @@ import components.pantallas.erp.pantallaAltaProducto.PantallaAltaProductoControl
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TableView;
-
 import javafx.stage.Stage;
 import modelo.Producto;
 import org.bson.Document;
-
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.beans.property.SimpleStringProperty;
@@ -32,52 +27,45 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import utils.AlertasSolarManager;
 
 /**
  * Controlador de la pantalla de gestión de stock.
- * 
- * <p>Se encarga de:
- * <ul>
- *     <li>Mostrar los productos en una tabla</li>
- *     <li>Permitir filtrar los productos</li>
- *     <li>Abrir pantallas de alta/modificación</li>
- *     <li>Eliminar productos</li>
- *     <li>Navegar entre pantallas del ERP</li>
- * </ul>
- * 
- * <p>Los datos se obtienen desde MongoDB utilizando la colección "Productos".</p>
- * 
+ *
+ * <p>Se encarga de mostrar los productos en una tabla, permitir el filtrado,
+ * abrir pantallas de alta y modificación, eliminar productos y navegar
+ * entre pantallas del ERP.</p>
+ *
+ * <p>Los datos se obtienen desde MongoDB utilizando la colección
+ * "Productos".</p>
+ *
  * @author Iván
  */
 public class PantallaStockController implements Initializable {
 
     @FXML private TableView<Producto> tablaStock;
-
     @FXML private TableColumn<Producto, String> colId;
     @FXML private TableColumn<Producto, String> colNombre;
     @FXML private TableColumn<Producto, String> colTipo;
     @FXML private TableColumn<Producto, String> colPrecio;
     @FXML private TableColumn<Producto, String> colProveedor;
     @FXML private TableColumn<Producto, String> colStock;
-
     @FXML private TextField txtFiltro;
 
-    /** Lista original de productos cargados desde la base de datos */
+    /**
+     * Lista original de productos cargados desde la base de datos.
+     */
     private ObservableList<Producto> listaOriginal = FXCollections.observableArrayList();
 
     /**
-     * Método de inicialización del controlador.
-     * 
-     * <p>Configura las columnas de la tabla, carga los productos desde la base de datos
-     * y añade un listener al campo de filtro.</p>
-     * 
+     * Inicializa el controlador configurando las columnas, cargando los
+     * productos y registrando el listener del filtro.
+     *
      * @param url ubicación
      * @param rb recursos
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        // Configuración de columnas
         colId.setCellValueFactory(data ->
                 new SimpleStringProperty(
                         data.getValue().getId() != null ? data.getValue().getId() : ""
@@ -99,13 +87,9 @@ public class PantallaStockController implements Initializable {
         txtFiltro.textProperty().addListener((obs, oldVal, newVal) -> buscarFiltro());
     }
 
-    // =========================
-    // CAMBIO DE PANTALLA
-    // =========================
-
     /**
      * Cambia la pantalla actual por otra especificada mediante un archivo FXML.
-     * 
+     *
      * @param nodo nodo origen del evento
      * @param rutaFXML ruta del archivo FXML
      */
@@ -123,13 +107,9 @@ public class PantallaStockController implements Initializable {
         }
     }
 
-    // =========================
-    // BOTONES
-    // =========================
-
     /**
      * Abre la ventana modal para dar de alta un nuevo producto.
-     * 
+     *
      * @param e evento de acción
      */
     @FXML
@@ -154,8 +134,7 @@ public class PantallaStockController implements Initializable {
             stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
             stage.centerOnScreen();
             stage.showAndWait();
-            
-            // Refrescar tabla al cerrar la ventana
+
             obtenerProductosTabla();
 
         } catch (IOException ex) {
@@ -164,44 +143,86 @@ public class PantallaStockController implements Initializable {
         }
     }
 
-    @FXML private void volverInicio(javafx.event.ActionEvent e) {
+    /**
+     * Navega a la pantalla principal del ERP.
+     *
+     * @param e evento de acción
+     */
+    @FXML
+    private void volverInicio(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml");
     }
 
-    @FXML private void irClientes(javafx.event.ActionEvent e) {
+    /**
+     * Navega a la pantalla de clientes.
+     *
+     * @param e evento de acción
+     */
+    @FXML
+    private void irClientes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaClientes/PantallaClientes.fxml");
     }
 
-    @FXML private void irComerciales(javafx.event.ActionEvent e) {
+    /**
+     * Navega a la pantalla de comerciales.
+     *
+     * @param e evento de acción
+     */
+    @FXML
+    private void irComerciales(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
     }
 
-    @FXML private void irProveedores(javafx.event.ActionEvent e) {
+    /**
+     * Navega a la pantalla de proveedores.
+     *
+     * @param e evento de acción
+     */
+    @FXML
+    private void irProveedores(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaProveedor/PantallaProveedor.fxml");
     }
 
-    @FXML private void irStock(javafx.event.ActionEvent e) {
+    /**
+     * Navega a la pantalla de stock.
+     *
+     * @param e evento de acción
+     */
+    @FXML
+    private void irStock(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaStock/PantallaStock.fxml");
     }
 
-    @FXML private void irPresupuestos(javafx.event.ActionEvent e) {
+    /**
+     * Navega a la pantalla de presupuestos.
+     *
+     * @param e evento de acción
+     */
+    @FXML
+    private void irPresupuestos(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
 
-    @FXML private void irInformes(javafx.event.ActionEvent e) {
+    /**
+     * Navega a la pantalla de informes.
+     *
+     * @param e evento de acción
+     */
+    @FXML
+    private void irInformes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
 
     /**
-     * Navega a la pantalla de alta de producto (no modal).
-     * 
+     * Navega a la pantalla de alta de producto en modo no modal.
+     *
      * @param e evento de acción
      */
     @FXML
@@ -210,24 +231,18 @@ public class PantallaStockController implements Initializable {
             "/components/pantallas/erp/pantallaAltaProducto/PantallaAltaProducto.fxml");
     }
 
-    // =========================
-    // CARGAR PRODUCTOS
-    // =========================
-
     /**
      * Obtiene los productos desde MongoDB y los carga en la tabla.
-     * 
+     *
      * @throws IOException en caso de error de acceso
      */
     public void obtenerProductosTabla() throws IOException {
-
         MongoDatabase db = MongoConnection.conectar();
         MongoCollection<Document> coleccion = db.getCollection("Productos");
 
         listaOriginal.clear();
 
         for (Document doc : coleccion.find()) {
-
             Producto p = new Producto();
 
             if (doc.getObjectId("_id") != null) {
@@ -272,16 +287,11 @@ public class PantallaStockController implements Initializable {
         tablaStock.setItems(listaOriginal);
     }
 
-    // =========================
-    // FILTRO
-    // =========================
-
     /**
      * Filtra los productos mostrados en la tabla según el texto introducido.
      */
     @FXML
     public void buscarFiltro() {
-
         String filtro = txtFiltro.getText().toLowerCase();
 
         if (filtro.isEmpty()) {
@@ -292,7 +302,6 @@ public class PantallaStockController implements Initializable {
         ObservableList<Producto> filtrada = FXCollections.observableArrayList();
 
         for (Producto p : listaOriginal) {
-
             String tipo = p.getTipoProducto() != null
                     ? p.getTipoProducto().name().toLowerCase()
                     : "";
@@ -310,17 +319,16 @@ public class PantallaStockController implements Initializable {
 
         tablaStock.setItems(filtrada);
     }
-    
+
     /**
-     * Abre la ventana de edición de un producto seleccionado.
+     * Abre la ventana de edición del producto seleccionado.
      */
     @FXML
     private void modificarProducto() {
-
         Producto seleccionado = tablaStock.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            mostrarAlerta("Selecciona un producto de la tabla para modificar", Alert.AlertType.WARNING);
+            AlertasSolarManager.seleccionarProductoModificar();
             return;
         }
 
@@ -357,21 +365,18 @@ public class PantallaStockController implements Initializable {
         Producto seleccionado = tablaStock.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            mostrarAlerta("Selecciona un producto de la tabla para eliminar", Alert.AlertType.WARNING);
+            AlertasSolarManager.seleccionarProductoEliminar();
             return;
         }
 
-        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmacion.setTitle("Confirmar eliminación");
-        confirmacion.setHeaderText("Eliminar producto");
-        confirmacion.setContentText("¿Seguro que deseas eliminar el producto: " + seleccionado.getNombre() + "?");
+        boolean confirmar = AlertasSolarManager.confirmar(
+                "Eliminar producto",
+                "¿Seguro que deseas eliminar el producto: " + seleccionado.getNombre() + "?",
+                "Eliminar",
+                "Cancelar"
+        );
 
-        ButtonType aceptar = new ButtonType("Eliminar", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        confirmacion.getButtonTypes().setAll(aceptar, cancelar);
-
-        if (confirmacion.showAndWait().orElse(cancelar) != aceptar) {
+        if (!confirmar) {
             return;
         }
 
@@ -381,28 +386,23 @@ public class PantallaStockController implements Initializable {
 
             coleccion.deleteOne(new Document("_id", new org.bson.types.ObjectId(seleccionado.getId())));
 
-            mostrarAlerta("Producto eliminado correctamente", Alert.AlertType.INFORMATION);
+            AlertasSolarManager.productoEliminadoCorrectamente();
 
             obtenerProductosTabla();
 
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarAlerta("Error al eliminar producto: " + e.getMessage(), Alert.AlertType.ERROR);
+            AlertasSolarManager.errorEliminarProducto(e.getMessage());
         }
     }
-    
+
     /**
-     * Muestra una alerta al usuario.
-     * 
+     * Muestra una alerta mediante la clase centralizada de alertas.
+     *
      * @param mensaje mensaje a mostrar
      * @param tipo tipo de alerta
      */
     private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle("Solar Manager");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }    
+        AlertasSolarManager.mostrar(tipo, null, mensaje);
+    }
 }
-    

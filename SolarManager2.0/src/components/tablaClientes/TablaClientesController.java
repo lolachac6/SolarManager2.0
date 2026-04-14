@@ -3,6 +3,7 @@ package components.tablaClientes;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.eq;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -26,18 +27,25 @@ import java.io.IOException;
 
 public class TablaClientesController implements Initializable {
 
-    @FXML private TableView<Document> tablaClientes;
+    @FXML
+    private TableView<Document> tablaClientes;
 
-    @FXML private TableColumn<Document, String> colNombre;
-    @FXML private TableColumn<Document, String> colApellidos;
-    @FXML private TableColumn<Document, String> colEmail;
-    @FXML private TableColumn<Document, String> colTelefono;
+    @FXML
+    private TableColumn<Document, String> colNombre;
+
+    @FXML
+    private TableColumn<Document, String> colApellidos;
+
+    @FXML
+    private TableColumn<Document, String> colEmail;
+
+    @FXML
+    private TableColumn<Document, String> colTelefono;
 
     private ObservableList<Document> lista;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         configurarColumnas();
         cargarDatos();
     }
@@ -45,16 +53,16 @@ public class TablaClientesController implements Initializable {
     private void configurarColumnas() {
 
         colNombre.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getString("nombre")));
+                new SimpleStringProperty(valorSeguro(data.getValue().getString("nombre"))));
 
         colApellidos.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getString("apellidos")));
+                new SimpleStringProperty(valorSeguro(data.getValue().getString("apellidos"))));
 
         colEmail.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getString("email")));
+                new SimpleStringProperty(valorSeguro(data.getValue().getString("email"))));
 
         colTelefono.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getString("telefono")));
+                new SimpleStringProperty(valorSeguro(data.getValue().getString("telefono"))));
     }
 
     private void cargarDatos() {
@@ -62,18 +70,33 @@ public class TablaClientesController implements Initializable {
         lista = FXCollections.observableArrayList();
 
         try {
-
             MongoDatabase db = MongoConnection.conectar();
             MongoCollection<Document> col = db.getCollection("Clientes");
 
-            for (Document doc : col.find()) {
+            /*
+             * FILTRA CLIENTES POR COMERCIAL --NOS FALTA SACAR LA PARTE DE USUAIRO LOGADO ---------------------------------------------------------
+             */
+           /* String idComercialLogado = SesionUsuario.getIdUsuario();
+
+            for (Document doc : col.find(eq("idComercialAsignado", idComercialLogado))) {
                 lista.add(doc);
-            }
+            }*/
+           for (Document doc : col.find()) { // HAY QUE QUITAR ESTE FOR CUANDO SE IMPLEMENTE EL DE ARRIBA --------------------------------------
+                    lista.add(doc);
+                }
 
         } catch (IOException ex) {
             Logger.getLogger(TablaClientesController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         tablaClientes.setItems(lista);
+    }
+
+    private String valorSeguro(String valor) {
+        return valor != null ? valor : "";
+    }
+
+    public Document getClienteSeleccionado() {
+        return tablaClientes.getSelectionModel().getSelectedItem();
     }
 }

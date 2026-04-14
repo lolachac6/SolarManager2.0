@@ -8,6 +8,8 @@ import Integration.google.model.ResultadoGeocoding;
 import Integration.google.service.SolarService;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import modelo.Cliente;
+import modelo.Direccion;
 import modelo.ResultadoSolar;
 import org.bson.Document;
 
@@ -23,59 +25,38 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import utils.AlertasSolarManager;
+
 /**
  * Controlador de la pantalla de cálculo de instalación fotovoltaica.
- * Gestiona la interacción entre la UI, la lógica de negocio y la persistencia.
+ *
+ * <p>Gestiona la validación de la dirección, el cálculo de la instalación,
+ * la persistencia de datos y la navegación de la pantalla.</p>
+ *
+ * @author Iván
  */
 public class CalculoInstalacionController implements Initializable {
 
-    @FXML
-    private TextField txtCalle;
+    @FXML private TextField txtCalle;
+    @FXML private TextField txtNumero;
+    @FXML private TextField txtCiudad;
+    @FXML private TextField txtProvincia;
+    @FXML private TextField txtCodigoPostal;
+    @FXML private TextField txtConsumoAnual;
+    @FXML private TextField txtHorasSol;
+    @FXML private TextField txtArea;
+    @FXML private TextField txtMaxPaneles;
+    @FXML private TextField txtPanelesNecesarios;
+    @FXML private TextField txtEnergiaPanel;
+    @FXML private TextField txtPresupuesto;
+    @FXML private TextField txtIdCliente;
+    @FXML private CheckBox chkBateria;
 
-    @FXML
-    private TextField txtNumero;
-
-    @FXML
-    private TextField txtCiudad;
-
-    @FXML
-    private TextField txtProvincia;
-
-    @FXML
-    private TextField txtCodigoPostal;
-
-    @FXML
-    private TextField txtConsumoAnual;
-
-    @FXML
-    private TextField txtHorasSol;
-
-    @FXML
-    private TextField txtArea;
-
-    @FXML
-    private TextField txtMaxPaneles;
-
-    @FXML
-    private TextField txtPanelesNecesarios;
-
-    @FXML
-    private TextField txtEnergiaPanel;
-
-    @FXML
-    private TextField txtPresupuesto;
-
-    @FXML
-    private TextField txtIdCliente;
-
-    @FXML
-    private CheckBox chkBateria;
+    private Cliente clienteSeleccionado;
 
     /**
      * Inicializa el controlador.
@@ -85,6 +66,30 @@ public class CalculoInstalacionController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+    }
+
+    /**
+     * Carga en el formulario los datos del cliente seleccionado.
+     *
+     * @param cliente cliente recibido desde la pantalla de clientes
+     */
+    public void setCliente(Cliente cliente) {
+        this.clienteSeleccionado = cliente;
+
+        if (cliente == null) {
+            return;
+        }
+
+        txtIdCliente.setText(cliente.getId());
+
+        Direccion direccion = cliente.getDireccion();
+        if (direccion != null) {
+            txtCalle.setText(direccion.getCalle());
+            txtNumero.setText(direccion.getNumero());
+            txtCiudad.setText(direccion.getMunicipio());
+            txtProvincia.setText(direccion.getProvincia());
+            txtCodigoPostal.setText(direccion.getCodigoPostal());
+        }
     }
 
     /**
@@ -135,7 +140,7 @@ public class CalculoInstalacionController implements Initializable {
             String mensajeCorreccion = construirMensajeCorreccion(geocoding);
 
             if (!mensajeCorreccion.isEmpty()) {
-                boolean aceptar = mostrarConfirmacionCorreccion(mensajeCorreccion);
+                boolean aceptar = AlertasSolarManager.confirmarCorreccionDireccion(mensajeCorreccion);
 
                 if (!aceptar) {
                     limpiarResultadosCalculados();
@@ -159,24 +164,23 @@ public class CalculoInstalacionController implements Initializable {
             txtEnergiaPanel.setText(String.valueOf(Math.round(resultado.getEnergiaPorPanel())));
             txtPresupuesto.setText(String.valueOf(resultado.getPresupuesto()));
 
-            mostrarAlerta(
-                    resultado.isAutosuficiente()
-                            ? "Instalación autosuficiente"
-                            : "No hay suficiente espacio en el tejado",
-                    Alert.AlertType.INFORMATION
-            );
+            if (resultado.isAutosuficiente()) {
+                AlertasSolarManager.instalacionAutosuficiente();
+            } else {
+                AlertasSolarManager.instalacionSinEspacioSuficiente();
+            }
 
         } catch (DireccionNoCoincideException e) {
             limpiarResultadosCalculados();
-            mostrarAlerta(e.getMessage(), Alert.AlertType.WARNING);
+            AlertasSolarManager.warning("Dirección no válida", e.getMessage());
 
         } catch (DatosEntradaInvalidosException e) {
             limpiarResultadosCalculados();
-            mostrarAlerta(e.getMessage(), Alert.AlertType.WARNING);
+            AlertasSolarManager.warning("Datos de entrada no válidos", e.getMessage());
 
         } catch (Exception e) {
             limpiarResultadosCalculados();
-            mostrarAlerta("Error en el cálculo: " + e.getMessage(), Alert.AlertType.ERROR);
+            AlertasSolarManager.errorCalculoInstalacion(e.getMessage());
         }
     }
 
@@ -188,33 +192,57 @@ public class CalculoInstalacionController implements Initializable {
     @FXML
     private void guardarInstalacion(ActionEvent event) {
         try {
+            construirDireccionCompleta();
+            obtenerConsumoAnualValidado();
 
             MongoDatabase db = MongoConnection.conectar();
-            MongoCollection<Document> coleccion = db.getCollection("Instalaciones");
+            MongoCollection<Document> coleccionClientes = db.getCollection("Clientes");
+            MongoCollection<Document> coleccionInstalaciones = db.getCollection("Instalaciones");
+
+            String idCliente = obtenerTextoNormalizado(txtIdCliente);
+
+            if (idCliente.isEmpty()) {
+                throw new DatosEntradaInvalidosException("No se ha recibido el cliente seleccionado");
+            }
+
+            Document clienteDoc = coleccionClientes.find(
+                    new Document("_id", new org.bson.types.ObjectId(idCliente))
+            ).first();
+
+            if (clienteDoc == null) {
+                throw new DatosEntradaInvalidosException("No se ha encontrado el cliente seleccionado");
+            }
+
+            Document direccionCliente = (Document) clienteDoc.get("direccion");
+
+            if (direccionCliente == null) {
+                throw new DatosEntradaInvalidosException("El cliente no tiene dirección registrada");
+            }
+
+            Document direccionInstalacion = new Document()
+                    .append("calle", direccionCliente.getString("calle"))
+                    .append("numero", direccionCliente.getString("numero"))
+                    .append("codigoPostal", direccionCliente.getString("codigoPostal"))
+                    .append("municipio", direccionCliente.getString("municipio"))
+                    .append("provincia", direccionCliente.getString("provincia"));
 
             Document instalacion = new Document()
-                    .append("idCliente", txtIdCliente.getText())
-                    .append("calle", txtCalle.getText())
-                    .append("numero", txtNumero.getText())
-                    .append("ciudad", txtCiudad.getText())
-                    .append("provincia", txtProvincia.getText())
-                    .append("codigoPostal", txtCodigoPostal.getText())
-                    .append("consumoAnual", txtConsumoAnual.getText())
-                    .append("horasSol", txtHorasSol.getText())
-                    .append("area", txtArea.getText())
-                    .append("maxPaneles", txtMaxPaneles.getText())
-                    .append("panelesNecesarios", txtPanelesNecesarios.getText())
-                    .append("energiaPanel", txtEnergiaPanel.getText())
-                    .append("presupuesto", txtPresupuesto.getText())
-                    .append("bateria", chkBateria.isSelected());
+                    .append("idCliente", idCliente)
+                    .append("potenciaInstalada", convertirADouble(txtEnergiaPanel))
+                    .append("numeroPaneles", convertirAInteger(txtPanelesNecesarios))
+                    .append("produccionEstimada", convertirADouble(txtHorasSol))
+                    .append("ahorroEstimado", convertirADouble(txtPresupuesto))
+                    .append("direccion", direccionInstalacion);
 
-            coleccion.insertOne(instalacion);
+            coleccionInstalaciones.insertOne(instalacion);
 
-            mostrarAlerta("Instalación guardada correctamente", Alert.AlertType.INFORMATION);
+            AlertasSolarManager.instalacionGuardadaCorrectamente();
 
+        } catch (DatosEntradaInvalidosException e) {
+            AlertasSolarManager.warning("Datos de entrada no válidos", e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarAlerta("Error al guardar instalación", Alert.AlertType.ERROR);
+            AlertasSolarManager.errorGuardarInstalacion();
         }
     }
 
@@ -236,6 +264,7 @@ public class CalculoInstalacionController implements Initializable {
 
         txtIdCliente.clear();
         chkBateria.setSelected(false);
+        clienteSeleccionado = null;
     }
 
     /**
@@ -245,13 +274,7 @@ public class CalculoInstalacionController implements Initializable {
      */
     @FXML
     private void cancelar(ActionEvent event) {
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmación");
-        confirm.setHeaderText("Salir sin guardar");
-        confirm.setContentText("¿Desea salir sin guardar?");
-
-        if (confirm.showAndWait().get() == ButtonType.OK) {
+        if (AlertasSolarManager.confirmar("Salir sin guardar", "¿Desea salir sin guardar?")) {
             cambiarPantalla(
                     (Node) event.getSource(),
                     "/components/pantallas/comercial/pantallaGeneral/PantallaGeneral.fxml"
@@ -463,21 +486,6 @@ public class CalculoInstalacionController implements Initializable {
     }
 
     /**
-     * Muestra una confirmación con las correcciones propuestas.
-     *
-     * @param mensaje Mensaje de confirmación
-     * @return true si el usuario acepta, false en caso contrario
-     */
-    private boolean mostrarConfirmacionCorreccion(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmación de dirección");
-        alert.setHeaderText("Se han encontrado diferencias");
-        alert.setContentText(mensaje);
-
-        return alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK;
-    }
-
-    /**
      * Obtiene el texto normalizado de un TextField.
      *
      * @param textField Campo de texto
@@ -542,6 +550,46 @@ public class CalculoInstalacionController implements Initializable {
     }
 
     /**
+     * Convierte el contenido de un TextField a double.
+     *
+     * @param campo campo de texto
+     * @return valor convertido
+     * @throws DatosEntradaInvalidosException si el campo no contiene un número válido
+     */
+    private double convertirADouble(TextField campo) throws DatosEntradaInvalidosException {
+        String valor = obtenerTextoNormalizado(campo).replace(",", ".");
+        if (valor.isEmpty()) {
+            throw new DatosEntradaInvalidosException("Faltan datos calculados de la instalación");
+        }
+
+        try {
+            return Double.parseDouble(valor);
+        } catch (NumberFormatException e) {
+            throw new DatosEntradaInvalidosException("Los datos calculados de la instalación no son válidos");
+        }
+    }
+
+    /**
+     * Convierte el contenido de un TextField a integer.
+     *
+     * @param campo campo de texto
+     * @return valor convertido
+     * @throws DatosEntradaInvalidosException si el campo no contiene un entero válido
+     */
+    private int convertirAInteger(TextField campo) throws DatosEntradaInvalidosException {
+        String valor = obtenerTextoNormalizado(campo);
+        if (valor.isEmpty()) {
+            throw new DatosEntradaInvalidosException("Faltan datos calculados de la instalación");
+        }
+
+        try {
+            return Integer.parseInt(valor);
+        } catch (NumberFormatException e) {
+            throw new DatosEntradaInvalidosException("Los datos calculados de la instalación no son válidos");
+        }
+    }
+
+    /**
      * Limpia los campos de resultados calculados.
      */
     private void limpiarResultadosCalculados() {
@@ -551,17 +599,5 @@ public class CalculoInstalacionController implements Initializable {
         txtPanelesNecesarios.clear();
         txtEnergiaPanel.clear();
         txtPresupuesto.clear();
-    }
-
-    /**
-     * Muestra una alerta al usuario.
-     *
-     * @param mensaje Mensaje a mostrar
-     * @param tipo Tipo de alerta
-     */
-    private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
     }
 }

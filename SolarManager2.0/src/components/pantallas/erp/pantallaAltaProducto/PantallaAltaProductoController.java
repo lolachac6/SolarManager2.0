@@ -4,12 +4,23 @@ import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import modelo.Producto;
 import org.bson.Document;
+import utils.AlertasSolarManager;
 
+/**
+ * Controlador de la pantalla de alta y edición de productos.
+ *
+ * <p>Gestiona la validación del formulario, el guardado del producto,
+ * la carga de datos para edición y el cierre de la ventana modal.</p>
+ *
+ * @author Iván
+ */
 public class PantallaAltaProductoController {
 
     @FXML private TextField txtNombre;
@@ -18,34 +29,40 @@ public class PantallaAltaProductoController {
     @FXML private TextField txtStock;
     @FXML private ComboBox<String> cmbProveedor;
     @FXML private TextArea txtDescripcion;
-    
+
     private String idProducto = null;
 
+    /**
+     * Inicializa la pantalla cargando los tipos de producto y los proveedores.
+     */
     @FXML
     public void initialize() {
-
-        // Tipos reales desde el ENUM
         cmbTipo.getItems().addAll(Producto.TipoProducto.values());
-
-        // TODO: cargar proveedores desde MongoDB
         cmbProveedor.getItems().addAll("Proveedor 1", "Proveedor 2", "Proveedor 3");
     }
 
-    // =========================
-    // NUEVO PRODUCTO
-    // =========================
+    /**
+     * Limpia el formulario para preparar el alta de un nuevo producto.
+     */
     @FXML
     private void nuevoProducto() {
         limpiarFormulario();
     }
 
-    // =========================
-    // GUARDAR PRODUCTO
-    // =========================
+    /**
+     * Guarda o actualiza un producto en la base de datos.
+     */
     @FXML
     private void guardarProducto() {
 
         if (!validarCampos()) return;
+
+        if (!AlertasSolarManager.confirmar(
+                "Guardar producto",
+                "¿Desea guardar los cambios del producto?"
+        )) {
+            return;
+        }
 
         try {
             MongoDatabase db = MongoConnection.conectar();
@@ -60,16 +77,15 @@ public class PantallaAltaProductoController {
                     .append("descripcion", txtDescripcion.getText().trim());
 
             if (idProducto == null) {
-                // ALTA
                 coleccion.insertOne(doc);
             } else {
-                // MODIFICACIÓN
                 coleccion.updateOne(
                     new Document("_id", new org.bson.types.ObjectId(idProducto)),
                     new Document("$set", doc)
                 );
             }
 
+            AlertasSolarManager.productoGuardadoCorrectamente();
             cerrarVentana();
 
         } catch (Exception e) {
@@ -77,18 +93,20 @@ public class PantallaAltaProductoController {
         }
     }
 
-    // =========================
-    // VALIDACIONES
-    // =========================
+    /**
+     * Valida los campos del formulario.
+     *
+     * @return true si todos los campos son válidos, false en caso contrario
+     */
     private boolean validarCampos() {
 
         if (txtNombre.getText().trim().isEmpty()) {
-            mostrarAlerta("El nombre es obligatorio", Alert.AlertType.WARNING);
+            AlertasSolarManager.nombreProductoObligatorio();
             return false;
         }
 
         if (cmbTipo.getValue() == null) {
-            mostrarAlerta("Seleccione un tipo de producto", Alert.AlertType.WARNING);
+            AlertasSolarManager.tipoProductoObligatorio();
             return false;
         }
 
@@ -96,7 +114,7 @@ public class PantallaAltaProductoController {
             double precio = Double.parseDouble(txtPrecio.getText());
             if (precio < 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
-            mostrarAlerta("El precio debe ser un número válido y positivo", Alert.AlertType.WARNING);
+            AlertasSolarManager.precioNoValido();
             return false;
         }
 
@@ -104,80 +122,73 @@ public class PantallaAltaProductoController {
             int stock = Integer.parseInt(txtStock.getText());
             if (stock < 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
-            mostrarAlerta("El stock debe ser un número entero positivo", Alert.AlertType.WARNING);
+            AlertasSolarManager.stockNoValido();
             return false;
         }
 
         if (cmbProveedor.getValue() == null) {
-            mostrarAlerta("Seleccione un proveedor", Alert.AlertType.WARNING);
+            AlertasSolarManager.proveedorObligatorio();
             return false;
         }
 
         if (txtDescripcion.getText().trim().isEmpty()) {
-            mostrarAlerta("La descripción es obligatoria", Alert.AlertType.WARNING);
+            AlertasSolarManager.descripcionObligatoria();
             return false;
         }
 
         return true;
     }
-    
-    // =========================
-    // CARGAR PRODUCTO
-    // =========================
+
+    /**
+     * Carga los datos de un producto existente para su edición.
+     *
+     * @param p producto a editar
+     */
     public void cargarProducto(Producto p) {
-    txtNombre.setText(p.getNombre());
-    cmbTipo.setValue(p.getTipoProducto());
-    txtPrecio.setText(String.valueOf(p.getPrecio()));
-    txtStock.setText(String.valueOf(p.getStock()));
-    cmbProveedor.setValue(p.getIdProveedor());
-    txtDescripcion.setText(p.getDescripcion());
+        txtNombre.setText(p.getNombre());
+        cmbTipo.setValue(p.getTipoProducto());
+        txtPrecio.setText(String.valueOf(p.getPrecio()));
+        txtStock.setText(String.valueOf(p.getStock()));
+        cmbProveedor.setValue(p.getIdProveedor());
+        txtDescripcion.setText(p.getDescripcion());
+        this.idProducto = p.getId();
+    }
 
-    // Guardamos el ID para saber qué documento actualizar
-    this.idProducto = p.getId();
-}
-
-    // =========================
-    // CANCELAR
-    // =========================
+    /**
+     * Cancela la operación actual previa confirmación.
+     *
+     * @param e evento de acción
+     */
     @FXML
     private void cancelar(javafx.event.ActionEvent e) {
-
-        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmacion.setTitle("Confirmar cancelación");
-        confirmacion.setHeaderText("¿Cancelar sin guardar?");
-        confirmacion.setContentText("Los cambios no guardados se perderán.");
-
-        ButtonType aceptar = new ButtonType("Salir sin guardar", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelar = new ButtonType("Volver", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        confirmacion.getButtonTypes().setAll(aceptar, cancelar);
-
-        // Si el usuario NO confirma, no hacemos nada
-        if (confirmacion.showAndWait().orElse(cancelar) != aceptar) {
+        if (!AlertasSolarManager.confirmarCancelarProducto()) {
             return;
         }
-
-        // Si confirma, cerramos la ventana
         cerrarVentana();
     }
 
+    /**
+     * Cierra la ventana actual.
+     */
     private void cerrarVentana() {
         Stage stage = (Stage) txtNombre.getScene().getWindow();
         stage.close();
     }
-    
-    // =========================
-    // VOLVER
-    // =========================
+
+    /**
+     * Cierra la ventana actual.
+     *
+     * @param e evento de acSción
+     */
     @FXML
     private void volver(javafx.event.ActionEvent e) {
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.close();
     }
 
-    // =========================
-    // UTILIDADES
-    // =========================
+    /**
+     * Limpia todos los campos del formulario.
+     */
     private void limpiarFormulario() {
         txtNombre.clear();
         txtPrecio.clear();
@@ -185,13 +196,5 @@ public class PantallaAltaProductoController {
         txtDescripcion.clear();
         cmbTipo.getSelectionModel().clearSelection();
         cmbProveedor.getSelectionModel().clearSelection();
-    }
-
-    private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle("Solar Manager");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
     }
 }

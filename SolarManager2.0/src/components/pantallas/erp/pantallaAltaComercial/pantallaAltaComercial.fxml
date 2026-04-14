@@ -134,8 +134,9 @@
 
                             <!-- BOTONES -->
                             <HBox alignment="CENTER_RIGHT" spacing="15">
-                                <Button onAction="#cancelar" styleClass="btn-cancelar" text="Cancelar"/>
                                 <Button onAction="#guardarComercial" styleClass="btn-guardar" text="Guardar"/>
+                                <Button onAction="#cancelar" styleClass="btn-cancelar" text="Cancelar"/>
+                                
                             </HBox>
 
                         </VBox>
