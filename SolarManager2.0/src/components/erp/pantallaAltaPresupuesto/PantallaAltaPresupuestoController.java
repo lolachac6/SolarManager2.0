@@ -1,4 +1,4 @@
-package components.erp.erp.pantallaAltaPresupuesto;
+package components.erp.pantallaAltaPresupuesto;
 
 import java.net.URL;
 import java.time.LocalDate;

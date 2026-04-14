@@ -4,34 +4,32 @@ import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
-import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextArea;
-import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javax.xml.soap.*;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import modelo.Direccion;
 import modelo.Proveedor;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import utils.AlertasSolarManager;
 
 /**
- * Controlador de alta, edición y eliminación de proveedores.
+ * Controlador de la pantalla de alta y edición de proveedores.
+ *
+ * <p>Gestiona el formulario de proveedor, la validación de campos,
+ * el guardado en MongoDB y la navegación asociada a la pantalla.</p>
+ *
+ * @author Iván
  */
 public class PantallaAltaProveedorController {
 
-    /** ID real de MongoDB del proveedor */
     private ObjectId proveedorId;
-
-    /** Controla si estamos en modo edición */
     private boolean modoEdicion = false;
 
     @FXML private TextField txtNombre;
@@ -42,7 +40,7 @@ public class PantallaAltaProveedorController {
     @FXML private TextArea txtObservaciones;
 
     /**
-     * Inicializa la pantalla bloqueando el formulario.
+     * Inicializa la pantalla bloqueando inicialmente el formulario.
      */
     @FXML
     public void initialize() {
@@ -50,7 +48,9 @@ public class PantallaAltaProveedorController {
     }
 
     /**
-     * Bloquea o desbloquea el formulario.
+     * Bloquea o desbloquea los campos del formulario.
+     *
+     * @param bloquear true para bloquear, false para desbloquear
      */
     private void bloquearFormulario(boolean bloquear) {
         txtNombre.setDisable(bloquear);
@@ -62,7 +62,7 @@ public class PantallaAltaProveedorController {
     }
 
     /**
-     * Limpia el formulario.
+     * Limpia el formulario y lo devuelve a su estado inicial.
      */
     @FXML
     private void nuevoProveedor() {
@@ -76,127 +76,121 @@ public class PantallaAltaProveedorController {
         modoEdicion = false;
         bloquearFormulario(true);
     }
-    
-/**
- * Guarda o actualiza un proveedor.
- */
-@FXML
-private void guardarProveedor(ActionEvent e) {
 
-    // NO permite guardar si no está en modo edición
-    if (!modoEdicion) {
-        mostrarAlerta("Pulsa primero el botón EDITAR", AlertType.WARNING);
-        return;
-    }
+    /**
+     * Guarda o actualiza un proveedor.
+     *
+     * @param e evento de acción
+     */
+    @FXML
+    private void guardarProveedor(ActionEvent e) {
 
-    if (!validarCampos()) {
-        return;
-    }
+        if (!modoEdicion) {
+            AlertasSolarManager.pulsarPrimeroEditar();
+            return;
+        }
 
-    // ===== CONFIRMACIÓN =====
-    Alert confirmacion = new Alert(AlertType.CONFIRMATION);
-    confirmacion.setTitle("Confirmar guardado");
-    confirmacion.setHeaderText("Guardar proveedor");
-    confirmacion.setContentText("¿Deseas guardar los cambios del proveedor?");
+        if (!validarCampos()) {
+            return;
+        }
 
-    Optional<ButtonType> resultado = confirmacion.showAndWait();
+        if (!AlertasSolarManager.confirmar("Guardar proveedor", "¿Deseas guardar los cambios del proveedor?")) {
+            return;
+        }
 
-    // SOLO continúa si pulsa OK
-    if (!resultado.isPresent() || resultado.get() != ButtonType.OK) {
-        return;
-    }
+        try {
+            Proveedor nuevoProveedor = new Proveedor();
+            nuevoProveedor.setNombre(txtNombre.getText());
+            nuevoProveedor.setTelefono(txtTelefono.getText());
+            nuevoProveedor.setEmail(txtEmail.getText());
+            nuevoProveedor.setDireccion(new Direccion());
+            nuevoProveedor.setNombreEmpresa(txtEmpresa.getText());
+            nuevoProveedor.setObservaciones(txtObservaciones.getText());
 
-    // ===== GUARDADO =====
-    try {
-        Proveedor nuevoProveedor = new Proveedor();
-        nuevoProveedor.setNombre(txtNombre.getText());
-        nuevoProveedor.setTelefono(txtTelefono.getText());
-        nuevoProveedor.setEmail(txtEmail.getText());
-        nuevoProveedor.setDireccion(new Direccion());
-        nuevoProveedor.setNombreEmpresa(txtEmpresa.getText());
-        nuevoProveedor.setObservaciones(txtObservaciones.getText());
+            Document direccionDoc = new Document()
+                    .append("calle", txtDireccion.getText())
+                    .append("numero", "")
+                    .append("codigoPostal", "")
+                    .append("municipio", "")
+                    .append("provincia", "");
 
-        Document direccionDoc = new Document()
-                .append("calle", txtDireccion.getText())
-                .append("numero", "")
-                .append("codigoPostal", "")
-                .append("municipio", "")
-                .append("provincia", "");
+            Document doc = new Document()
+                    .append("nombre", nuevoProveedor.getNombre())
+                    .append("telefono", nuevoProveedor.getTelefono())
+                    .append("email", nuevoProveedor.getEmail())
+                    .append("direccion", direccionDoc)
+                    .append("nombreEmpresa", nuevoProveedor.getNombreEmpresa())
+                    .append("observaciones", nuevoProveedor.getObservaciones());
 
-        Document doc = new Document()
-                .append("nombre", nuevoProveedor.getNombre())
-                .append("telefono", nuevoProveedor.getTelefono())
-                .append("email", nuevoProveedor.getEmail())
-                .append("direccion", direccionDoc)
-                .append("nombreEmpresa", nuevoProveedor.getNombreEmpresa())
-                .append("observaciones", nuevoProveedor.getObservaciones());
+            MongoDatabase db = MongoConnection.conectar();
+            MongoCollection<Document> coleccion = db.getCollection("Proveedor");
 
-        MongoDatabase db = MongoConnection.conectar();
-        MongoCollection<Document> coleccion = db.getCollection("Proveedor");
-
-        if (proveedorId != null) {
-            coleccion.updateOne(
-                    new Document("_id", proveedorId),
-                    new Document("$set", doc)
-            );
-        } else {
-            Document existente = coleccion.find(
-                    new Document("nombre", txtNombre.getText())
-            ).first();
-
-            if (existente != null) {
+            if (proveedorId != null) {
                 coleccion.updateOne(
-                        new Document("nombre", txtNombre.getText()),
+                        new Document("_id", proveedorId),
                         new Document("$set", doc)
                 );
             } else {
-                coleccion.insertOne(doc);
+                Document existente = coleccion.find(
+                        new Document("nombre", txtNombre.getText())
+                ).first();
+
+                if (existente != null) {
+                    coleccion.updateOne(
+                            new Document("nombre", txtNombre.getText()),
+                            new Document("$set", doc)
+                    );
+                } else {
+                    coleccion.insertOne(doc);
+                }
             }
+
+            AlertasSolarManager.proveedorGuardadoCorrectamente();
+
+            cambiarPantalla(
+                    (Node) e.getSource(),
+                    "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
+            );
+
+        } catch (Exception ex) {
+            AlertasSolarManager.errorGuardarProveedor(ex.getMessage());
         }
-
-        mostrarAlerta("Proveedor guardado correctamente", AlertType.INFORMATION);
-
-        cambiarPantalla(
-                (Node) e.getSource(),
-                "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
-        );
-
-    } catch (Exception ex) {
-        mostrarAlerta("Error al guardar proveedor: " + ex.getMessage(), AlertType.ERROR);
     }
-}
+
     /**
-     * Valida campos obligatorios.
+     * Valida los campos obligatorios del formulario.
+     *
+     * @return true si todos los campos son válidos, false en caso contrario
      */
     private boolean validarCampos() {
 
         if (txtNombre.getText().isEmpty()) {
-            mostrarAlerta("El nombre es obligatorio", Alert.AlertType.WARNING);
+            AlertasSolarManager.nombreProveedorObligatorio();
             return false;
         }
 
         if (txtTelefono.getText().isEmpty()) {
-            mostrarAlerta("El teléfono es obligatorio", Alert.AlertType.WARNING);
+            AlertasSolarManager.telefonoObligatorio();
             return false;
         }
 
         if (txtEmail.getText().isEmpty()) {
-            mostrarAlerta("El email es obligatorio", Alert.AlertType.WARNING);
+            AlertasSolarManager.emailProveedorObligatorio();
             return false;
         }
 
         if (!txtEmail.getText().contains("@")) {
-            mostrarAlerta("El email no es válido", Alert.AlertType.WARNING);
+            AlertasSolarManager.emailProveedorInvalido();
             return false;
         }
 
         if (txtDireccion.getText().isEmpty()) {
-            mostrarAlerta("La calle es obligatoria", Alert.AlertType.WARNING);
+            AlertasSolarManager.direccionObligatoria();
             return false;
         }
 
         if (txtEmpresa.getText().isEmpty()) {
-            mostrarAlerta("La empresa es obligatoria", Alert.AlertType.WARNING);
+            AlertasSolarManager.empresaObligatoria();
             return false;
         }
 
@@ -204,99 +198,50 @@ private void guardarProveedor(ActionEvent e) {
     }
 
     /**
-     * Activa modo edición (DESBLOQUEA FORMULARIO).
+     * Activa el modo edición y desbloquea el formulario.
      */
     @FXML
     private void editarProveedor() {
-
         modoEdicion = true;
         bloquearFormulario(false);
-
-        mostrarAlerta("Modo edición activado", AlertType.INFORMATION);
+        AlertasSolarManager.modoEdicionActivado();
     }
 
-/**
- * Elimina el proveedor de la base de datos.
- */
-/**@FXML
-private void eliminarProveedor(ActionEvent e) {
+    /**
+     * Cancela la edición actual previa confirmación.
+     *
+     * @param e evento de acción
+     */
+    @FXML
+    private void cancelar(ActionEvent e) {
 
-    // ❌ NO permite eliminar si no está en modo edición
-    if (!modoEdicion) {
-        mostrarAlerta("Pulsa primero el botón EDITAR", AlertType.WARNING);
-        return;
-    }
-
-    if (txtNombre.getText().isEmpty()) {
-        mostrarAlerta("Introduce el nombre del proveedor", AlertType.WARNING);
-        return;
-    }
-
-    // ===== CONFIRMACIÓN =====
-    Alert confirmacion = new Alert(AlertType.CONFIRMATION);
-    confirmacion.setTitle("Confirmar eliminación");
-    confirmacion.setHeaderText("Eliminar proveedor");
-    confirmacion.setContentText(
-        "¿Estás seguro de que deseas eliminar este proveedor?\n\n" +
-        "Esta acción no se puede deshacer."
-    );
-
-    Optional<ButtonType> resultado = confirmacion.showAndWait();
-
-    // ✅ SOLO continúa si pulsa OK
-    if (!resultado.isPresent() || resultado.get() != ButtonType.OK) {
-        return;
-    }
-
-    // ===== ELIMINACIÓN =====
-    try {
-        MongoDatabase db = MongoConnection.conectar();
-        MongoCollection<Document> coleccion = db.getCollection("Proveedor");
-
-        coleccion.deleteOne(new Document("nombre", txtNombre.getText()));
-
-        mostrarAlerta("Proveedor eliminado correctamente", AlertType.INFORMATION);
+        if (!AlertasSolarManager.confirmarCancelarProveedor()) {
+            return;
+        }
 
         cambiarPantalla(
             (Node) e.getSource(),
             "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
         );
-
-    } catch (Exception ex) {
-        mostrarAlerta("Error al eliminar: " + ex.getMessage(), AlertType.ERROR);
-    }
-}*/
-
-@FXML
-private void cancelar(ActionEvent e) {
-
-    Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-    confirmacion.setTitle("Cancelar cambios");
-    confirmacion.setHeaderText("Salir sin guardar");
-    confirmacion.setContentText(
-        "¿Deseas cancelar y volver a la lista de proveedores?\n\n" +
-        "Los cambios no guardados se perderán."
-    );
-
-    Optional<ButtonType> resultado = confirmacion.showAndWait();
-
-    // ✅ SOLO continúa si pulsa OK
-    if (!resultado.isPresent() || resultado.get() != ButtonType.OK) {
-        return;
     }
 
-    cambiarPantalla(
-        (Node) e.getSource(),
-        "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
-    );
-}
-
+    /**
+     * Vuelve a la pantalla de proveedores.
+     *
+     * @param e evento de acción
+     */
     @FXML
     private void volver(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
                 "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml");
     }
 
+    /**
+     * Cambia la pantalla actual por otra indicada.
+     *
+     * @param nodo nodo origen
+     * @param rutaFXML ruta del fichero FXML
+     */
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
@@ -311,6 +256,11 @@ private void cancelar(ActionEvent e) {
         }
     }
 
+    /**
+     * Carga en el formulario los datos del proveedor seleccionado.
+     *
+     * @param p proveedor a mostrar
+     */
     public void cargarProveedor(Proveedor p) {
 
         txtNombre.setText(p.getNombre());
@@ -323,19 +273,13 @@ private void cancelar(ActionEvent e) {
             txtDireccion.setText(p.getDireccion().toString());
         }
 
-        // IMPORTANTE: sigue bloqueado hasta pulsar editar
         bloquearFormulario(true);
         modoEdicion = false;
     }
 
-    private void mostrarAlerta(String mensaje, AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle("Solar Manager");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
-
+    /**
+     * Limpia el formulario y restablece su estado inicial.
+     */
     private void limpiarFormulario() {
         txtNombre.clear();
         txtEmpresa.clear();
