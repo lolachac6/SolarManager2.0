@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="clientesPorComercial_Mensual_Barras_Ordenado" pageWidth="900" pageHeight="700" orientation="Landscape" columnWidth="860" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="11111111-1111-1111-1111-111111111111">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="COMERCIAL" class="java.lang.String"/>
+        <parameter name="HAY_DATOS" class="java.lang.Boolean"/>
+	<field name="mes" class="java.lang.String"/>
+	<field name="ordenMes" class="java.lang.Integer"/>
+	<field name="total" class="java.lang.Double"/>
+	<field name="etiqueta" class="java.lang.Double"/>
+	<detail>
+		<band/>
+	</detail>
+	<summary>
+		<band height="622">
+			<barChart>
+				<chart>
+					<reportElement x="0" y="0" width="860" height="622" uuid="ecda9cda-59c7-4e84-92dd-3f8a215012c5"/>
+					<chartTitle>
+						<font size="30" isBold="true"/>
+						<titleExpression><![CDATA["Clientes Mensuales - Comercial: " + $P{COMERCIAL}]]></titleExpression>
+					</chartTitle>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Clientes"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{mes}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{total}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot>
+					<plot/>
+					<itemLabel>
+						<font size="10"/>
+					</itemLabel>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</barPlot>
+			</barChart>
+		</band>
+	</summary>
+</jasperReport>

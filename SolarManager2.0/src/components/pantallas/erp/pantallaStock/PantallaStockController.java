@@ -365,8 +365,19 @@ public class PantallaStockController implements Initializable {
     }
 
     /**
-     * Elimina el producto seleccionado tras confirmación del usuario.
-     */
+    * Elimina el producto seleccionado de la base de datos tras confirmación del usuario.
+    *
+    * <p>El proceso es:
+    * <ul>
+    *   <li>Verificar que haya un producto seleccionado</li>
+    *   <li>Solicitar confirmación mediante un cuadro de diálogo</li>
+    *   <li>Eliminar el documento correspondiente en MongoDB</li>
+    *   <li>Actualizar la tabla de productos</li>
+    * </ul>
+    *
+    * <p>Si ocurre un error durante la eliminación, se muestra una alerta de error.</p>
+    */
+    
     @FXML
     private void eliminarProducto() {
         Producto seleccionado = tablaStock.getSelectionModel().getSelectedItem();

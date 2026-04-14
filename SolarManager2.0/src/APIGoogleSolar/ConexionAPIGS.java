@@ -16,8 +16,8 @@ public class ConexionAPIGS {
             // Datos de entrada
             String calle = "Calle de Alcalá";
             String numero = "50";
-            String ciudad = "ghfghfgh";
-            String codigoPostal = "jghjhj";
+            String ciudad = "Madrid";
+            String codigoPostal = "28014";
             String pais = "España";
             double consumoAnual = 4500; // kWh/año (consumo de la vivienda)
             double potenciaPanel = 0.4; // kW por panel (400 W)

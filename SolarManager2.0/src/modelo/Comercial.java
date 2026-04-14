@@ -70,14 +70,12 @@ public class Comercial extends Persona {
      * @param apellidos apellidos
      * @param telefono teléfono
      * @param email correo electrónico
-     * @param password password
      * @param direccion dirección
      * @param tipoContrato tipo de contrato
      * @param dni documento de identidad
      * @param numeroCuenta número de cuenta bancaria
      * @param centroTrabajo centro de trabajo
      * @param observaciones comentarios adicionales
-     * @param activo si continua trabajando
      */
     public Comercial(String id,
             String nombre,
@@ -101,8 +99,6 @@ public class Comercial extends Persona {
         this.numeroCuenta = numeroCuenta;
         this.centroTrabajo = centroTrabajo;
         this.observaciones = observaciones;
-        this.activo = activo;
-        this.password = password;
     }
 
     /**

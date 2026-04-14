@@ -102,9 +102,11 @@ public class CalculoInstalacionController implements Initializable {
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(rutaFXML));
+
             Stage stage = (Stage) nodo.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.centerOnScreen();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -272,7 +274,6 @@ public class CalculoInstalacionController implements Initializable {
 
         limpiarResultadosCalculados();
 
-        txtIdCliente.clear();
         chkBateria.setSelected(false);
         clienteSeleccionado = null;
     }
