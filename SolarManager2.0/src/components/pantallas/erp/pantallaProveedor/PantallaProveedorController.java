@@ -118,14 +118,10 @@ public class PantallaProveedorController implements Initializable {
             ex.printStackTrace();
         }
     }
+    
+        @FXML
+    private void modificar(ActionEvent e) {
 
-    /**
-     * Abre la pantalla de detalle del proveedor seleccionado.
-     *
-     * @param e evento de acción
-     */
-    @FXML
-    private void detalle(ActionEvent e) {
         Proveedor seleccionado = tablaProveedores.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
@@ -150,37 +146,10 @@ public class PantallaProveedorController implements Initializable {
             ex.printStackTrace();
         }
     }
+    
 
-    /**
-     * Recarga la lista de proveedores desde MongoDB y refresca la tabla.
-     *
-     * @param e evento de acción
-     */
-    @FXML
-    private void actualizar(ActionEvent e) {
-        try {
-            txtFiltro.clear();
-            obtenerProveedoresTabla();
-            tablaProveedores.refresh();
-
-            AlertasSolarManager.info(
-                    "Actualización",
-                    "La lista de proveedores se ha actualizado correctamente."
-            );
-        } catch (IOException ex) {
-            ex.printStackTrace();
-
-            AlertasSolarManager.error(
-                    "Error al actualizar",
-                    "No se han podido cargar los proveedores desde la base de datos."
-            );
-        }
-    }
-
-    /**
-     * Elimina el proveedor seleccionado tras solicitar confirmación.
-     */
-    @FXML
+   
+@FXML
     private void eliminarProveedor() {
         Proveedor seleccionado = tablaProveedores.getSelectionModel().getSelectedItem();
 

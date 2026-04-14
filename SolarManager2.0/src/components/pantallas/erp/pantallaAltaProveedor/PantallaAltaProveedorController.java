@@ -44,7 +44,7 @@ public class PantallaAltaProveedorController {
      */
     @FXML
     public void initialize() {
-        bloquearFormulario(true);
+        bloquearFormulario(false);
     }
 
     /**
@@ -74,27 +74,27 @@ public class PantallaAltaProveedorController {
         txtObservaciones.clear();
         proveedorId = null;
         modoEdicion = false;
-        bloquearFormulario(true);
+        bloquearFormulario(false);
     }
 
     /**
      * Guarda o actualiza un proveedor.
-     *
-     * @param e evento de acción
      */
     @FXML
     private void guardarProveedor(ActionEvent e) {
-
-        if (!modoEdicion) {
-            AlertasSolarManager.pulsarPrimeroEditar();
-            return;
-        }
 
         if (!validarCampos()) {
             return;
         }
 
-        if (!AlertasSolarManager.confirmar("Guardar proveedor", "¿Deseas guardar los cambios del proveedor?")) {
+        Alert confirmacion = new Alert(AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar guardado");
+        confirmacion.setHeaderText("Guardar proveedor");
+        confirmacion.setContentText("¿Deseas guardar los cambios del proveedor?");
+
+        Optional<ButtonType> resultado = confirmacion.showAndWait();
+
+        if (!resultado.isPresent() || resultado.get() != ButtonType.OK) {
             return;
         }
 
@@ -145,7 +145,7 @@ public class PantallaAltaProveedorController {
                 }
             }
 
-            AlertasSolarManager.proveedorGuardadoCorrectamente();
+            mostrarAlerta("Proveedor guardado correctamente", AlertType.INFORMATION);
 
             cambiarPantalla(
                     (Node) e.getSource(),
@@ -153,15 +153,10 @@ public class PantallaAltaProveedorController {
             );
 
         } catch (Exception ex) {
-            AlertasSolarManager.errorGuardarProveedor(ex.getMessage());
+            mostrarAlerta("Error al guardar proveedor: " + ex.getMessage(), AlertType.ERROR);
         }
     }
 
-    /**
-     * Valida los campos obligatorios del formulario.
-     *
-     * @return true si todos los campos son válidos, false en caso contrario
-     */
     private boolean validarCampos() {
 
         if (txtNombre.getText().isEmpty()) {
@@ -197,39 +192,29 @@ public class PantallaAltaProveedorController {
         return true;
     }
 
-    /**
-     * Activa el modo edición y desbloquea el formulario.
-     */
-    @FXML
-    private void editarProveedor() {
-        modoEdicion = true;
-        bloquearFormulario(false);
-        AlertasSolarManager.modoEdicionActivado();
-    }
-
-    /**
-     * Cancela la edición actual previa confirmación.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void cancelar(ActionEvent e) {
 
-        if (!AlertasSolarManager.confirmarCancelarProveedor()) {
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Cancelar cambios");
+        confirmacion.setHeaderText("Salir sin guardar");
+        confirmacion.setContentText(
+                "¿Deseas cancelar y volver a la lista de proveedores?\n\n" +
+                "Los cambios no guardados se perderán."
+        );
+
+        Optional<ButtonType> resultado = confirmacion.showAndWait();
+
+        if (!resultado.isPresent() || resultado.get() != ButtonType.OK) {
             return;
         }
 
         cambiarPantalla(
-            (Node) e.getSource(),
-            "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
+                (Node) e.getSource(),
+                "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
         );
     }
 
-    /**
-     * Vuelve a la pantalla de proveedores.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void volver(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
@@ -273,7 +258,7 @@ public class PantallaAltaProveedorController {
             txtDireccion.setText(p.getDireccion().toString());
         }
 
-        bloquearFormulario(true);
+        bloquearFormulario(false);
         modoEdicion = false;
     }
 

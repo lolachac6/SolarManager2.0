@@ -248,6 +248,14 @@ public class pantallaComercialesController implements Initializable {
     private void irPresupuestos(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
+    
+    
+    @FXML
+    private void irInstalaciones(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),
+            "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
+    }
+    
 
     /**
      * Navega a la pantalla de informes.

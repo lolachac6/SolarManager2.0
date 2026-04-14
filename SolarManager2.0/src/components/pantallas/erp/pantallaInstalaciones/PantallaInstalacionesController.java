@@ -285,12 +285,7 @@ public class PantallaInstalacionesController implements Initializable {
      * @param event evento de acción
      */
     @FXML private void irPresupuestos(ActionEvent event) {}
-
-    /**
-     * Método reservado para futura navegación a informes.
-     *
-     * @param event evento de acción
-     */
+    @FXML private void irInstalaciones(ActionEvent event) {}
     @FXML private void irInformes(ActionEvent event) {}
 
     /**
