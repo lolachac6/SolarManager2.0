@@ -6,7 +6,7 @@ import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
-import components.navigation.SessionContext; 
+import components.navigation.SessionContext;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,69 +49,67 @@ public class PantallaLoginController implements Initializable {
     }
 
     @FXML
-private void handleAceptar() {
+    private void handleAceptar() {
 
-    String email = txtUsuario.getText().trim();
-    String password = txtPassword.getText().trim();
+        String email = txtUsuario.getText().trim();
+        String password = txtPassword.getText().trim();
 
-    if (email.isEmpty() || password.isEmpty()) {
-        lblMensaje.setText("Introduce el usuario y la contraseña.");
-        return;
-    }
-
-    try {
-        UsuarioService service = new UsuarioService();
-
-        boolean ok = service.login(email, password);
-
-        if (!ok) {
-            lblMensaje.setText("Credenciales incorrectas.");
+        if (email.isEmpty() || password.isEmpty()) {
+            lblMensaje.setText("Introduce el usuario y la contraseña.");
             return;
         }
 
-        JSONObject usuario = service.obtenerUsuarioPorEmail(email);
+        try {
+            UsuarioService service = new UsuarioService();
 
-        if (usuario == null) {
-            lblMensaje.setText("Error: usuario no encontrado.");
-            return;
-        }
+            boolean ok = service.login(email, password);
 
-        String rol = usuario.getString("rol");
-
-        // Guardar usuario en sesión (una sola vez)
-        SessionManager.setUsuario(usuario);
-
-        // 🔹 ADMIN
-        if (rol.equalsIgnoreCase("admin")) {
-
-            SessionContext.setRol(SessionContext.Rol.ADMIN);
-            cargarPantalla("/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml");
-            return;
-        }
-
-        // 🔹 COMERCIAL
-        if (rol.equalsIgnoreCase("comercial")) {
-
-            boolean activo = comprobarActivoMongo(email);
-
-            if (!activo) {
-                lblMensaje.setText("Usuario desactivado. Contacta con administración.");
+            if (!ok) {
+                lblMensaje.setText("Credenciales incorrectas.");
                 return;
             }
 
-            SessionContext.setRol(SessionContext.Rol.COMERCIAL);
-            cargarPantalla("/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml");
-            return;
+            JSONObject usuario = service.obtenerUsuarioPorEmail(email);
+
+            if (usuario == null) {
+                lblMensaje.setText("Error: usuario no encontrado.");
+                return;
+            }
+
+            String rol = usuario.getString("rol");
+
+            SessionManager.setUsuario(usuario);
+
+            if (rol.equalsIgnoreCase("admin")) {
+                System.out.println(
+                        getClass().getResource("/components/comun/header/Header.fxml")
+                );
+                SessionContext.setRol(SessionContext.Rol.ADMIN);
+                cargarPantalla("/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml");
+                return;
+            }
+
+            if (rol.equalsIgnoreCase("comercial")) {
+
+                boolean activo = comprobarActivoMongo(email);
+
+                if (!activo) {
+                    lblMensaje.setText("Usuario desactivado. Contacta con administración.");
+                    return;
+                }
+
+                SessionContext.setRol(SessionContext.Rol.COMERCIAL);
+                cargarPantalla("/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml");
+                return;
+            }
+
+            // 🔹 OTRO ROL
+            lblMensaje.setText("Rol desconocido: " + rol);
+
+        } catch (Exception e) {
+            lblMensaje.setText("Error: " + e.getMessage());
         }
-
-        // 🔹 OTRO ROL
-        lblMensaje.setText("Rol desconocido: " + rol);
-
-    } catch (Exception e) {
-        lblMensaje.setText("Error: " + e.getMessage());
-        e.printStackTrace();
     }
-}
 
     private boolean comprobarActivoMongo(String email) {
         try {
@@ -158,9 +156,9 @@ private void handleAceptar() {
             stage.setScene(scene);
             stage.show();
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             lblMensaje.setText("Error cargando pantalla: " + e.getMessage());
-            e.printStackTrace();
+            
         }
     }
 }

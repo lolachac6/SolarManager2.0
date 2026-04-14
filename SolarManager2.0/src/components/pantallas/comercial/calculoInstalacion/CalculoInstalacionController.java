@@ -8,6 +8,7 @@ import Integration.google.model.ResultadoGeocoding;
 import Integration.google.service.SolarService;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import components.navigation.SessionContext;
 import modelo.ResultadoSolar;
 import org.bson.Document;
 
@@ -109,13 +110,22 @@ public class CalculoInstalacionController implements Initializable {
      *
      * @param e Evento de acción
      */
+      // =========================
+    // VOLVER NUEVO / CANCELAR
+    // =========================
     @FXML
     private void volverInicio(ActionEvent e) {
-        cambiarPantalla(
-                (Node) e.getSource(),
-                "/components/pantallas/comercial/pantallaGeneral/PantallaGeneral.fxml"
-        );
-    }
+
+        String destino;
+
+        if (SessionContext.isAdmin()) {
+            destino = "/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml";
+        } else {
+            destino = "/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml";
+        }
+
+    cambiarPantalla((Node) e.getSource(), destino);
+}
 
     /**
      * Llama al servicio solar para calcular la instalación y muestra los resultados.
@@ -252,10 +262,8 @@ public class CalculoInstalacionController implements Initializable {
         confirm.setContentText("¿Desea salir sin guardar?");
 
         if (confirm.showAndWait().get() == ButtonType.OK) {
-            cambiarPantalla(
-                    (Node) event.getSource(),
-                    "/components/pantallas/comercial/pantallaGeneral/PantallaGeneral.fxml"
-            );
+            volverInicio(event);
+            
         }
     }
 
