@@ -4,12 +4,16 @@ import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
+import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -145,15 +149,15 @@ public class PantallaAltaProveedorController {
                 }
             }
 
-            mostrarAlerta("Proveedor guardado correctamente", AlertType.INFORMATION);
+                    AlertasSolarManager.proveedorGuardadoCorrectamente();
 
             cambiarPantalla(
                     (Node) e.getSource(),
                     "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml"
             );
 
-        } catch (Exception ex) {
-            mostrarAlerta("Error al guardar proveedor: " + ex.getMessage(), AlertType.ERROR);
+        } catch (IOException ex) {
+            AlertasSolarManager.errorGuardarProveedor(ex.getMessage());
         }
     }
 
@@ -276,4 +280,6 @@ public class PantallaAltaProveedorController {
         modoEdicion = false;
         bloquearFormulario(true);
     }
+
+   
 }

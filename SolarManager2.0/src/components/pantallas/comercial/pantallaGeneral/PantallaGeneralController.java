@@ -47,13 +47,11 @@ public class PantallaGeneralController implements Initializable {
     private Button btnClientes;
     @FXML
     private Button btnInstalaciones;
-    @FXML private Button btnClientes;
-    @FXML private Button btnInstalaciones;
+
 
     @FXML private AnchorPane panelTabla;
 
-    @FXML
-    private AnchorPane panelTabla;
+
 
     private TablaClientesController tablaClientesController;
 
@@ -236,7 +234,7 @@ public class PantallaGeneralController implements Initializable {
         }
     }
 
-       private void cambiarPantalla(Node nodo, String rutaFXML) {
+      
     /**
      * Cambia la pantalla actual por otra indicada.
      *
@@ -263,6 +261,7 @@ public class PantallaGeneralController implements Initializable {
             ex.printStackTrace();
         }
     }
+
 
     /**
      * Convierte un documento de MongoDB a objeto Cliente.
