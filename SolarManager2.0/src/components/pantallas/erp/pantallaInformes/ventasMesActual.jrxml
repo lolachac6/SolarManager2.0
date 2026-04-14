@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD JasperReport//EN"
+        "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport name="ventasMesActual"
+              pageWidth="842" pageHeight="595"
+              columnWidth="842"
+              leftMargin="0" rightMargin="0"
+              topMargin="0" bottomMargin="0">
+
+    <parameter name="COMERCIAL" class="java.lang.String"/>
+
+    <field name="mes" class="java.lang.String"/>
+    <field name="ordenMes" class="java.lang.Integer"/>
+    <field name="total" class="java.lang.Integer"/>
+
+    <detail>
+        <band height="1"/>
+    </detail>
+
+    <summary>
+        <band height="500">
+            <barChart>
+                <chart>
+                    <reportElement x="0" y="0" width="842" height="500"/>
+                    <chartTitle>
+                        <font size="30" isBold="true"/>
+                        <titleExpression><![CDATA["Ventas Mensuales - Comercial: " + $P{COMERCIAL}]]></titleExpression>
+                    </chartTitle>
+                </chart>
+
+                <categoryDataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Ventas"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{mes}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{total}]]></valueExpression>
+                    </categorySeries>
+                </categoryDataset>
+
+                <barPlot>
+                    <plot orientation="Vertical" backcolor="#FFFFFF"/>
+                    <!-- Eje X (categorías) -->
+                    <categoryAxisFormat>
+                        <axisFormat/>
+                    </categoryAxisFormat>
+                    <!-- Eje Y (valores enteros) -->
+                    <valueAxisFormat>
+                        <axisFormat tickLabelMask="###0"/>
+                    </valueAxisFormat>
+                </barPlot>
+
+            </barChart>
+        </band>
+    </summary>
+
+</jasperReport>
+
+
+
+
+
+

@@ -6,7 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
 /**
  * Arranque de la aplicación
  */
@@ -19,7 +18,7 @@ public class SolarManager extends Application {
             getClass().getResource(
                 "/components/pantallas/comun/pantallaLogin/PantallaLogin.fxml"
             )
-        );
+        );       
 
         Parent root = loader.load();
 

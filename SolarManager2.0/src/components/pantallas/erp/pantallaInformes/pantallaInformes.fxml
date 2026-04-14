@@ -2,161 +2,75 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.00"
-            prefWidth="1200.0"
-            styleClass="mainFxmlClass"
-            xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="components.pantallas.erp.pantallaInformes.PantallaInformesController">
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.pantallas.erp.pantallaInformes.PantallaInformesController">
 
     <stylesheets>
-        <URL value="@plantillageneral.css"/>
+        <URL value="@plantillageneral.css" />
     </stylesheets>
 
     <children>
 
-        <BorderPane AnchorPane.topAnchor="0"
-                    AnchorPane.bottomAnchor="0"
-                    AnchorPane.leftAnchor="0"
-                    AnchorPane.rightAnchor="0">
+        <BorderPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
-            <!-- ===================== -->
             <!-- CABECERA -->
-            <!-- ===================== -->
             <top>
-                <HBox alignment="CENTER_LEFT"
-                      spacing="10"
-                      style="-fx-background-color:#f4f4f4; -fx-padding:10;">
-
-                    <Button fx:id="btnVolver"
-                            text="← Volver"
-                            onAction="#volverInicio"/>
-
-                    <Label text="Solar Manager"
-                           style="-fx-font-size:18px; -fx-font-weight:bold;"/>
-
-                    <Pane HBox.hgrow="ALWAYS"/>
-
+                <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color:#f4f4f4; -fx-padding:10;">
+                    <Button fx:id="btnVolver" onAction="#volverInicio" text="← Volver" />
+                    <Label style="-fx-font-size:18px; -fx-font-weight:bold;" text="Solar Manager" />
+                    <Pane HBox.hgrow="ALWAYS" />
                 </HBox>
             </top>
 
-            <!-- ===================== -->
-            <!-- MENU LATERAL (IDÉNTICO) -->
-            <!-- ===================== -->
+            <!-- MENU LATERAL -->
             <left>
-
-                <VBox alignment="TOP_CENTER"
-                      prefWidth="200"
-                      spacing="10"
-                      style="
-                            -fx-background-color:#e6e9ef;
-                            -fx-padding:85 15 15 15;
-                            -fx-border-color:#d0d0d0;
-                            -fx-border-width:2;
-                            -fx-background-radius:5;
-                            -fx-border-radius:5;">
-
+                <VBox fx:id="vboxMenu" alignment="TOP_CENTER" prefWidth="200" spacing="10" style="-fx-background-color:#e6e9ef; -fx-padding:85 15 15 15;                              -fx-border-color:#d0d0d0; -fx-border-width:2;                              -fx-background-radius:5; -fx-border-radius:5;">
                     <BorderPane.margin>
-                        <Insets top="90" right="15" bottom="65" left="15"/>
+                        <Insets bottom="65" left="15" right="15" top="90" />
                     </BorderPane.margin>
 
-                    <Label text="Inicio"
-                           style="-fx-font-weight:bold;"/>
+                    <Label style="-fx-font-weight:bold;" text="Inicio" />
 
-                    <Button text="Clientes" maxWidth="Infinity" styleClass="menu-button" onAction="#irClientes"/>
-                    <Button text="Comerciales" maxWidth="Infinity" styleClass="menu-button" onAction="#irComerciales"/>
-                    <Button text="Proveedores" maxWidth="Infinity" styleClass="menu-button" onAction="#irProveedores"/>
-                    <Button text="Stock" maxWidth="Infinity" styleClass="menu-button" onAction="#irStock"/>
-                    <Button text="Presupuestos" maxWidth="Infinity" styleClass="menu-button" onAction="#irPresupuestos"/>
-                    <Button text="Informes" maxWidth="Infinity" styleClass="menu-button" onAction="#irInformes"/>
-
+                    <Button maxWidth="Infinity" onAction="#irClientes" styleClass="menu-button" text="Clientes" />
+                    <Button maxWidth="Infinity" onAction="#irComerciales" styleClass="menu-button" text="Comerciales" />
+                    <Button maxWidth="Infinity" onAction="#irProveedores" styleClass="menu-button" text="Proveedores" />
+                    <Button maxWidth="Infinity" onAction="#irStock" styleClass="menu-button" text="Stock" />
+                    <Button maxWidth="Infinity" onAction="#irPresupuestos" styleClass="menu-button" text="Presupuestos" />
+                    <Button maxWidth="Infinity" onAction="#irInformes" styleClass="menu-button" text="Informes" />
                 </VBox>
-
             </left>
 
-            <!-- ===================== -->
-            <!-- CONTENIDO -->
-            <!-- ===================== -->
+            <!-- CENTRO -->
             <center>
+                <AnchorPane prefHeight="652.0" prefWidth="984.0">
 
-                <VBox spacing="20" style="-fx-padding:20;">
+                    <Label layoutX="44.0" layoutY="26.0" text="Informes">
+                        <font>
+                            <Font name="System Bold" size="20.0" />
+                        </font>
+                    </Label>
+               <ComboBox fx:id="comboComerciales" layoutX="-1.0" layoutY="109.0" prefHeight="26.0" prefWidth="194.0" promptText="Selecciona comercial" />
 
-                    <!-- TITULO -->
-                    <Label text="Informes"
-                           style="-fx-font-size:22px; -fx-font-weight:bold;"/>
+                    <Button fx:id="btnInformeComercial" layoutX="-1.0" layoutY="195.0" onAction="#onInformeComercial" text="Informe Nº clientes" />
+                    <Button fx:id="btnPresupuestos" layoutX="-1.0" layoutY="351.0" onAction="#onPresupuestos" text="Informe presupuestos" />
+                    <Button fx:id="btnVentasMes" alignment="TOP_LEFT" layoutX="-1.0" layoutY="269.0" onAction="#onVentasMes" prefHeight="26.0" prefWidth="150.0" text="Informe Nº ventas" />
+                    <!-- PREVIEW DEL INFORME -->
+                    <StackPane fx:id="panelPreview" layoutX="196.0" layoutY="93.0" prefHeight="516.0" prefWidth="726.0" style="-fx-background-color:white; -fx-border-color:#ccc;" />
 
-                    <!-- ===================== -->
-                    <!-- FILTRO (MISMO TAMAÑO QUE PROVEEDORES) -->
-                    <!-- ===================== -->
-                    <HBox spacing="10">
-
-                        <TextField fx:id="txtComercial"
-                                   promptText="Comercial..."
-                                   HBox.hgrow="ALWAYS"/>
-
-                        <Button fx:id="btnValidar"
-                                text="Validar"
-                                prefWidth="100"/>
-
-                    </HBox>
-
-                    <!-- ===================== -->
-                    <!-- PANEL INFORMES (MISMO ESPACIO QUE TABLA) -->
-                    <!-- ===================== -->
-                    <GridPane hgap="20" vgap="20"
-                              VBox.vgrow="ALWAYS"
-                              style="-fx-border-color:#d0d0d0; -fx-border-width:2;">
-
-                        <columnConstraints>
-                            <ColumnConstraints percentWidth="50"/>
-                            <ColumnConstraints percentWidth="50"/>
-                        </columnConstraints>
-
-                        <rowConstraints>
-                            <RowConstraints percentHeight="100"/>
-                        </rowConstraints>
-
-                        <!-- PANEL 1 -->
-                        <Pane fx:id="panelInforme1"
-                              style="
-                                -fx-background-color:white;
-                                -fx-border-color:#d0d0d0;
-                                -fx-border-width:2;
-                                -fx-border-radius:5;
-                                -fx-background-radius:5;"
-                              GridPane.columnIndex="0"
-                              GridPane.rowIndex="0"/>
-
-                        <!-- PANEL 2 -->
-                        <Pane fx:id="panelInforme2"
-                              style="
-                                -fx-background-color:white;
-                                -fx-border-color:#d0d0d0;
-                                -fx-border-width:2;
-                                -fx-border-radius:5;
-                                -fx-background-radius:5;"
-                              GridPane.columnIndex="1"
-                              GridPane.rowIndex="0"/>
-
-                    </GridPane>
-
-                    <!-- ===================== -->
-                    <!-- PANEL INFERIOR (IGUAL) -->
-                    <!-- ===================== -->
-                    <Pane prefHeight="100"
-                          style="
-                                -fx-background-color:white;
-                                -fx-border-color:#d0d0d0;
-                                -fx-border-width:2;
-                                -fx-border-radius:5;
-                                -fx-background-radius:5;"/>
-                    
-
-                </VBox>
-
+                    <!-- ESTADO -->
+                    <Label fx:id="lblStatus" layoutX="197.0" layoutY="617.0" prefHeight="20.0" prefWidth="486.0" style="-fx-font-size:14; -fx-text-fill:#555;" text="Estado" />
+               
+                </AnchorPane>
             </center>
 
         </BorderPane>

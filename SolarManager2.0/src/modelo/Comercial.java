@@ -23,9 +23,6 @@ public class Comercial extends Persona {
 
     /** Documento de identidad del comercial */
     private String dni;
-    
-    /** Password */
-    private String password;
 
     /** Número de cuenta bancaria */
     private String numeroCuenta;
@@ -35,8 +32,6 @@ public class Comercial extends Persona {
 
     /** Observaciones o notas adicionales */
     private String observaciones;
-    
-    private boolean activo;
 
     /**
      * Constructor vacío.
@@ -55,28 +50,24 @@ public class Comercial extends Persona {
      * @param apellidos apellidos
      * @param telefono teléfono
      * @param email correo electrónico
-     * @param password password
      * @param direccion dirección
      * @param tipoContrato tipo de contrato
      * @param dni documento de identidad
      * @param numeroCuenta número de cuenta bancaria
      * @param centroTrabajo centro de trabajo
      * @param observaciones comentarios adicionales
-     * @param activo si continua trabajando
      */
     public Comercial(String id,
                      String nombre,
                      String apellidos,
                      String telefono,
                      String email,
-                     String password, 
                      Direccion direccion,
                      TipoContrato tipoContrato,
                      String dni,
                      String numeroCuenta,
                      String centroTrabajo,
-                     String observaciones,
-                     Boolean activo) {
+                     String observaciones) {
 
         super(nombre, apellidos, telefono, email, direccion);
 
@@ -86,8 +77,6 @@ public class Comercial extends Persona {
         this.numeroCuenta = numeroCuenta;
         this.centroTrabajo = centroTrabajo;
         this.observaciones = observaciones;
-        this.activo = activo;
-        this.password = password;
     }
 
     /**
@@ -197,32 +186,7 @@ public class Comercial extends Persona {
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
     }
-    
-    /**
-     *
-     * @return
-     */
-    public boolean getActivo(){
-       return this.activo;
-    }
 
-    /**
-     *
-     * @param activo
-     */
-    public void setActivo ( Boolean activo){
-        this.activo = activo;
-        
-    }
-    
-    public void setPassword (String password){
-        this.password = password;   
-    }
-    
-    public String getPassword() {
-    return password;
-}
-    
     /**
      * Enumeración que define los tipos de contrato posibles.
      */

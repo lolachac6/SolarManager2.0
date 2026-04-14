@@ -128,6 +128,6 @@ public class PlantillaGeneralController implements Initializable {
     private void irInformes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
-    }
+    }   
+    
 }
-   

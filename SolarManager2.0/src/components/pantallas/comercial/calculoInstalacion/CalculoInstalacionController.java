@@ -19,13 +19,6 @@ import javafx.event.ActionEvent;
 
 import javafx.scene.control.*;
 
-import Integration.google.service.SolarService;
-import modelo.ResultadoSolar;
-
-/**
- * Controlador de la pantalla de cálculo de instalación fotovoltaica.
- * Gestiona la interacción entre la UI, la lógica de negocio y la persistencia.
- */
 public class CalculoInstalacionController implements Initializable {
 
     // =========================
@@ -45,40 +38,31 @@ public class CalculoInstalacionController implements Initializable {
     @FXML private TextField txtPanelesNecesarios;
     @FXML private TextField txtEnergiaPanel;
     @FXML private TextField txtPresupuesto;
-    @FXML private TextField txtIdCliente;
+    @FXML private TextField IdCliente;
 
     @FXML private CheckBox chkBateria;
 
-    // =========================
-    // INICIALIZACIÓN
-    // =========================
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Aquí podrías cargar consumo automáticamente desde BD si quieres
     }
 
     // =========================
     // NAVEGACIÓN
     // =========================
 
-    /**
-     * Cambia de pantalla cargando un nuevo FXML.
-     */
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(rutaFXML));
+
             Stage stage = (Stage) nodo.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.centerOnScreen();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Vuelve a la pantalla principal.
-     */
     @FXML
     private void volverInicio(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
@@ -86,75 +70,16 @@ public class CalculoInstalacionController implements Initializable {
     }
 
     // =========================
-    // CALCULAR INSTALACIÓN
-    // =========================
-
-    /**
-     * Llama al servicio solar para calcular la instalación y muestra los resultados.
-     */
-    @FXML
-    private void calcularInstalacion(ActionEvent event) {
-
-        try {
-
-            // Validación básica
-            if (txtCalle.getText().isEmpty() || txtCiudad.getText().isEmpty()) {
-                mostrarAlerta("Debe completar la dirección", Alert.AlertType.WARNING);
-                return;
-            }
-
-            if (txtConsumoAnual.getText().isEmpty()) {
-                mostrarAlerta("Debe indicar el consumo anual", Alert.AlertType.WARNING);
-                return;
-            }
-
-            String direccion = txtCalle.getText() + " " + txtNumero.getText() + ", "
-                    + txtCiudad.getText() + ", "
-                    + txtCodigoPostal.getText() + ", España";
-
-            double consumo = Double.parseDouble(txtConsumoAnual.getText());
-
-            SolarService service = new SolarService();
-            ResultadoSolar resultado = service.calcularInstalacion(direccion, consumo);
-
-            // Pintar resultados en UI
-            txtHorasSol.setText(String.valueOf(Math.round(resultado.getHorasSol())));
-            txtArea.setText(String.valueOf(Math.round(resultado.getArea())));
-            txtMaxPaneles.setText(String.valueOf(resultado.getMaxPaneles()));
-            txtPanelesNecesarios.setText(String.valueOf(resultado.getPanelesNecesarios()));
-            txtEnergiaPanel.setText(String.valueOf(Math.round(resultado.getEnergiaPorPanel())));
-            txtPresupuesto.setText(String.valueOf(resultado.getPresupuesto()));
-
-            mostrarAlerta(
-                    resultado.isAutosuficiente()
-                            ? "Instalación autosuficiente"
-                            : "No hay suficiente espacio en el tejado",
-                    Alert.AlertType.INFORMATION
-            );
-
-        } catch (NumberFormatException e) {
-            mostrarAlerta("El consumo debe ser un número válido", Alert.AlertType.ERROR);
-        } catch (Exception e) {
-            mostrarAlerta("Error en el cálculo: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-    // =========================
     // GUARDAR INSTALACIÓN
     // =========================
 
-    /**
-     * Guarda la instalación en MongoDB.
-     */
     @FXML
     private void guardarInstalacion(ActionEvent event) {
         try {
-
             MongoDatabase db = MongoConnection.conectar();
             MongoCollection<Document> coleccion = db.getCollection("Instalaciones");
 
             Document instalacion = new Document()
-                    .append("idCliente", txtIdCliente.getText())
                     .append("calle", txtCalle.getText())
                     .append("numero", txtNumero.getText())
                     .append("ciudad", txtCiudad.getText())
@@ -183,9 +108,6 @@ public class CalculoInstalacionController implements Initializable {
     // LIMPIAR CAMPOS
     // =========================
 
-    /**
-     * Limpia todos los campos del formulario.
-     */
     @FXML
     private void limpiarCampos(ActionEvent event) {
         txtCalle.clear();
@@ -202,7 +124,6 @@ public class CalculoInstalacionController implements Initializable {
         txtEnergiaPanel.clear();
         txtPresupuesto.clear();
 
-        txtIdCliente.clear();
         chkBateria.setSelected(false);
     }
 
@@ -210,9 +131,6 @@ public class CalculoInstalacionController implements Initializable {
     // CANCELAR
     // =========================
 
-    /**
-     * Cancela la operación y vuelve atrás previa confirmación.
-     */
     @FXML
     private void cancelar(ActionEvent event) {
 
@@ -222,18 +140,27 @@ public class CalculoInstalacionController implements Initializable {
         confirm.setContentText("¿Desea salir sin guardar?");
 
         if (confirm.showAndWait().get() == ButtonType.OK) {
+
             cambiarPantalla((Node) event.getSource(),
-                "/components/pantallas/comercial/pantallaGeneral/PantallaGeneral.fxml");
+                "/components/pantallas/------- Aqui metemos pagina segun rol--------");
         }
+    }
+
+    // =========================
+    // CALCULAR (SIN IMPLEMENTAR)
+    // =========================
+
+    @FXML
+    private void calcularInstalacion(ActionEvent event) {
+        // ------Aqui metemos el codigo de la API-------
+        
+        mostrarAlerta("Falta por desarrollar el metodo, codigo API", Alert.AlertType.INFORMATION);
     }
 
     // =========================
     // ALERTAS
     // =========================
 
-    /**
-     * Muestra una alerta al usuario.
-     */
     private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
         alert.setContentText(mensaje);

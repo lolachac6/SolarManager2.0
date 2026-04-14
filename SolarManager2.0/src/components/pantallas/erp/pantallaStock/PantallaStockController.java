@@ -312,8 +312,18 @@ public class PantallaStockController implements Initializable {
     }
     
     /**
-     * Abre la ventana de edición de un producto seleccionado.
-     */
+    * Abre una ventana modal para modificar el producto seleccionado en la tabla.
+    *
+    * <p>Si no hay ningún producto seleccionado, muestra una alerta de advertencia.
+    * En caso contrario:
+    * <ul>
+    *   <li>Carga el FXML de alta/modificación de producto</li>
+    *   <li>Pasa el producto seleccionado al controlador correspondiente</li>
+    *   <li>Abre la ventana en modo modal</li>
+    *   <li>Refresca la tabla al cerrarse la ventana</li>
+    * </ul>
+    */
+    
     @FXML
     private void modificarProducto() {
 
@@ -350,8 +360,19 @@ public class PantallaStockController implements Initializable {
     }
 
     /**
-     * Elimina el producto seleccionado tras confirmación del usuario.
-     */
+    * Elimina el producto seleccionado de la base de datos tras confirmación del usuario.
+    *
+    * <p>El proceso es:
+    * <ul>
+    *   <li>Verificar que haya un producto seleccionado</li>
+    *   <li>Solicitar confirmación mediante un cuadro de diálogo</li>
+    *   <li>Eliminar el documento correspondiente en MongoDB</li>
+    *   <li>Actualizar la tabla de productos</li>
+    * </ul>
+    *
+    * <p>Si ocurre un error durante la eliminación, se muestra una alerta de error.</p>
+    */
+    
     @FXML
     private void eliminarProducto() {
         Producto seleccionado = tablaStock.getSelectionModel().getSelectedItem();
@@ -392,11 +413,12 @@ public class PantallaStockController implements Initializable {
     }
     
     /**
-     * Muestra una alerta al usuario.
-     * 
-     * @param mensaje mensaje a mostrar
-     * @param tipo tipo de alerta
-     */
+    * Muestra una alerta simple al usuario con un mensaje y un tipo determinado.
+    *
+    * @param mensaje texto que se mostrará en la alerta
+    * @param tipo tipo de alerta (información, advertencia, error, etc.)
+    */
+    
     private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
         alert.setTitle("Solar Manager");

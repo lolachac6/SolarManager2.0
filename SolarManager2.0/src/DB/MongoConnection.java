@@ -26,7 +26,7 @@ public class MongoConnection {
                 String pass = props.getProperty("MONGO_PASS");
                 String dbName = props.getProperty("MONGO_DB");
                 
-                 String uri = "mongodb+srv://" + user + ":" + pass + "@cluster0.wnrz0ak.mongodb.net/" + dbName + "?retryWrites=true&w=majority";
+                String uri = "mongodb+srv://" + user + ":" + pass + "@cluster0.wnrz0ak.mongodb.net/" + dbName + "?retryWrites=true&w=majority";
                  
                 TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {

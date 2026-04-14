@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="presupuestosGeneradosAprobados" pageWidth="842" pageHeight="700" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="11111111-1111-1111-1111-111111111111">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="total" class="java.lang.Integer"/>
+	<field name="porcentaje" class="java.lang.String"/>
+	<title>
+		<band height="60">
+			<staticText>
+				<reportElement x="112" y="10" width="555" height="40" uuid="33333333-3333-3333-3333-333333333333"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="28" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Presupuestos por Estado]]></text>
+			</staticText>
+		</band>
+	</title>
+	<summary>
+		<band height="550">
+			<pieChart>
+				<chart evaluationTime="Report">
+					<reportElement x="51" y="0" width="726" height="550" uuid="55555555-5555-5555-5555-555555555555"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend>
+						<font size="18" isBold="true"/>
+					</chartLegend>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{estado}]]></keyExpression>
+					<valueExpression><![CDATA[$F{total}]]></valueExpression>
+					<labelExpression><![CDATA[$F{estado} + " (" + $F{porcentaje} + ")"]]></labelExpression>
+				</pieDataset>
+				<piePlot>
+					<plot backgroundAlpha="0.0" foregroundAlpha="1.0"/>
+					<itemLabel>
+						<font size="18" isBold="true"/>
+					</itemLabel>
+				</piePlot>
+			</pieChart>
+		</band>
+	</summary>
+</jasperReport>

@@ -10,6 +10,22 @@ import javafx.scene.Node;
 import modelo.Producto;
 import org.bson.Document;
 
+/**
+ * Controlador de la pantalla de alta y edición de productos dentro del ERP.
+ *
+ * <p>Esta clase gestiona:
+ * <ul>
+ *   <li>La creación de nuevos productos.</li>
+ *   <li>La edición de productos existentes.</li>
+ *   <li>La validación de los campos del formulario.</li>
+ *   <li>La comunicación con MongoDB para insertar o actualizar documentos.</li>
+ *   <li>La carga de datos en los controles JavaFX.</li>
+ * </ul>
+ *
+ * <p>El controlador permite tanto registrar un producto nuevo como modificar uno existente,
+ * dependiendo de si {@code idProducto} es nulo o contiene un ObjectId válido.
+ */
+
 public class PantallaAltaProductoController {
 
     @FXML private TextField txtNombre;
@@ -20,7 +36,17 @@ public class PantallaAltaProductoController {
     @FXML private TextArea txtDescripcion;
     
     private String idProducto = null;
-
+    
+    /**
+     * Inicializa la pantalla cargando:
+     * <ul>
+     *   <li>Los tipos de producto definidos en el enum {@link Producto.TipoProducto}.</li>
+     *   <li>La lista de proveedores (actualmente simulada).</li>
+     * </ul>
+     *
+     * Este método se ejecuta automáticamente al cargar el FXML.
+     */
+    
     @FXML
     public void initialize() {
 
@@ -31,17 +57,29 @@ public class PantallaAltaProductoController {
         cmbProveedor.getItems().addAll("Proveedor 1", "Proveedor 2", "Proveedor 3");
     }
 
-    // =========================
-    // NUEVO PRODUCTO
-    // =========================
+    /**
+     * Limpia todos los campos del formulario para permitir registrar un nuevo producto.
+     * No modifica el valor de {@code idProducto}.
+     */
+    
     @FXML
     private void nuevoProducto() {
         limpiarFormulario();
     }
 
-    // =========================
-    // GUARDAR PRODUCTO
-    // =========================
+    /**
+     * Guarda un producto en la base de datos.
+     *
+     * <p>El comportamiento depende del valor de {@code idProducto}:
+     * <ul>
+     *   <li><b>Nulo</b>: se inserta un nuevo documento en la colección "Productos".</li>
+     *   <li><b>No nulo</b>: se actualiza el documento existente con ese ID.</li>
+     * </ul>
+     *
+     * <p>Antes de guardar, se validan todos los campos mediante {@link #validarCampos()}.
+     * Si la validación falla, el método se detiene.
+     */
+    
     @FXML
     private void guardarProducto() {
 
@@ -77,9 +115,22 @@ public class PantallaAltaProductoController {
         }
     }
 
-    // =========================
-    // VALIDACIONES
-    // =========================
+     /**
+     * Valida todos los campos del formulario antes de guardar.
+     *
+     * <p>Comprueba:
+     * <ul>
+     *   <li>Nombre no vacío.</li>
+     *   <li>Tipo de producto seleccionado.</li>
+     *   <li>Precio numérico y positivo.</li>
+     *   <li>Stock entero y positivo.</li>
+     *   <li>Proveedor seleccionado.</li>
+     *   <li>Descripción no vacía.</li>
+     * </ul>
+     *
+     * @return {@code true} si todos los campos son válidos, {@code false} en caso contrario.
+     */
+    
     private boolean validarCampos() {
 
         if (txtNombre.getText().trim().isEmpty()) {
@@ -121,9 +172,18 @@ public class PantallaAltaProductoController {
         return true;
     }
     
-    // =========================
-    // CARGAR PRODUCTO
-    // =========================
+    /**
+     * Carga los datos de un producto existente en el formulario para su edición.
+     *
+     * <p>Este método:
+     * <ul>
+     *   <li>Rellena todos los campos del formulario con los valores del producto.</li>
+     *   <li>Guarda el ID del producto para permitir su actualización posterior.</li>
+     * </ul>
+     *
+     * @param p Producto a cargar en el formulario.
+     */
+    
     public void cargarProducto(Producto p) {
     txtNombre.setText(p.getNombre());
     cmbTipo.setValue(p.getTipoProducto());
@@ -136,9 +196,15 @@ public class PantallaAltaProductoController {
     this.idProducto = p.getId();
 }
 
-    // =========================
-    // CANCELAR
-    // =========================
+    /**
+     * Solicita confirmación al usuario para cancelar la operación actual.
+     *
+     * <p>Si el usuario confirma, se cierra la ventana sin guardar cambios.
+     * Si no confirma, la operación se cancela y la ventana permanece abierta.
+     *
+     * @param e Evento de acción del botón.
+     */
+    
     @FXML
     private void cancelar(javafx.event.ActionEvent e) {
 
@@ -160,24 +226,32 @@ public class PantallaAltaProductoController {
         // Si confirma, cerramos la ventana
         cerrarVentana();
     }
-
+    
+    /**
+     * Cierra la ventana actual del formulario.
+     */
+    
     private void cerrarVentana() {
         Stage stage = (Stage) txtNombre.getScene().getWindow();
         stage.close();
     }
     
-    // =========================
-    // VOLVER
-    // =========================
+    /**
+     * Cierra la ventana actual y vuelve a la pantalla anterior.
+     *
+     * @param e Evento de acción del botón.
+     */
+    
     @FXML
     private void volver(javafx.event.ActionEvent e) {
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.close();
     }
 
-    // =========================
-    // UTILIDADES
-    // =========================
+    /**
+     * Limpia todos los campos del formulario y reinicia las selecciones.
+     */
+    
     private void limpiarFormulario() {
         txtNombre.clear();
         txtPrecio.clear();
@@ -186,7 +260,14 @@ public class PantallaAltaProductoController {
         cmbTipo.getSelectionModel().clearSelection();
         cmbProveedor.getSelectionModel().clearSelection();
     }
-
+    
+    /**
+     * Muestra una alerta modal con un mensaje y un tipo específico.
+     *
+     * @param mensaje Texto a mostrar en la alerta.
+     * @param tipo    Tipo de alerta (información, advertencia, error, etc.).
+     */
+    
     private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
         alert.setTitle("Solar Manager");

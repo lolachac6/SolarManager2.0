@@ -115,7 +115,7 @@
 
                         <Button fx:id="btnBuscar"
                                 text="🔍"
-                                prefWidth="40" onAction="#buscarFiltro" />
+                                prefWidth="40"/>
 
                     </HBox>
 
@@ -127,7 +127,6 @@
                         <columns>
 
                             <TableColumn fx:id="colId" prefWidth="70" text="ID"/>
-                            <TableColumn fx:id="colActivo" prefWidth="80" text="Activo"/>
                             <TableColumn fx:id="colNombre" prefWidth="120" text="Nombre"/>
                             <TableColumn fx:id="colApellidos" prefWidth="140" text="Apellidos"/>
                             <TableColumn fx:id="colTelefono" prefWidth="110" text="Teléfono"/>
@@ -156,8 +155,8 @@
 
                         <!-- IZQUIERDA -->
                         <Button fx:id="btnAñadirComercial"
-                                text="➕ Añadir Comercial"  onAction="#anadirComercial"/>
-                               
+                                text="➕ Añadir Comercial"/>
+
                         <Pane HBox.hgrow="ALWAYS"/>
 
                         <!-- DERECHA -->
@@ -165,7 +164,7 @@
                                 text="Guardar"
                                 style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
 
-                        <Button fx:id="btnModificar" text="Modificar" onAction="#modificarComercial"/>
+                        <Button fx:id="btnModificar" text="Modificar"/>
                         <Button fx:id="btnCancelar" text="Cancelar"/>
 
                     </HBox>
