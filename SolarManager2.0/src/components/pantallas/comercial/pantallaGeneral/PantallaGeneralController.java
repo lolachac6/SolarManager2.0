@@ -22,27 +22,21 @@ import javafx.scene.image.ImageView;
 
 import javafx.application.Platform;
 
+
 import javafx.scene.layout.AnchorPane;
 
-/**
- * Controller de la pantalla general comercial
- */
+
 public class PantallaGeneralController implements Initializable {
 
-    // =========================
-    // BOTONES DASHBOARD
-    // =========================
-    @FXML private Button btnClientes;
-    @FXML private Button btnInstalaciones;
+    @FXML
+    private Button btnClientes;
+    @FXML
+    private Button btnInstalaciones;
 
-    // =========================
-    // PANEL DINÁMICO
-    // =========================
-    @FXML private AnchorPane panelTabla;
 
-    // =========================
-    // INITIALIZE
-    // =========================
+    @FXML
+    private AnchorPane panelTabla;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -52,9 +46,6 @@ public class PantallaGeneralController implements Initializable {
         });
     }
 
-    // =========================
-    // ICONOS
-    // =========================
     private void cargarIcono(Button boton, String rutaIcono) {
 
         try {
@@ -70,7 +61,9 @@ public class PantallaGeneralController implements Initializable {
 
             double size = boton.getWidth() * 0.6;
 
-            if (size <= 0) size = 120;
+            if (size <= 0) {
+                size = 120;
+            }
 
             imageView.setFitWidth(size);
             imageView.setPreserveRatio(true);
@@ -84,24 +77,20 @@ public class PantallaGeneralController implements Initializable {
         }
     }
 
-    // =========================
-    // DASHBOARD
-    // =========================
+
     @FXML
     private void abrirAltaCliente(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
-            "/components/pantallas/comercial/pantallaAltaCliente/AltaCliente.fxml");
+                "/components/pantallas/comercial/pantallaAltaCliente/AltaCliente.fxml");
     }
 
     @FXML
     private void abrirCalculoInstalacion(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
-            "/components/pantallas/comercial/calculoInstalacion/CalculoInstalacion.fxml");
+                "/components/pantallas/comercial/calculoInstalacion/CalculoInstalacion.fxml");
     }
 
-    // =========================
-    // MENU LATERAL → CARGA COMPONENTES
-    // =========================
+
     @FXML
     private void mostrarClientes(ActionEvent e) {
         cargarEnPanel("/components/tablaClientes/tablaClientes.fxml");
@@ -117,9 +106,6 @@ public class PantallaGeneralController implements Initializable {
         cargarEnPanel("/components/tablaPresupuestos/tablaPresupuestos.fxml");
     }
 
-    // =========================
-    // CARGAR COMPONENTE EN PANEL
-    // =========================
     private void cargarEnPanel(String rutaFXML) {
         try {
 
@@ -136,7 +122,6 @@ public class PantallaGeneralController implements Initializable {
             panelTabla.getChildren().clear();
             panelTabla.getChildren().add(contenido);
 
-            
             AnchorPane.setTopAnchor(contenido, 0.0);
             AnchorPane.setBottomAnchor(contenido, 0.0);
             AnchorPane.setLeftAnchor(contenido, 0.0);
@@ -147,10 +132,7 @@ public class PantallaGeneralController implements Initializable {
         }
     }
 
-    // =========================
-    // CAMBIO DE PANTALLA
-    // =========================
-    private void cambiarPantalla(Node nodo, String rutaFXML) {
+       private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
 
             URL resource = getClass().getResource(rutaFXML);

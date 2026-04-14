@@ -44,6 +44,8 @@
                            style="-fx-font-size:18px; -fx-font-weight:bold;"/>
 
                     <Pane HBox.hgrow="ALWAYS"/>
+                    <fx:include source="/components/comun/header/Header.fxml"/>
+
 
                 </HBox>
             </top>
