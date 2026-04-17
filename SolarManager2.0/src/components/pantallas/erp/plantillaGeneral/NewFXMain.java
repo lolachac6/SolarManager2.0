@@ -33,7 +33,7 @@ public class NewFXMain extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/components//pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml")
+                getClass().getResource("/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml")
         );
 
         Parent root = loader.load();
@@ -41,13 +41,8 @@ public class NewFXMain extends Application {
         Scene scene = new Scene(root);
 
         primaryStage.setTitle("Solar Manager");
-
-        // abrir en pantalla completa
         primaryStage.setMaximized(true);
-
-        // permitir redimensionar
         primaryStage.setResizable(true);
-
         primaryStage.setScene(scene);
         primaryStage.show();
     }

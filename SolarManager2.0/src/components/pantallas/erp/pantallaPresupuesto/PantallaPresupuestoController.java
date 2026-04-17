@@ -3,6 +3,7 @@ package components.pantallas.erp.pantallaPresupuesto;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,18 +27,19 @@ public class PantallaPresupuestoController implements Initializable {
     // =========================
 
     private void cambiarPantalla(Node nodo, String rutaFXML) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
-            Parent root = loader.load();
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+        Parent root = loader.load();
 
-            Stage stage = (Stage) nodo.getScene().getWindow();
-            stage.setResizable(true);
-            stage.setMaximized(true);
+        Stage stage = (Stage) nodo.getScene().getWindow();
+        stage.setScene(new Scene(root));
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Platform.runLater(() -> stage.setMaximized(true));
+
+    } catch (IOException e) {
+        e.printStackTrace();
     }
+}
 
     // =========================
     // BOTONES

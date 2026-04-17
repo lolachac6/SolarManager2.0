@@ -8,6 +8,7 @@ import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
 import components.navigation.SessionContext;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -85,7 +86,7 @@ public class PantallaLoginController implements Initializable {
                         getClass().getResource("/components/comun/header/Header.fxml")
                 );
                 SessionContext.setRol(SessionContext.Rol.ADMIN);
-                cargarPantalla("/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml");
+                cargarPantalla("/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml");
                 return;
             }
 
@@ -103,7 +104,6 @@ public class PantallaLoginController implements Initializable {
                 return;
             }
 
-            // 🔹 OTRO ROL
             lblMensaje.setText("Rol desconocido: " + rol);
 
         } catch (Exception e) {
@@ -154,11 +154,17 @@ public class PantallaLoginController implements Initializable {
             Stage stage = (Stage) txtUsuario.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            stage.setResizable(true);
+
+            Platform.runLater(() -> {
+                stage.setMaximized(true);
+                stage.centerOnScreen();
+            });
+
             stage.show();
 
         } catch (IOException e) {
             lblMensaje.setText("Error cargando pantalla: " + e.getMessage());
-            
         }
     }
 }

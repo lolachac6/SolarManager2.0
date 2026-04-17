@@ -7,6 +7,7 @@ import org.bson.Document;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -26,7 +27,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import modelo.Direccion;
 import modelo.Proveedor;
 import components.pantallas.erp.pantallaAltaProveedor.PantallaAltaProveedorController;
-import javafx.scene.control.Alert;
 import utils.AlertasSolarManager;
 
 /**
@@ -50,13 +50,6 @@ public class PantallaProveedorController implements Initializable {
 
     private ObservableList<Proveedor> listaOriginal = FXCollections.observableArrayList();
 
-    /**
-     * Inicializa el controlador configurando la tabla, cargando los proveedores
-     * y activando el filtrado por texto.
-     *
-     * @param url ubicación del recurso
-     * @param rb recursos internacionales
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         colId.setCellValueFactory(data ->
@@ -83,28 +76,35 @@ public class PantallaProveedorController implements Initializable {
     }
 
     /**
-     * Cambia la pantalla actual por otra especificada mediante su ruta FXML.
+     * Cambia la pantalla actual por otra indicada mediante su ruta FXML.
      *
-     * @param nodo nodo origen
-     * @param rutaFXML ruta del archivo FXML
+     * @param nodo nodo origen desde el que se obtiene el Stage
+     * @param rutaFXML ruta del fichero FXML a cargar
      */
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
             Parent root = loader.load();
-            Stage stage = (Stage) nodo.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
+
+            Stage stageActual = (Stage) nodo.getScene().getWindow();
+            stageActual.close();
+
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Abre la pantalla de alta de proveedor.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void abrirAltaProveedor(javafx.event.ActionEvent e) {
         try {
@@ -112,14 +112,27 @@ public class PantallaProveedorController implements Initializable {
                 getClass().getResource("/components/pantallas/erp/pantallaAltaProveedor/pantallaAltaProveedor.fxml")
             );
             Parent root = loader.load();
-            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
+
+            Stage stageActual = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            stageActual.close();
+
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    
-        @FXML
+
+    @FXML
     private void modificar(ActionEvent e) {
 
         Proveedor seleccionado = tablaProveedores.getSelectionModel().getSelectedItem();
@@ -138,18 +151,26 @@ public class PantallaProveedorController implements Initializable {
             PantallaAltaProveedorController controller = loader.getController();
             controller.cargarProveedor(seleccionado);
 
-            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
+            Stage stageActual = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            stageActual.close();
+
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
 
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
-    
 
-   
-@FXML
+    @FXML
     private void eliminarProveedor() {
         Proveedor seleccionado = tablaProveedores.getSelectionModel().getSelectedItem();
 
@@ -185,102 +206,52 @@ public class PantallaProveedorController implements Initializable {
         }
     }
 
-    /**
-     * Cierra la ventana actual.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void cancelar(ActionEvent e) {
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.close();
     }
 
-    /**
-     * Navega a la pantalla principal del ERP.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void volverInicio(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml");
     }
 
-    /**
-     * Navega a la pantalla de clientes.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irClientes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaClientes/PantallaClientes.fxml");
     }
 
-    /**
-     * Navega a la pantalla de comerciales.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irComerciales(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
     }
 
-    /**
-     * Navega a la pantalla de proveedores.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irProveedores(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml");
     }
 
-    /**
-     * Navega a la pantalla de stock.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irStock(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaStock/PantallaStock.fxml");
     }
 
-    /**
-     * Navega a la pantalla de presupuestos.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irPresupuestos(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
 
-    /**
-     * Navega a la pantalla de instalaciones.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irInstalaciones(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
     }
 
-    /**
-     * Navega a la pantalla de informes.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irInformes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
 
-    /**
-     * Carga los proveedores desde MongoDB y los muestra en la tabla.
-     *
-     * @throws IOException si ocurre un error de acceso
-     */
     public void obtenerProveedoresTabla() throws IOException {
         MongoDatabase db = MongoConnection.conectar();
         MongoCollection<Document> coleccion = db.getCollection("Proveedor");
@@ -322,9 +293,6 @@ public class PantallaProveedorController implements Initializable {
         tablaProveedores.setItems(listaOriginal);
     }
 
-    /**
-     * Filtra la tabla de proveedores según el texto introducido.
-     */
     @FXML
     public void buscarFiltro() {
         String filtro = txtFiltro.getText().toLowerCase();
@@ -350,12 +318,6 @@ public class PantallaProveedorController implements Initializable {
         tablaProveedores.setItems(filtrada);
     }
 
-    /**
-     * Muestra una alerta mediante la clase centralizada de alertas.
-     *
-     * @param msg mensaje principal
-     * @param tipo tipo de alerta
-     */
     private void mostrarAlerta(String msg, Alert.AlertType tipo) {
         AlertasSolarManager.mostrar(tipo, null, msg);
     }

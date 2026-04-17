@@ -5,12 +5,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="800.0"
-            prefWidth="1200.0"
-            styleClass="mainFxmlClass"
-            xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="components.pantallas.erp.pantallaClientes.PantallaClientesController">
+<AnchorPane
+        styleClass="mainFxmlClass"
+        xmlns="http://javafx.com/javafx/8"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="components.pantallas.erp.pantallaClientes.PantallaClientesController">
 
     <stylesheets>
         <URL value="@pantallaclientes.css"/>
@@ -18,10 +17,10 @@
 
     <children>
 
-        <BorderPane AnchorPane.bottomAnchor="0"
-                    AnchorPane.leftAnchor="0"
-                    AnchorPane.rightAnchor="0"
-                    AnchorPane.topAnchor="0">
+        <BorderPane AnchorPane.bottomAnchor="0.0"
+                    AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
 
             <top>
                 <HBox alignment="CENTER_LEFT"
@@ -40,92 +39,112 @@
                 </HBox>
             </top>
 
-            <!-- MENU LATERAL -->
             <left>
-                <VBox alignment="TOP_CENTER" prefWidth="200" spacing="10" style="-fx-background-color:#e6e9ef;                              -fx-padding:85 15 15 15;                              -fx-border-color:#d0d0d0;                              -fx-border-width:2;                              -fx-background-radius:5;                              -fx-border-radius:5;">
+                <VBox alignment="TOP_CENTER"
+                      prefWidth="200"
+                      spacing="10"
+                      style="-fx-background-color:#e6e9ef;
+                             -fx-padding:85 15 15 15;
+                             -fx-border-color:#d0d0d0;
+                             -fx-border-width:2;
+                             -fx-background-radius:5;
+                             -fx-border-radius:5;">
 
                     <BorderPane.margin>
-                        <Insets bottom="65" left="15" right="15" top="90" />
+                        <Insets bottom="65" left="15" right="15" top="90"/>
                     </BorderPane.margin>
 
-                    <Label style="-fx-font-weight:bold;" text="Inicio" />
+                    <Label style="-fx-font-weight:bold;" text="Inicio"/>
 
-                    <Button maxWidth="Infinity" onAction="#irClientes" styleClass="menu-button" text="Clientes" />
+                    <Button maxWidth="Infinity" onAction="#irClientes" styleClass="menu-button" text="Clientes"/>
+                    <Button maxWidth="Infinity" onAction="#irComerciales" styleClass="menu-button" text="Comerciales"/>
+                    <Button maxWidth="Infinity" onAction="#irProveedores" styleClass="menu-button" text="Proveedores"/>
+                    <Button maxWidth="Infinity" onAction="#irStock" styleClass="menu-button" text="Stock"/>
+                    <Button maxWidth="Infinity" onAction="#irPresupuestos" styleClass="menu-button" text="Presupuestos"/>
+                    <Button maxWidth="Infinity" onAction="#irInstalaciones" styleClass="menu-button" text="Instalaciones"/>
+                    <Button maxWidth="Infinity" onAction="#irInformes" styleClass="menu-button" text="Informes"/>
 
-                    <Button maxWidth="Infinity" onAction="#irComerciales" styleClass="menu-button" text="Comerciales" />
-
-                    <Button maxWidth="Infinity" onAction="#irProveedores" styleClass="menu-button" text="Proveedores" />
-
-                    <Button maxWidth="Infinity" onAction="#irStock" styleClass="menu-button" text="Stock" />
-
-                    <Button maxWidth="Infinity" onAction="#irPresupuestos" styleClass="menu-button" text="Presupuestos" />
-                    
-                    <Button maxWidth="Infinity" onAction="#irInstalaciones" styleClass="menu-button" text="Instalaciones" />
-
-                    <Button maxWidth="Infinity" onAction="#irInformes" styleClass="menu-button" text="Informes" />
-                    
-                    
                 </VBox>
             </left>
 
-            <!-- CONTENIDO -->
             <center>
-                <VBox spacing="20" style="-fx-padding:20;">
+                <AnchorPane>
+                    <children>
+                        <VBox spacing="20"
+                              fillWidth="true"
+                              maxWidth="Infinity"
+                              maxHeight="Infinity"
+                              style="-fx-padding:20;"
+                              AnchorPane.topAnchor="0.0"
+                              AnchorPane.bottomAnchor="0.0"
+                              AnchorPane.leftAnchor="0.0"
+                              AnchorPane.rightAnchor="0.0">
 
-                    <Label text="Clientes"
-                           style="-fx-font-size:22px; -fx-font-weight:bold;"/>
+                            <Label text="Clientes"
+                                   style="-fx-font-size:22px; -fx-font-weight:bold;"/>
 
-                    <HBox spacing="10">
+                            <HBox spacing="10">
 
-                        <TextField fx:id="txtFiltro"
-                                   promptText="Buscar cliente..."
-                                   HBox.hgrow="ALWAYS"/>
+                                <TextField fx:id="txtFiltro"
+                                           promptText="Buscar cliente..."
+                                           HBox.hgrow="ALWAYS"/>
 
-                        <Button fx:id="btnBuscar"
-                                prefWidth="40"
-                                text="🔍"
-                                onAction="#buscar"/>
+                                <Button fx:id="btnBuscar"
+                                        prefWidth="40"
+                                        text="🔍"
+                                        onAction="#buscar"/>
 
-                    </HBox>
+                            </HBox>
 
-                    <TableView fx:id="tablaClientes"
-                               VBox.vgrow="ALWAYS"
-                               style="-fx-border-color:#d0d0d0; -fx-border-width:2;">
+                            <TableView fx:id="tablaClientes"
+                                       maxWidth="Infinity"
+                                       maxHeight="Infinity"
+                                       VBox.vgrow="ALWAYS"
+                                       style="-fx-border-color:#d0d0d0; -fx-border-width:2;">
 
-                        <columns>
-                            <TableColumn fx:id="colId" prefWidth="80" text="ID"/>
-                            <TableColumn fx:id="colNombre" prefWidth="120" text="Nombre"/>
-                            <TableColumn fx:id="colApellidos" prefWidth="140" text="Apellidos"/>
-                            <TableColumn fx:id="colTelefono" prefWidth="100" text="Teléfono"/>
-                            <TableColumn fx:id="colEmail" prefWidth="180" text="Email"/>
-                            <TableColumn fx:id="colDireccion" prefWidth="220" text="Dirección"/>
-                            <TableColumn fx:id="colTipoCliente" prefWidth="100" text="Tipo"/>
-                            <TableColumn fx:id="colDni" prefWidth="100" text="DNI"/>
-                            <TableColumn fx:id="colCif" prefWidth="100" text="CIF"/>
-                            <TableColumn fx:id="colObservaciones" prefWidth="150" text="Observaciones"/>
-                            <TableColumn fx:id="colIdComercialAsignado" prefWidth="120" text="Comercial"/>
-                        </columns>
+                                <columns>
+                                    <TableColumn fx:id="colId" prefWidth="80" text="ID"/>
+                                    <TableColumn fx:id="colNombre" prefWidth="120" text="Nombre"/>
+                                    <TableColumn fx:id="colApellidos" prefWidth="140" text="Apellidos"/>
+                                    <TableColumn fx:id="colTelefono" prefWidth="100" text="Teléfono"/>
+                                    <TableColumn fx:id="colEmail" prefWidth="180" text="Email"/>
+                                    <TableColumn fx:id="colDireccion" prefWidth="220" text="Dirección"/>
+                                    <TableColumn fx:id="colTipoCliente" prefWidth="100" text="Tipo"/>
+                                    <TableColumn fx:id="colDni" prefWidth="100" text="DNI"/>
+                                    <TableColumn fx:id="colCif" prefWidth="100" text="CIF"/>
+                                    <TableColumn fx:id="colObservaciones" prefWidth="150" text="Observaciones"/>
+                                    <TableColumn fx:id="colIdComercialAsignado" prefWidth="120" text="Comercial"/>
+                                </columns>
 
-                    </TableView>
+                            </TableView>
+                            <!-- PANEL INFERIOR -->
+                    <Pane prefHeight="100"
+                          style="-fx-background-color:white;
+                                 -fx-border-color:#d0d0d0;
+                                 -fx-border-width:2;
+                                 -fx-border-radius:5;
+                                 -fx-background-radius:5;"/>
 
-                    <HBox spacing="10">
-                        <Button text="➕ Añadir Cliente"
-                                onAction="#añadirCliente"/>
+                            <HBox spacing="10">
+                                <Button fx:id="btnAñadirCliente"
+                                text="➕ Añadir Cliente"  onAction="#añadirCliente" style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
 
-                        <Button text="Calcular Instalación"
-                                onAction="#calcularInstalacion"/>
+                                <Button text="Calcular Instalación"
+                                        onAction="#calcularInstalacion"/>
 
-                        <Button text="Modificar"
-                                onAction="#modificar"/>
+                                <Button text="Modificar"
+                                        onAction="#modificar"/>
 
-                        <Button text="Eliminar"
-                                onAction="#eliminarCliente"/>
+                                <Button text="Eliminar"
+                                        onAction="#eliminarCliente"/>
 
-                        <Pane HBox.hgrow="ALWAYS"/>
+                                <Pane HBox.hgrow="ALWAYS"/>
 
-                    </HBox>
+                            </HBox>
 
-                </VBox>
+                        </VBox>
+                    </children>
+                </AnchorPane>
             </center>
 
         </BorderPane>

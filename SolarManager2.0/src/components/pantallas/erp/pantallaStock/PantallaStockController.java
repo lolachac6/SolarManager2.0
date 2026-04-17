@@ -7,6 +7,7 @@ import components.pantallas.erp.pantallaAltaProducto.PantallaAltaProductoControl
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,8 +25,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import utils.AlertasSolarManager;
 
@@ -52,18 +51,8 @@ public class PantallaStockController implements Initializable {
     @FXML private TableColumn<Producto, String> colStock;
     @FXML private TextField txtFiltro;
 
-    /**
-     * Lista original de productos cargados desde la base de datos.
-     */
     private ObservableList<Producto> listaOriginal = FXCollections.observableArrayList();
 
-    /**
-     * Inicializa el controlador configurando las columnas, cargando los
-     * productos y registrando el listener del filtro.
-     *
-     * @param url ubicación
-     * @param rb recursos
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         colId.setCellValueFactory(data ->
@@ -87,31 +76,30 @@ public class PantallaStockController implements Initializable {
         txtFiltro.textProperty().addListener((obs, oldVal, newVal) -> buscarFiltro());
     }
 
-    /**
-     * Cambia la pantalla actual por otra especificada mediante un archivo FXML.
-     *
-     * @param nodo nodo origen del evento
-     * @param rutaFXML ruta del archivo FXML
-     */
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
             Parent root = loader.load();
 
-            Stage stage = (Stage) nodo.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
+            Stage stageActual = (Stage) nodo.getScene().getWindow();
+            stageActual.close();
+
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Abre la ventana modal para dar de alta un nuevo producto.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void abrirAltaProducto(javafx.event.ActionEvent e) {
         try {
@@ -127,15 +115,19 @@ public class PantallaStockController implements Initializable {
             FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
 
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Alta Producto");
-            stage.setResizable(false);
-            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            stage.centerOnScreen();
-            stage.showAndWait();
+            Stage stageActual = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            stageActual.close();
 
-            obtenerProductosTabla();
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
 
         } catch (IOException ex) {
             System.out.println("❌ Error abriendo alta de producto");
@@ -143,106 +135,60 @@ public class PantallaStockController implements Initializable {
         }
     }
 
-    /**
-     * Navega a la pantalla principal del ERP.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void volverInicio(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml");
     }
 
-    /**
-     * Navega a la pantalla de clientes.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irClientes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaClientes/PantallaClientes.fxml");
     }
 
-    /**
-     * Navega a la pantalla de comerciales.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irComerciales(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
     }
 
-    /**
-     * Navega a la pantalla de proveedores.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irProveedores(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaProveedor/PantallaProveedor.fxml");
     }
 
-    /**
-     * Navega a la pantalla de stock.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irStock(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaStock/PantallaStock.fxml");
     }
 
-    /**
-     * Navega a la pantalla de presupuestos.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irPresupuestos(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
-    
-           @FXML
+
+    @FXML
     private void irInstalaciones(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
     }
-    
 
-    /**
-     * Navega a la pantalla de informes.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irInformes(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
 
-    /**
-     * Navega a la pantalla de alta de producto en modo no modal.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void anadirProducto(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaAltaProducto/PantallaAltaProducto.fxml");
     }
 
-    /**
-     * Obtiene los productos desde MongoDB y los carga en la tabla.
-     *
-     * @throws IOException en caso de error de acceso
-     */
     public void obtenerProductosTabla() throws IOException {
         MongoDatabase db = MongoConnection.conectar();
         MongoCollection<Document> coleccion = db.getCollection("Productos");
@@ -294,9 +240,6 @@ public class PantallaStockController implements Initializable {
         tablaStock.setItems(listaOriginal);
     }
 
-    /**
-     * Filtra los productos mostrados en la tabla según el texto introducido.
-     */
     @FXML
     public void buscarFiltro() {
         String filtro = txtFiltro.getText().toLowerCase();
@@ -327,9 +270,6 @@ public class PantallaStockController implements Initializable {
         tablaStock.setItems(filtrada);
     }
 
-    /**
-     * Abre la ventana de edición del producto seleccionado.
-     */
     @FXML
     private void modificarProducto() {
         Producto seleccionado = tablaStock.getSelectionModel().getSelectedItem();
@@ -349,35 +289,25 @@ public class PantallaStockController implements Initializable {
             PantallaAltaProductoController controller = loader.getController();
             controller.cargarProducto(seleccionado);
 
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Modificar Producto");
-            stage.setResizable(false);
-            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            stage.centerOnScreen();
-            stage.showAndWait();
+            Stage stageActual = (Stage) tablaStock.getScene().getWindow();
+            stageActual.close();
 
-            obtenerProductosTabla();
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    /**
-    * Elimina el producto seleccionado de la base de datos tras confirmación del usuario.
-    *
-    * <p>El proceso es:
-    * <ul>
-    *   <li>Verificar que haya un producto seleccionado</li>
-    *   <li>Solicitar confirmación mediante un cuadro de diálogo</li>
-    *   <li>Eliminar el documento correspondiente en MongoDB</li>
-    *   <li>Actualizar la tabla de productos</li>
-    * </ul>
-    *
-    * <p>Si ocurre un error durante la eliminación, se muestra una alerta de error.</p>
-    */
-    
     @FXML
     private void eliminarProducto() {
         Producto seleccionado = tablaStock.getSelectionModel().getSelectedItem();
@@ -414,12 +344,6 @@ public class PantallaStockController implements Initializable {
         }
     }
 
-    /**
-     * Muestra una alerta mediante la clase centralizada de alertas.
-     *
-     * @param mensaje mensaje a mostrar
-     * @param tipo tipo de alerta
-     */
     private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
         AlertasSolarManager.mostrar(tipo, null, mensaje);
     }

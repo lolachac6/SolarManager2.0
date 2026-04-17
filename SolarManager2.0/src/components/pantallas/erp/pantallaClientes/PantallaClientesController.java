@@ -6,6 +6,7 @@ import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -55,21 +56,12 @@ public class PantallaClientesController implements Initializable {
 
     private ObservableList<Cliente> listaClientes;
 
-    /**
-     * Inicializa el controlador configurando columnas y cargando clientes.
-     *
-     * @param url URL de inicialización
-     * @param rb recursos asociados
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarColumnas();
         cargarClientes();
     }
 
-    /**
-     * Configura las columnas de la tabla de clientes.
-     */
     private void configurarColumnas() {
 
         colId.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getId()));
@@ -105,9 +97,6 @@ public class PantallaClientesController implements Initializable {
                 new SimpleStringProperty(data.getValue().getIdComercialAsignado()));
     }
 
-    /**
-     * Carga los clientes desde MongoDB en la tabla.
-     */
     private void cargarClientes() {
 
         listaClientes = FXCollections.observableArrayList();
@@ -159,11 +148,6 @@ public class PantallaClientesController implements Initializable {
         }
     }
 
-    /**
-     * Solicita confirmación antes de salir.
-     *
-     * @param event evento de acción
-     */
     @FXML
     private void confirmarSalida(ActionEvent event) {
         if (AlertasSolarManager.confirmar("Confirmación", "¿Desea salir sin guardar?")) {
@@ -171,42 +155,37 @@ public class PantallaClientesController implements Initializable {
         }
     }
 
-    /**
-     * Vuelve a la pantalla principal.
-     *
-     * @param event evento de acción
-     */
     private void volver(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(
-                getClass().getResource("/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml")
+                getClass().getResource("/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml")
             );
 
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
+            Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stageActual.close();
+
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Abre la pantalla de alta de cliente.
-     *
-     * @param event evento de acción
-     */
     @FXML
     private void añadirCliente(ActionEvent event) {
-        cambiarPantalla(event,
+        cambiarPantalla((Node) event.getSource(),
             "/components/pantallas/comercial/pantallaAltaCliente/altaCliente.fxml");
     }
 
-    /**
-     * Abre la pantalla de cálculo de instalación del cliente seleccionado.
-     *
-     * @param event evento de acción
-     */
     @FXML
     private void calcularInstalacion(ActionEvent event) {
 
@@ -227,9 +206,19 @@ public class PantallaClientesController implements Initializable {
             components.pantallas.comercial.calculoInstalacion.CalculoInstalacionController controller = loader.getController();
             controller.setCliente(seleccionado);
 
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
+            Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stageActual.close();
+
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -237,11 +226,6 @@ public class PantallaClientesController implements Initializable {
         }
     }
 
-    /**
-     * Abre la pantalla de edición del cliente seleccionado.
-     *
-     * @param event evento de acción
-     */
     @FXML
     private void modificar(ActionEvent event) {
 
@@ -262,9 +246,19 @@ public class PantallaClientesController implements Initializable {
             components.pantallas.comercial.pantallaAltaCliente.AltaClienteController controller = loader.getController();
             controller.setCliente(seleccionado);
 
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
+            Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stageActual.close();
+
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -272,9 +266,6 @@ public class PantallaClientesController implements Initializable {
         }
     }
 
-    /**
-     * Elimina el cliente seleccionado previa confirmación.
-     */
     @FXML
     private void eliminarCliente() {
         Cliente seleccionado = tablaClientes.getSelectionModel().getSelectedItem();
@@ -310,9 +301,6 @@ public class PantallaClientesController implements Initializable {
         }
     }
 
-    /**
-     * Filtra la tabla de clientes según el texto introducido.
-     */
     @FXML
     private void buscar() {
         String filtro = txtFiltro.getText().toLowerCase();
@@ -331,88 +319,72 @@ public class PantallaClientesController implements Initializable {
         tablaClientes.setItems(filtrados);
     }
 
-    /**
-     * Acción del menú lateral de clientes.
-     *
-     * @param event evento de acción
-     */
     @FXML private void irClientes(ActionEvent event) {}
 
-    /**
-     * Navega a la pantalla de comerciales.
-     *
-     * @param event evento de acción
-     */
-    @FXML private void irComerciales(ActionEvent event) {
-        cambiarPantalla(event, "/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml");
+    @FXML
+    private void irComerciales(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(),
+            "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
     }
 
-    /**
-     * Navega a la pantalla de proveedores.
-     *
-     * @param event evento de acción
-     */
-    @FXML private void irProveedores(ActionEvent event) {
-        cambiarPantalla(event, "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml");
+    @FXML
+    private void irProveedores(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(), "/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml");
     }
 
-    /**
-     * Navega a la pantalla de stock.
-     *
-     * @param event evento de acción
-     */
-    @FXML private void irStock(ActionEvent event) {
-        cambiarPantalla(event, "/components/pantallas/erp/pantallaStock/pantallaStock.fxml");
+    @FXML
+    private void irStock(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(), "/components/pantallas/erp/pantallaStock/PantallaStock.fxml");
     }
 
-    /**
-     * Navega a la pantalla de presupuestos.
-     *
-     * @param event evento de acción
-     */
-    @FXML private void irPresupuestos(ActionEvent event) {
-        cambiarPantalla(event, "/components/pantallas/erp/pantallaPresupuesto/pantallaPresupuesto.fxml");
-    }
-    
-    @FXML private void irInstalaciones(ActionEvent event) {
-        cambiarPantalla(event, "/components/pantallas/erp/pantallaInstalaciones/pantallaInstalaciones.fxml");
-    }
-    
-
-    /**
-     * Muestra la pantalla de informes en desarrollo.
-     *
-     * @param event evento de acción
-     */
-    @FXML private void irInformes(ActionEvent event) {
-        AlertasSolarManager.pantallaEnDesarrollo();
+    @FXML
+    private void irPresupuestos(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(), "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
 
-    /**
-     * Vuelve a la plantilla general.
-     *
-     * @param event evento de acción
-     */
+    @FXML
+    private void irInstalaciones(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(), "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
+    }
+
+    @FXML
+    private void irInformes(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(), "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
+    }
+
     @FXML
     private void volverInicio(ActionEvent event) {
-        cambiarPantalla(event,
+        cambiarPantalla((Node) event.getSource(),
             "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml");
     }
 
     /**
-     * Cambia la pantalla actual por otra indicada.
+     * Cambia la pantalla actual por otra indicada mediante su ruta FXML.
      *
-     * @param event evento de acción
-     * @param rutaFXML ruta del fichero FXML
+     * @param nodo nodo origen desde el que se obtiene el Stage
+     * @param rutaFXML ruta del fichero FXML a cargar
      */
-    private void cambiarPantalla(ActionEvent event, String rutaFXML) {
+    private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(rutaFXML));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            Parent root = loader.load();
+
+            Stage stageActual = (Stage) nodo.getScene().getWindow();
+            stageActual.close();
+
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
+
         } catch (IOException e) {
-            AlertasSolarManager.errorCambioPantalla();
+            e.printStackTrace();
         }
     }
 }

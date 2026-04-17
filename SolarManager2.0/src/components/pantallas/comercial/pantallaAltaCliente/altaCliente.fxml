@@ -166,8 +166,9 @@
 
                     <Pane HBox.hgrow="ALWAYS"/>
 
-                  <Button fx:id="btnCancelar" text="Cancelar"/>
-                  <Button fx:id="btnGuardar" text="Guardar"/>
+                    <Button fx:id="btnGuardar" text="Guardar"/>
+                    <Button fx:id="btnCancelar" text="Cancelar"/>
+                  
                   
               </HBox>
 
