@@ -6,12 +6,11 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane id="AnchorPane"
-            prefHeight="700.00"
-            prefWidth="1200.0"
+            
             styleClass="mainFxmlClass"
             xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/8"
-            fx:controller="components.pantallas.erp.pantallaComerciales.pantallaComercialesController">
+            fx:controller="components.pantallas.erp.pantallaComerciales.PantallaComercialesController">
 
     
     <stylesheets>
@@ -123,6 +122,7 @@
                             <TableColumn fx:id="colNumeroCuenta" prefWidth="150" text="Cuenta"/>
                             <TableColumn fx:id="colCentroTrabajo" prefWidth="140" text="Centro Trabajo"/>
                             <TableColumn fx:id="colObservaciones" prefWidth="180" text="Observaciones"/>
+                            <TableColumn fx:id="colActivo" prefWidth="90" text="Activo"/>
 
                         </columns>
 

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
 
 /**
@@ -18,6 +14,7 @@ package modelo;
  *
  * La instalación se compone de:
  * <ul>
+ * <li>Id de la instalación</li>
  * <li>Id Cliente</li>
  * <li>Potencia total instalada</li>
  * <li>Número de paneles solares</li>
@@ -29,9 +26,13 @@ package modelo;
  * @author ivang
  */
 public class InstalacionFotovoltaica {
-    
-    /** Id Cliente de referencia de la instalacion */
-    private String IdCliente;
+
+    /** Id de la instalación */
+    private String id;
+
+    /** Id Cliente de referencia de la instalación */
+    private String idCliente;
+
     /** Potencia total instalada en kW */
     private double potenciaInstalada;
 
@@ -60,18 +61,19 @@ public class InstalacionFotovoltaica {
     /**
      * Constructor completo que inicializa todos los atributos de la instalación.
      *
-     * @param IdCliente Cliente de referencia 
+     * @param id id de la instalación
+     * @param idCliente cliente de referencia
      * @param potenciaInstalada potencia total instalada
      * @param numeroPaneles número de paneles solares
      * @param produccionEstimada producción energética estimada
      * @param ahorroEstimado ahorro económico estimado
      * @param direccion dirección de la instalación
      */
-    public InstalacionFotovoltaica(String IdCliente, double potenciaInstalada, int numeroPaneles,
+    public InstalacionFotovoltaica(String id, String idCliente, double potenciaInstalada, int numeroPaneles,
                                    double produccionEstimada, double ahorroEstimado,
                                    Direccion direccion) {
-
-        this.IdCliente = IdCliente;
+        this.id = id;
+        this.idCliente = idCliente;
         this.potenciaInstalada = potenciaInstalada;
         this.numeroPaneles = numeroPaneles;
         this.produccionEstimada = produccionEstimada;
@@ -79,12 +81,40 @@ public class InstalacionFotovoltaica {
         this.direccion = direccion;
     }
 
-    public String getIdCliente() {
-        return IdCliente;
+    /**
+     * Obtiene el id de la instalación.
+     *
+     * @return id de la instalación
+     */
+    public String getId() {
+        return id;
     }
 
-    public void setIdCliente(String IdCliente) {
-        this.IdCliente = IdCliente;
+    /**
+     * Establece el id de la instalación.
+     *
+     * @param id id de la instalación
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * Obtiene el id del cliente asociado.
+     *
+     * @return id del cliente
+     */
+    public String getIdCliente() {
+        return idCliente;
+    }
+
+    /**
+     * Establece el id del cliente asociado.
+     *
+     * @param idCliente id del cliente
+     */
+    public void setIdCliente(String idCliente) {
+        this.idCliente = idCliente;
     }
 
     /**
@@ -179,19 +209,17 @@ public class InstalacionFotovoltaica {
 
     /**
      * Devuelve una representación en texto de la instalación.
-     * <p>
-     * Útil para depuración, logs o visualización rápida de la información.
-     * </p>
      *
      * @return descripción textual de la instalación
      */
     @Override
     public String toString() {
-        return "Instalación FV | IdCliente: " + IdCliente
-                + "Potencia: " + potenciaInstalada + " kW" +
-               " | Paneles: " + numeroPaneles +
-               " | Producción estimada: " + produccionEstimada +
-               " | Ahorro estimado: " + ahorroEstimado +
-               " | Dirección: " + direccion;
+        return "Instalación FV | Id: " + id
+                + " | IdCliente: " + idCliente
+                + " | Potencia: " + potenciaInstalada + " kW"
+                + " | Paneles: " + numeroPaneles
+                + " | Producción estimada: " + produccionEstimada
+                + " | Ahorro estimado: " + ahorroEstimado
+                + " | Dirección: " + direccion;
     }
 }

@@ -7,6 +7,7 @@ import components.pantallas.erp.pantallaAltaComercial.PantallaAltaComercialContr
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,7 +39,7 @@ import utils.AlertasSolarManager;
  *
  * @author Iván
  */
-public class pantallaComercialesController implements Initializable {
+public class PantallaComercialesController implements Initializable {
 
     @FXML private TableView<Comercial> tablaComerciales;
     @FXML private TableColumn<Comercial, String> colId, colNombre, colActivo, colApellidos,
@@ -134,27 +135,41 @@ public class pantallaComercialesController implements Initializable {
      * @param event evento de acción
      */
     @FXML
-    public void modificarComercial(ActionEvent event) {
-        Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
-        if (seleccionado == null) {
-            AlertasSolarManager.seleccionarComercial();
-            return;
-        }
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/pantallas/erp/pantallaAltaComercial/pantallaAltaComercial.fxml"));
-            Parent root = loader.load();
+public void modificarComercial(ActionEvent event) {
+    Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
 
-            PantallaAltaComercialController controller = loader.getController();
-            controller.cargarDatos(seleccionado);
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            AlertasSolarManager.errorGenerico("Error");
-        }
+    if (seleccionado == null) {
+        AlertasSolarManager.seleccionarComercial();
+        return;
     }
+
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                "/components/pantallas/erp/pantallaAltaComercial/pantallaAltaComercial.fxml"));
+        Parent root = loader.load();
+
+        PantallaAltaComercialController controller = loader.getController();
+        controller.cargarDatos(seleccionado);
+
+        Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stageActual.close();
+
+        Stage nuevoStage = new Stage();
+        nuevoStage.setScene(new Scene(root));
+        nuevoStage.setResizable(true);
+
+        Platform.runLater(() -> {
+            nuevoStage.setMaximized(true);
+            nuevoStage.centerOnScreen();
+        });
+
+        nuevoStage.show();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        AlertasSolarManager.errorGenerico("Error al abrir la pantalla de modificar comercial");
+    }
+}
 
     /**
      * Filtra los comerciales según el texto introducido.
@@ -248,14 +263,12 @@ public class pantallaComercialesController implements Initializable {
     private void irPresupuestos(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
-    
-    
+
     @FXML
     private void irInstalaciones(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
     }
-    
 
     /**
      * Navega a la pantalla de informes.
@@ -271,16 +284,29 @@ public class pantallaComercialesController implements Initializable {
      * Cambia la pantalla actual por otra indicada.
      *
      * @param nodo nodo origen
-     * @param ruta ruta del fichero FXML
+     * @param rutaFXML ruta del fichero FXML
      */
-    private void cambiarPantalla(Node nodo, String ruta) {
+    private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(ruta));
-            Stage stage = (Stage) nodo.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            Parent root = loader.load();
+
+            Stage stageActual = (Stage) nodo.getScene().getWindow();
+            stageActual.close();
+
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
+
         } catch (IOException e) {
-            AlertasSolarManager.errorGenerico("Error de navegación");
+            e.printStackTrace();
         }
     }
 

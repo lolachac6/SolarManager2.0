@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1200.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.pantallas.erp.pantallaInstalaciones.PantallaInstalacionesController">
+<AnchorPane styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.pantallas.erp.pantallaInstalaciones.PantallaInstalacionesController">
 
     <stylesheets>
         <URL value="@pantallainstalaciones.css" />
@@ -90,14 +90,23 @@
                         </columns>
 
                     </TableView>
+                    <!-- PANEL INFERIOR -->
+                    <Pane prefHeight="100"
+                          style="-fx-background-color:white;
+                                 -fx-border-color:#d0d0d0;
+                                 -fx-border-width:2;
+                                 -fx-border-radius:5;
+                                 -fx-background-radius:5;"/>
 
                     <!-- BOTONES -->
                     <HBox spacing="10">
 
                         <Button onAction="#añadirInstalacion" style="-fx-background-color: #2f6fda; -fx-text-fill: white;" text="➕ Añadir instalación" />
+                      <Button  style="-fx-background-color: #2f6fda; -fx-text-fill: white;" text="➕ Hacer Presupuesto" /> 
 
                         <Pane HBox.hgrow="ALWAYS" />
-
+                        
+                        <Button onAction="#hacerPresupuesto" text="Hacer Presupuesto" />
                         <Button onAction="#modificar" text="Modificar" />
                         <Button text="Eliminar" />
 

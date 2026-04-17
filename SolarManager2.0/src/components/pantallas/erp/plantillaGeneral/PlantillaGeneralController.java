@@ -3,6 +3,7 @@ package components.pantallas.erp.plantillaGeneral;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -85,10 +86,19 @@ public class PlantillaGeneralController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
             Parent root = loader.load();
 
-            Stage stage = (Stage) nodo.getScene().getWindow();
-            stage.setResizable(true);
-            stage.setMaximized(true);
-            stage.setScene(new Scene(root));
+            Stage stageActual = (Stage) nodo.getScene().getWindow();
+            stageActual.close();
+
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -112,7 +122,7 @@ public class PlantillaGeneralController implements Initializable {
      */
     @FXML
     private void irComerciales(javafx.event.ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml");
+        cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
     }
 
     /**

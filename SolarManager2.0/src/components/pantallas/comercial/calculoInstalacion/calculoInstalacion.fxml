@@ -92,7 +92,7 @@
                             <TextField fx:id="txtIdCliente" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
 
                             <Label text="Consumo anual (kWh):" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                            <TextField fx:id="txtConsumoAnual" GridPane.columnIndex="1" GridPane.rowIndex="3" editable="false" focusTraversable="false" />
+                            <TextField fx:id="txtConsumoAnual" GridPane.columnIndex="1" GridPane.rowIndex="3" editable="true" focusTraversable="true" />
 
                         </GridPane>
 
