@@ -59,11 +59,11 @@ import org.bson.types.ObjectId;
 public class PantallaInformesController implements Initializable {
 
     @FXML private Button btnPresupuestos;
-    @FXML private StackPane panelPreview;
-    @FXML private Label lblStatus;
+    @FXML private StackPane panelPreview;   
     @FXML private ComboBox<String> comboComerciales;
     @FXML private Button btnInformeComercial;
     @FXML private Button btnVentasMes;
+    @FXML private Button btnRatioVentas;
 
     private MongoDatabase database;
 
@@ -75,7 +75,6 @@ public class PantallaInformesController implements Initializable {
             cargarComerciales();
         } catch (Exception e) {
             e.printStackTrace();
-            lblStatus.setText("Error conectando a MongoDB");
         }
 
         compilarInformes();
@@ -137,8 +136,7 @@ public class PantallaInformesController implements Initializable {
 
     private void generarInformeAsync(String rutaJasper, DataSourceSupplier supplier) {
 
-        Platform.runLater(() -> {
-            lblStatus.setText("Generando informe...");
+        Platform.runLater(() -> {           
             panelPreview.getChildren().clear();
         });
 
@@ -148,7 +146,6 @@ public class PantallaInformesController implements Initializable {
 
                 if (ds == null) {
                     Platform.runLater(() -> {
-                        lblStatus.setText("No hay datos");
                         mostrarAlerta("No hay datos para generar el informe.", Alert.AlertType.INFORMATION);
                     });
                     return;
@@ -167,7 +164,6 @@ public class PantallaInformesController implements Initializable {
 
                 if (print == null || print.getPages().isEmpty()) {
                     Platform.runLater(() -> {
-                        lblStatus.setText("Sin datos en informe");
                         mostrarAlerta("El informe no contiene páginas.", Alert.AlertType.INFORMATION);
                     });
                     return;
@@ -178,7 +174,6 @@ public class PantallaInformesController implements Initializable {
             } catch (Exception e) {
                 e.printStackTrace();
                 Platform.runLater(() -> {
-                    lblStatus.setText("Error al generar informe");
                     mostrarAlerta("Error al generar el informe: " + e.getMessage(), Alert.AlertType.ERROR);
                 });
             }
@@ -192,7 +187,8 @@ public class PantallaInformesController implements Initializable {
         String[] informes = {
                 "ventasMesActual.jrxml",
                 "presupuestosGeneradosAprobados.jrxml",
-                "clientesPorComercial_Mensual_Barras_Ordenado.jrxml"
+                "clientesPorComercial_Mensual_Barras_Ordenado.jrxml",
+                "ventasComercialVsEmpresa.jrxml"
         };
 
         for (String inf : informes) {
@@ -481,7 +477,96 @@ public class PantallaInformesController implements Initializable {
 
         return lista;
     }
+    
+    
+    @FXML
+    private void onVentasVsEmpresa(ActionEvent event) throws Exception {
 
+        String comercial = comboComerciales.getValue();
+
+        if (comercial == null || comercial.isEmpty()) {
+            mostrarMensaje("Selecciona un comercial");
+            return;
+        }
+
+        JasperPrint print = generarInformeRelacionVentas(comercial);
+
+        generarImagenAjustada(print);
+    }
+
+    private JasperPrint generarInformeRelacionVentas(String comercial) {
+    try {
+
+        MongoCollection<Document> col = database.getCollection("Presupuestos");
+
+        // 1. Datos
+        long ventasComercial = col.countDocuments(
+                Filters.and(
+                        Filters.eq("idComercial", comercial.trim()),
+                        Filters.regex("estado", "^facturado$", "i")
+                )
+        );
+
+        long instalacionesTotales = col.countDocuments(
+                Filters.regex("estado", "^facturado$", "i")
+        );
+
+        boolean hayDatos = instalacionesTotales > 0;
+
+        // 2. Porcentajes
+        long total = instalacionesTotales == 0 ? 1 : instalacionesTotales;
+
+        int pctComercial = (int) Math.round(ventasComercial * 100.0 / total);
+        int pctInstalaciones = 100 - pctComercial;
+
+        // 3. Lista para Jasper
+        List<Map<String, Object>> lista = new ArrayList<>();
+
+        // Ventas del Comercial
+        {
+            Map<String, Object> fila = new HashMap<>();
+            fila.put("label", "Ventas del Comercial");
+            fila.put("valor", ventasComercial);
+            fila.put("porcentaje", pctComercial + "%");
+            lista.add(fila);
+        }
+
+        // Instalaciones
+        {
+            Map<String, Object> fila = new HashMap<>();
+            fila.put("label", "Instalaciones Totales");
+            fila.put("valor", instalacionesTotales - ventasComercial);
+            fila.put("porcentaje", "");
+            lista.add(fila);
+        }
+
+        // 4. Parámetros
+        Map<String, Object> params = new HashMap<>();
+        params.put("COMERCIAL", comercial);
+        params.put("HAY_DATOS", hayDatos);
+
+        // 5. Cargar informe
+        InputStream jasperStream = getClass().getResourceAsStream(
+                "/components/pantallas/erp/pantallaInformes/ventasComercialVsEmpresa.jasper"
+        );
+
+        JRDataSource dataSource = new JRMapCollectionDataSource((Collection) lista);
+
+
+        return JasperFillManager.fillReport(jasperStream, params, dataSource);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    }
+}
+
+    /**
+    * Convierte la primera página del informe JasperPrint en una imagen
+    * y la ajusta automáticamente al tamaño del panel de vista previa.
+    *
+    * @param print informe Jasper ya generado
+    */
     private void generarImagenAjustada(JasperPrint print) {
         try {
             panelPreview.getChildren().clear();
@@ -494,14 +579,27 @@ public class PantallaInformesController implements Initializable {
             imageView.setPreserveRatio(true);
             imageView.fitWidthProperty().bind(panelPreview.widthProperty());
             imageView.fitHeightProperty().bind(panelPreview.heightProperty());
+            // ⭐ AJUSTE AUTOMÁTICO AL PANEL
+            imageView.setPreserveRatio(true);
+            imageView.fitWidthProperty().bind(panelPreview.widthProperty());
+            imageView.fitHeightProperty().bind(panelPreview.heightProperty());
 
             panelPreview.getChildren().add(imageView);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        } catch (Exception e) {
+        e.printStackTrace();
+        }
     }
 
+    
+    /**
+    * Muestra un mensaje informativo en un cuadro de diálogo.
+    *
+    * @param mensaje texto a mostrar
+    */
     private void mostrarMensaje(String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setTitle("Mensaje");
