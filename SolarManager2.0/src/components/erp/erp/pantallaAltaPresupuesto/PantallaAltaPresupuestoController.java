@@ -20,15 +20,20 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import javafx.scene.control.ListCell;
+import modelo.Cliente;
+import modelo.Comercial;
+import modelo.InstalacionFotovoltaica;
+import modelo.Presupuesto;
 
 public class PantallaAltaPresupuestoController implements Initializable {
 
     // =========================
     // CAMPOS FXML
     // =========================
-    @FXML private ComboBox<String> cmbCliente;
-    @FXML private ComboBox<String> cmbComercial;
-    @FXML private ComboBox<String> cmbEstado;
+@FXML private ComboBox<Cliente> cmbCliente;
+@FXML private ComboBox<Comercial> cmbComercial;
+@FXML private ComboBox<Presupuesto.EstadoPresupuesto> cmbEstado;
 
     @FXML private DatePicker dpFecha;
 
@@ -36,6 +41,10 @@ public class PantallaAltaPresupuestoController implements Initializable {
     @FXML private TextField txtPaneles;
     @FXML private TextField txtProduccion;
     @FXML private TextField txtAhorro;
+    
+    private Presupuesto presupuesto;
+    
+    
 
     // =========================
     // INIT
@@ -47,60 +56,159 @@ public class PantallaAltaPresupuestoController implements Initializable {
         dpFecha.setValue(LocalDate.now());
 
         // Cargar combos (mock por ahora)
-        cargarClientes();
-        cargarComerciales();
+      //  cargarClientes();
+      //  cargarComerciales();
         cargarEstados();
+        
+        
+         // Mostrar nombre en vez de objeto
+        cmbCliente.setCellFactory(cb -> new ListCell<Cliente>() {
+         @Override
+            protected void updateItem(Cliente item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getNombre());
+            }
+         });
+
+        cmbCliente.setButtonCell(new ListCell<Cliente>() {
+          @Override
+            protected void updateItem(Cliente item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getNombre());
+            }
+         });
+
+        cmbComercial.setCellFactory(cb -> new ListCell<Comercial>() {
+            @Override
+            protected void updateItem(Comercial item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getNombre());
+            }
+        });
+
+        cmbComercial.setButtonCell(new ListCell<Comercial>() {
+            @Override
+            protected void updateItem(Comercial item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getNombre());
+            }
+        });
+ 
+  }
+    
+    
+    //===========================
+    //SET PRESUPUESTO (EDITAR)
+    //===========================
+  public void setPresupuesto(Presupuesto presupuesto) {
+    this.presupuesto = presupuesto;
+
+    if (presupuesto != null) {
+
+        // Seleccionar cliente por ID
+        cmbCliente.getSelectionModel().select(
+            cmbCliente.getItems().stream()
+                .filter(c -> c.getId().equals(presupuesto.getIdCliente()))
+                .findFirst()
+                .orElse(null)
+        );
+
+        // Seleccionar comercial por ID
+        cmbComercial.getSelectionModel().select(
+            cmbComercial.getItems().stream()
+                .filter(c -> c.getId().equals(presupuesto.getIdComercial()))
+                .findFirst()
+                .orElse(null)
+        );
+
+        // Estado (ya es enum)
+        cmbEstado.setValue(presupuesto.getEstado());
+
+        // Fecha
+        dpFecha.setValue(presupuesto.getFechaCreacion());
+
+        // Instalación
+        if (presupuesto.getInstalacion() != null) {
+            txtPotencia.setText(String.valueOf(presupuesto.getInstalacion().getPotenciaInstalada()));
+            txtPaneles.setText(String.valueOf(presupuesto.getInstalacion().getNumeroPaneles()));
+            txtProduccion.setText(String.valueOf(presupuesto.getInstalacion().getProduccionEstimada()));
+            txtAhorro.setText(String.valueOf(presupuesto.getInstalacion().getAhorroEstimado()));
+        }
     }
+}
 
     // =========================
     // CARGA DE DATOS (MOCK)
     // =========================
-    private void cargarClientes() {
-        cmbCliente.getItems().addAll("Cliente 1", "Cliente 2", "Cliente 3");
-    }
+  /** private void cargarClientes() {cmbCliente.getItems().addAll("Clientes");
+}
 
     private void cargarComerciales() {
-        cmbComercial.getItems().addAll("Iván", "Juan", "Pedro");
-    }
+     cmbComercial.getItems().addAll(
+        new Comercial("1", "Iván"),
+        new Comercial("2", "Juan")
+    );
+}*/
 
-    private void cargarEstados() {
-        cmbEstado.getItems().addAll("BORRADOR", "ENVIADO", "ACEPTADO", "RECHAZADO");
-    }
+private void cargarEstados() {
+    cmbEstado.getItems().addAll(Presupuesto.EstadoPresupuesto.values());
+}
+    
+    
 
     // =========================
     // GUARDAR PRESUPUESTO
     // =========================
     @FXML
-    private void guardarPresupuesto() {
+private void guardarPresupuesto() {
 
-        if (!validarCampos()) {
-            return;
-        }
-
-        // Obtener datos
-        String cliente = cmbCliente.getValue();
-        String comercial = cmbComercial.getValue();
-        String estado = cmbEstado.getValue();
-        LocalDate fecha = dpFecha.getValue();
-
-        double potencia = Double.parseDouble(txtPotencia.getText());
-        int paneles = Integer.parseInt(txtPaneles.getText());
-        double produccion = Double.parseDouble(txtProduccion.getText());
-        double ahorro = Double.parseDouble(txtAhorro.getText());
-
-        // DEBUG (simulación)
-        System.out.println("=== PRESUPUESTO ===");
-        System.out.println("Cliente: " + cliente);
-        System.out.println("Comercial: " + comercial);
-        System.out.println("Estado: " + estado);
-        System.out.println("Potencia: " + potencia);
-
-        // TODO: guardar en BD (DAO / Service)
-
-        mostrarAlerta("Presupuesto creado correctamente", AlertType.INFORMATION);
-
-        limpiarFormulario();
+    if (!validarCampos()) {
+        return;
     }
+
+    // Obtener objetos reales
+    Cliente cliente = cmbCliente.getValue();
+    Comercial comercial = cmbComercial.getValue();
+    Presupuesto.EstadoPresupuesto estado = cmbEstado.getValue();
+    LocalDate fecha = dpFecha.getValue();
+
+    double potencia = Double.parseDouble(txtPotencia.getText());
+    int paneles = Integer.parseInt(txtPaneles.getText());
+    double produccion = Double.parseDouble(txtProduccion.getText());
+    double ahorro = Double.parseDouble(txtAhorro.getText());
+
+    // Crear instalación
+    InstalacionFotovoltaica instalacion = new InstalacionFotovoltaica();
+    instalacion.setPotenciaInstalada(potencia);
+    instalacion.setNumeroPaneles(paneles);
+    instalacion.setProduccionEstimada(produccion);
+    instalacion.setAhorroEstimado(ahorro);
+
+    // CREAR o EDITAR
+    if (presupuesto == null) {
+        presupuesto = new Presupuesto();
+    }
+
+    // Setear datos
+    presupuesto.setIdCliente(cliente.getId());
+    presupuesto.setIdComercial(comercial.getId());
+    presupuesto.setFechaCreacion(fecha);
+    presupuesto.setEstado(estado);
+    presupuesto.setInstalacion(instalacion);
+
+    // DEBUG
+    System.out.println("=== PRESUPUESTO ===");
+    System.out.println(presupuesto);
+
+    mostrarAlerta(
+        presupuesto.getId() == null 
+            ? "Presupuesto creado correctamente" 
+            : "Presupuesto actualizado correctamente",
+        AlertType.INFORMATION
+    );
+
+    limpiarFormulario();
+}
 
     // =========================
     // VALIDACIONES

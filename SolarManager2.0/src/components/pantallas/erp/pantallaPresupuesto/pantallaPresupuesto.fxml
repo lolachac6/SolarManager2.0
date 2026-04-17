@@ -58,6 +58,8 @@
                     <Button maxWidth="Infinity" onAction="#irPresupuestos" styleClass="menu-button" text="Presupuestos" />
 
                     <Button maxWidth="Infinity" onAction="#irInformes" styleClass="menu-button" text="Informes" />
+                    
+                    <Button maxWidth="Infinity" onAction="#irInstalaciones" styleClass="menu-button" text="Instalaciones" />
 
                 </VBox>
 
@@ -103,15 +105,15 @@
 
                     <!-- BOTONES -->
                     <HBox spacing="10">
-                        <Button fx:id="btnnuevoPresupeusto" onAction="#añadirPresupuesto" style="-fx-background-color: #2f6fda; -fx-text-fill: white;" text="➕ Añadir Presupuesto" />
+                       
 
                         <Pane HBox.hgrow="ALWAYS" />
 
                         <Button fx:id="btnHacerFactura" text="Hacer factura" />
 
-                        
                         <Button fx:id="btnModificar" text="Modificar" />
-                  <Button onAction="#eliminarPresupuesto" text="Eliminar" />
+                        
+                        <Button onAction="#eliminarPresupuesto" text="Eliminar" />
 
                     </HBox>
 

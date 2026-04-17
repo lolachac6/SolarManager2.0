@@ -3,6 +3,7 @@ package components.pantallas.erp.pantallaPresupuesto;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import components.erp.erp.pantallaAltaPresupuesto.PantallaAltaPresupuestoController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -189,6 +190,40 @@ public class PantallaPresupuestoController implements Initializable {
         }
     }
     
+    
+    @FXML
+private void modificar(ActionEvent event) {
+
+    Presupuesto seleccionado = tablaPresupuestos.getSelectionModel().getSelectedItem();
+
+    if (seleccionado == null) {
+        mostrarAlerta("Debe seleccionar un presupuesto para editar", Alert.AlertType.WARNING);
+        return;
+    }
+
+    try {
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("/components/pantallas/erp/pantallaPresupuesto/pantallaAltaPresupuesto.fxml")
+        );
+
+        Parent root = loader.load();
+
+        PantallaAltaPresupuestoController controller = loader.getController();
+        controller.setPresupuesto(seleccionado);
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+
+    } catch (IOException e) {
+        e.printStackTrace();
+        mostrarAlerta("Error al abrir pantalla de edición", Alert.AlertType.ERROR);
+    }
+}
+    
+    
+    
+    
      @FXML
     public void buscarFiltro() {
 
@@ -311,6 +346,11 @@ private void irInformes(ActionEvent event) {
     cambiarPantalla((Node) event.getSource(), 
         "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
 }
+
+@FXML
+    private void irInstalaciones(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(), "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
+    }
 
   /**
      * Cambia la pantalla actual por otra indicada mediante su ruta FXML.
