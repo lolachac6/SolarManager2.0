@@ -309,6 +309,7 @@ public class Presupuesto {
                " | Total: " + total + " €";
     }
 
+  
     /**
      * Enumeración que representa los posibles estados de un presupuesto.
      */

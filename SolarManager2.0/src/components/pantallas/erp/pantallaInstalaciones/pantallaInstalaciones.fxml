@@ -84,8 +84,9 @@
 
                     <!-- BOTONES -->
                     <HBox spacing="10">
+                  <Button layoutX="10.0" layoutY="10.0" onAction="#añadirInstalacion" style="-fx-background-color: #2f6fda; -fx-text-fill: white;" text="➕ Añadir instalación" />
 
-                        <Button onAction="#añadirInstalacion" style="-fx-background-color: #2f6fda; -fx-text-fill: white;" text="➕ Añadir instalación" />
+                        
 
                         <Pane HBox.hgrow="ALWAYS" />
 

@@ -176,6 +176,8 @@ public class PantallaInstalacionesController implements Initializable {
         cambiarPantalla(event,
             "/components/pantallas/comercial/calculoInstalacion/calculoInstalacion.fxml");
     }
+    
+    
 
     @FXML
     private void modificar(ActionEvent event) {
