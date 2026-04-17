@@ -58,11 +58,11 @@ import org.bson.types.ObjectId;
     public class PantallaInformesController implements Initializable {
 
     @FXML private Button btnPresupuestos;
-    @FXML private StackPane panelPreview;
-    @FXML private Label lblStatus;
+    @FXML private StackPane panelPreview;   
     @FXML private ComboBox<String> comboComerciales;
     @FXML private Button btnInformeComercial;
     @FXML private Button btnVentasMes;
+    @FXML private Button btnRatioVentas;
 
     private MongoDatabase database;
     
@@ -81,7 +81,6 @@ import org.bson.types.ObjectId;
             cargarComerciales();
         } catch (Exception e) {
             e.printStackTrace();
-            lblStatus.setText("Error conectando a MongoDB");
         }
 
         compilarInformes();
@@ -129,8 +128,9 @@ import org.bson.types.ObjectId;
     *
     * @param e evento de acción del botón
     */
-    @FXML private void irComerciales(ActionEvent e) { 
-        cambiarPantalla((Node)e.getSource(), "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
+    @FXML
+    private void irComerciales(ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
     }
     
     
@@ -161,6 +161,10 @@ import org.bson.types.ObjectId;
         cambiarPantalla((Node)e.getSource(), "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
     
+    @FXML
+    private void irInstalaciones(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),"/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
+    }
     /**
     * Recarga la pantalla de informes.
     *
@@ -169,6 +173,7 @@ import org.bson.types.ObjectId;
     @FXML private void irInformes(ActionEvent e) { 
         cambiarPantalla((Node)e.getSource(), "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
+    
     
     /**
     * Genera un informe JasperReports de forma asíncrona para evitar bloquear
@@ -181,8 +186,7 @@ import org.bson.types.ObjectId;
 
     private void generarInformeAsync(String rutaJasper, DataSourceSupplier supplier) {
 
-        Platform.runLater(() -> {
-            lblStatus.setText("Generando informe...");
+        Platform.runLater(() -> {           
             panelPreview.getChildren().clear();
         });
 
@@ -192,7 +196,6 @@ import org.bson.types.ObjectId;
 
                 if (ds == null) {
                     Platform.runLater(() -> {
-                        lblStatus.setText("No hay datos");
                         mostrarAlerta("No hay datos para generar el informe.", Alert.AlertType.INFORMATION);
                     });
                     return;
@@ -211,7 +214,6 @@ import org.bson.types.ObjectId;
 
                 if (print == null || print.getPages().isEmpty()) {
                     Platform.runLater(() -> {
-                        lblStatus.setText("Sin datos en informe");
                         mostrarAlerta("El informe no contiene páginas.", Alert.AlertType.INFORMATION);
                     });
                     return;
@@ -222,7 +224,6 @@ import org.bson.types.ObjectId;
             } catch (Exception e) {
                 e.printStackTrace();
                 Platform.runLater(() -> {
-                    lblStatus.setText("Error al generar informe");
                     mostrarAlerta("Error al generar el informe: " + e.getMessage(), Alert.AlertType.ERROR);
                 });
             }
@@ -242,7 +243,8 @@ import org.bson.types.ObjectId;
         String[] informes = {
                 "ventasMesActual.jrxml",
                 "presupuestosGeneradosAprobados.jrxml",
-                "clientesPorComercial_Mensual_Barras_Ordenado.jrxml"
+                "clientesPorComercial_Mensual_Barras_Ordenado.jrxml",
+                "ventasComercialVsEmpresa.jrxml"
         };
 
         for (String inf : informes) {
@@ -595,6 +597,89 @@ import org.bson.types.ObjectId;
 
         return lista;
     }
+    
+    
+    @FXML
+    private void onVentasVsEmpresa(ActionEvent event) throws Exception {
+
+        String comercial = comboComerciales.getValue();
+
+        if (comercial == null || comercial.isEmpty()) {
+            mostrarMensaje("Selecciona un comercial");
+            return;
+        }
+
+        JasperPrint print = generarInformeRelacionVentas(comercial);
+
+        generarImagenAjustada(print);
+    }
+
+    private JasperPrint generarInformeRelacionVentas(String comercial) {
+    try {
+
+        MongoCollection<Document> col = database.getCollection("Presupuestos");
+
+        // 1. Datos
+        long ventasComercial = col.countDocuments(
+                Filters.and(
+                        Filters.eq("idComercial", comercial.trim()),
+                        Filters.regex("estado", "^facturado$", "i")
+                )
+        );
+
+        long instalacionesTotales = col.countDocuments(
+                Filters.regex("estado", "^facturado$", "i")
+        );
+
+        boolean hayDatos = instalacionesTotales > 0;
+
+        // 2. Porcentajes
+        long total = instalacionesTotales == 0 ? 1 : instalacionesTotales;
+
+        int pctComercial = (int) Math.round(ventasComercial * 100.0 / total);
+        int pctInstalaciones = 100 - pctComercial;
+
+        // 3. Lista para Jasper
+        List<Map<String, Object>> lista = new ArrayList<>();
+
+        // Ventas del Comercial
+        {
+            Map<String, Object> fila = new HashMap<>();
+            fila.put("label", "Ventas del Comercial");
+            fila.put("valor", ventasComercial);
+            fila.put("porcentaje", pctComercial + "%");
+            lista.add(fila);
+        }
+
+        // Instalaciones
+        {
+            Map<String, Object> fila = new HashMap<>();
+            fila.put("label", "Instalaciones Totales");
+            fila.put("valor", instalacionesTotales - ventasComercial);
+            fila.put("porcentaje", "");
+            lista.add(fila);
+        }
+
+        // 4. Parámetros
+        Map<String, Object> params = new HashMap<>();
+        params.put("COMERCIAL", comercial);
+        params.put("HAY_DATOS", hayDatos);
+
+        // 5. Cargar informe
+        InputStream jasperStream = getClass().getResourceAsStream(
+                "/components/pantallas/erp/pantallaInformes/ventasComercialVsEmpresa.jasper"
+        );
+
+        JRDataSource dataSource = new JRMapCollectionDataSource((Collection) lista);
+
+
+        return JasperFillManager.fillReport(jasperStream, params, dataSource);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    }
+}
 
     /**
     * Convierte la primera página del informe JasperPrint en una imagen
@@ -603,25 +688,25 @@ import org.bson.types.ObjectId;
     * @param print informe Jasper ya generado
     */
     private void generarImagenAjustada(JasperPrint print) {
-    try {
-        panelPreview.getChildren().clear();
+        try {
+            panelPreview.getChildren().clear();
 
-        BufferedImage pageImage = (BufferedImage) JasperPrintManager.printPageToImage(print, 0, 2f);
-        Image fxImage = SwingFXUtils.toFXImage(pageImage, null);
+            BufferedImage pageImage = (BufferedImage) JasperPrintManager.printPageToImage(print, 0, 2f);
+            Image fxImage = SwingFXUtils.toFXImage(pageImage, null);
 
-        ImageView imageView = new ImageView(fxImage);
+            ImageView imageView = new ImageView(fxImage);
 
-        // ⭐ AJUSTE AUTOMÁTICO AL PANEL
-        imageView.setPreserveRatio(true);
-        imageView.fitWidthProperty().bind(panelPreview.widthProperty());
-        imageView.fitHeightProperty().bind(panelPreview.heightProperty());
+            // ⭐ AJUSTE AUTOMÁTICO AL PANEL
+            imageView.setPreserveRatio(true);
+            imageView.fitWidthProperty().bind(panelPreview.widthProperty());
+            imageView.fitHeightProperty().bind(panelPreview.heightProperty());
 
-        panelPreview.getChildren().add(imageView);
+            panelPreview.getChildren().add(imageView);
 
-    } catch (Exception e) {
+        } catch (Exception e) {
         e.printStackTrace();
+        }
     }
-}
     
     /**
     * Muestra un mensaje informativo en un cuadro de diálogo.
