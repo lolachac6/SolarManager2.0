@@ -3,7 +3,6 @@ package components.pantallas.erp.pantallaInformes;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Sorts;
 
@@ -39,6 +38,8 @@ import java.time.LocalDate;
 import java.util.*;
 import net.sf.jasperreports.view.JasperViewer;
 import org.bson.types.ObjectId;
+import utils.AlertasSolarManager;
+
 
 /**
  * Controlador principal de la pantalla de informes del ERP SolarManager.
@@ -127,6 +128,10 @@ public class PantallaInformesController implements Initializable {
     @FXML private void irPresupuestos(ActionEvent e) {
         cambiarPantalla((Node)e.getSource(), "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
+    
+    @FXML private void irInstalaciones(javafx.event.ActionEvent e) {
+        cambiarPantalla((Node) e.getSource(),"/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
+    }
 
     @FXML private void irInformes(ActionEvent e) {
         cambiarPantalla((Node)e.getSource(), "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
@@ -146,7 +151,7 @@ public class PantallaInformesController implements Initializable {
 
                 if (ds == null) {
                     Platform.runLater(() -> {
-                        mostrarAlerta("No hay datos para generar el informe.", Alert.AlertType.INFORMATION);
+                        AlertasSolarManager.errorGenerico(" No hay datos para generar el informe.");
                     });
                     return;
                 }
@@ -164,7 +169,7 @@ public class PantallaInformesController implements Initializable {
 
                 if (print == null || print.getPages().isEmpty()) {
                     Platform.runLater(() -> {
-                        mostrarAlerta("El informe no contiene páginas.", Alert.AlertType.INFORMATION);
+                        AlertasSolarManager.errorGenerico("El informe no contiene páginas.");
                     });
                     return;
                 }
@@ -174,7 +179,7 @@ public class PantallaInformesController implements Initializable {
             } catch (Exception e) {
                 e.printStackTrace();
                 Platform.runLater(() -> {
-                    mostrarAlerta("Error al generar el informe: " + e.getMessage(), Alert.AlertType.ERROR);
+                    AlertasSolarManager.errorGenerico("Error al generar el informe: ");
                 });
             }
         }).start();
@@ -234,7 +239,7 @@ public class PantallaInformesController implements Initializable {
         String comercial = comboComerciales.getValue();
 
         if (comercial == null || comercial.isEmpty()) {
-            mostrarMensaje("Selecciona un comercial");
+            mostrarAlerta("Selecciona un comercial", Alert.AlertType.ERROR);
             return;
         }
 
@@ -246,17 +251,17 @@ public class PantallaInformesController implements Initializable {
                         .anyMatch(m -> ((Number)m.get("total")).doubleValue() > 0);
 
                 if (!hayDatos) {
-                    Platform.runLater(() -> mostrarMensaje("Este comercial aún no tiene clientes asignados"));
+                    Platform.runLater(() -> AlertasSolarManager.errorGenerico("Este comercial aún no tiene clientes asignados"));
                     return;
                 }
 
                 if (!hayDatos) {
-                    Platform.runLater(() -> mostrarMensaje("Este comercial aún no tiene clientes asignados"));
+                    Platform.runLater(() -> AlertasSolarManager.errorGenerico("Este comercial aún no tiene clientes asignados"));
                     return;
                 }
 
                 if (datos.isEmpty()) {
-                    Platform.runLater(() -> mostrarMensaje("Este comercial aún no tiene clientes asignados"));
+                    Platform.runLater(() -> AlertasSolarManager.errorGenerico("Este comercial aún no tiene clientes asignados"));
                     return;
                 }
 
@@ -276,7 +281,7 @@ public class PantallaInformesController implements Initializable {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Platform.runLater(() -> mostrarMensaje("Error generando informe: " + e.getMessage()));
+                Platform.runLater(() -> AlertasSolarManager.errorGenerico("Error generando informe: " + e.getMessage()));
             }
         }).start();
     }
@@ -384,7 +389,7 @@ public class PantallaInformesController implements Initializable {
         String comercial = comboComerciales.getValue();
 
         if (comercial == null || comercial.isEmpty()) {
-            mostrarMensaje("Selecciona un comercial");
+            mostrarAlerta("Selecciona un comercial", Alert.AlertType.ERROR);
             return;
         }
 
@@ -396,7 +401,7 @@ public class PantallaInformesController implements Initializable {
             List<Map<String, Object>> datos = obtenerVentasPorMes(comercial);
 
             if (datos.isEmpty()) {
-                mostrarMensaje("No hay ventas este mes para este comercial");
+                AlertasSolarManager.errorGenerico("No hay ventas este mes para este comercial");
                 return;
             }
 
@@ -417,7 +422,7 @@ public class PantallaInformesController implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarMensaje("Error generando informe: " + e.getMessage());
+            AlertasSolarManager.errorGenerico("Error generando informe: " + e.getMessage());
         }
     }
 
@@ -485,7 +490,7 @@ public class PantallaInformesController implements Initializable {
         String comercial = comboComerciales.getValue();
 
         if (comercial == null || comercial.isEmpty()) {
-            mostrarMensaje("Selecciona un comercial");
+            mostrarAlerta("Selecciona un comercial", Alert.AlertType.ERROR);
             return;
         }
 
@@ -589,9 +594,7 @@ public class PantallaInformesController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        } catch (Exception e) {
-        e.printStackTrace();
-        }
+       
     }
 
     

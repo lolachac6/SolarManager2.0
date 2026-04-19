@@ -47,6 +47,12 @@ public class PantallaLoginController implements Initializable {
                 getClass().getResource("/assets/iconos/solar_manager_logo.jpg").toExternalForm()
         );
         imgLogo.setImage(logo);
+        
+        // ENTER en usuario
+        txtUsuario.setOnAction(e -> handleAceptar());
+
+        // ENTER en contraseña
+        txtPassword.setOnAction(e -> handleAceptar());
     }
 
     @FXML
