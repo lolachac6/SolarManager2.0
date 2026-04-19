@@ -250,7 +250,7 @@ public class AltaClienteController implements Initializable {
                 coleccion.updateOne(filtro, update);
             }
 
-            volverInicio(event);
+            volver(event);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -372,10 +372,12 @@ public class AltaClienteController implements Initializable {
             }
         }
 
-        if (calle.isEmpty() && (!numero.isEmpty() || !ciudad.isEmpty() || !provincia.isEmpty() || !codigoPostal.isEmpty())) {
-            AlertasSolarManager.direccionObligatoria();
+        // Dirección obligatoria
+        if (calle.isEmpty() || numero.isEmpty() || ciudad.isEmpty() || provincia.isEmpty() || codigoPostal.isEmpty()) {
+            AlertasSolarManager.errorGenerico("Todos los campos de dirección son obligatorios.");
             return false;
         }
+
 
         return true;
     }
@@ -394,7 +396,7 @@ public class AltaClienteController implements Initializable {
             return;
         }
 
-        volverInicio(e);
+        volver(e);
     }
 
     /**
