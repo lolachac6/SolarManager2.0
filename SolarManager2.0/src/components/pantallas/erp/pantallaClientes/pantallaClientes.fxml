@@ -117,17 +117,25 @@
                                 </columns>
 
                             </TableView>
+
                             <!-- PANEL INFERIOR -->
-                    <Pane prefHeight="100"
-                          style="-fx-background-color:white;
-                                 -fx-border-color:#d0d0d0;
-                                 -fx-border-width:2;
-                                 -fx-border-radius:5;
-                                 -fx-background-radius:5;"/>
+                            <Pane prefHeight="100"
+                                  style="-fx-background-color:white;
+                                         -fx-border-color:#d0d0d0;
+                                         -fx-border-width:2;
+                                         -fx-border-radius:5;
+                                         -fx-background-radius:5;"/>
 
                             <HBox spacing="10">
+                                <Pane HBox.hgrow="ALWAYS"/>
+
+                                <Button text="Detalles"
+                                        onAction="#detalle"/>
+
                                 <Button fx:id="btnAñadirCliente"
-                                text="➕ Añadir Cliente"  onAction="#añadirCliente" style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
+                                        text="➕ Añadir Cliente"
+                                        onAction="#añadirCliente"
+                                        style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
 
                                 <Button text="Calcular Instalación"
                                         onAction="#calcularInstalacion"/>
@@ -137,8 +145,6 @@
 
                                 <Button text="Eliminar"
                                         onAction="#eliminarCliente"/>
-
-                                <Pane HBox.hgrow="ALWAYS"/>
 
                             </HBox>
 

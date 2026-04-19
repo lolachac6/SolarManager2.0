@@ -20,6 +20,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.Cliente;
 import modelo.Direccion;
@@ -263,6 +264,41 @@ public class PantallaClientesController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
             AlertasSolarManager.errorAbrirEdicionCliente();
+        }
+    }
+
+    @FXML
+    private void detalle(ActionEvent event) {
+        Cliente seleccionado = tablaClientes.getSelectionModel().getSelectedItem();
+
+        if (seleccionado == null) {
+            AlertasSolarManager.seleccionarClienteParaEditar();
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/components/pantallas/pantallaDetalleClientes/PantallaDetalleClientes.fxml")
+            );
+
+            Parent root = loader.load();
+
+            components.pantallas.pantallaDetalleClientes.PantallaDetalleClientesController controller =
+                    loader.getController();
+            controller.cargarClientePorId(seleccionado.getId());
+
+            Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            Stage modal = new Stage();
+            modal.initOwner(stageActual);
+            modal.initModality(Modality.APPLICATION_MODAL);
+            modal.setResizable(false);
+            modal.setScene(new Scene(root));
+            modal.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertasSolarManager.errorGenerico("No se pudo abrir el detalle del cliente.");
         }
     }
 
