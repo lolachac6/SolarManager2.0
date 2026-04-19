@@ -6,13 +6,11 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane id="AnchorPane"
-            
             styleClass="mainFxmlClass"
             xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/8"
             fx:controller="components.pantallas.erp.pantallaComerciales.PantallaComercialesController">
 
-    
     <stylesheets>
         <URL value="@pantallacomerciales.css"/>
     </stylesheets>
@@ -24,7 +22,6 @@
                     AnchorPane.rightAnchor="0.0"
                     AnchorPane.topAnchor="0.0">
 
-            <!-- CABECERA -->
             <top>
                 <HBox alignment="CENTER_LEFT"
                       spacing="10"
@@ -42,18 +39,16 @@
                 </HBox>
             </top>
 
-            <!-- MENU LATERAL -->
             <left>
                 <VBox alignment="TOP_CENTER"
                       prefWidth="200"
                       spacing="10"
-                      style="
-                            -fx-background-color:#e6e9ef;
-                            -fx-padding:85 15 15 15;
-                            -fx-border-color:#d0d0d0;
-                            -fx-border-width:2;
-                            -fx-background-radius:5;
-                            -fx-border-radius:5;">
+                      style="-fx-background-color:#e6e9ef;
+                             -fx-padding:85 15 15 15;
+                             -fx-border-color:#d0d0d0;
+                             -fx-border-width:2;
+                             -fx-background-radius:5;
+                             -fx-border-radius:5;">
 
                     <BorderPane.margin>
                         <Insets top="90.0" right="15.0" bottom="65.0" left="15.0"/>
@@ -62,36 +57,25 @@
                     <Label text="Inicio"
                            style="-fx-font-weight:bold;"/>
 
-                     <Button maxWidth="Infinity" onAction="#irClientes" styleClass="menu-button" text="Clientes" />
-
+                    <Button maxWidth="Infinity" onAction="#irClientes" styleClass="menu-button" text="Clientes" />
                     <Button maxWidth="Infinity" onAction="#irComerciales" styleClass="menu-button" text="Comerciales" />
-
                     <Button maxWidth="Infinity" onAction="#irProveedores" styleClass="menu-button" text="Proveedores" />
-
                     <Button maxWidth="Infinity" onAction="#irStock" styleClass="menu-button" text="Stock" />
-
                     <Button maxWidth="Infinity" onAction="#irPresupuestos" styleClass="menu-button" text="Presupuestos" />
-                    
                     <Button maxWidth="Infinity" onAction="#irInstalaciones" styleClass="menu-button" text="Instalaciones" />
-
                     <Button maxWidth="Infinity" onAction="#irInformes" styleClass="menu-button" text="Informes" />
-                    
-                    
 
                 </VBox>
             </left>
 
-            <!-- CONTENIDO -->
             <center>
                 <VBox spacing="20"
                       style="-fx-padding:20;">
 
-                    <!-- TITULO -->
                     <Label fx:id="lblTituloPagina"
                            text="Comerciales"
                            style="-fx-font-size:22px; -fx-font-weight:bold;"/>
 
-                    <!-- FILTRO -->
                     <HBox spacing="10">
 
                         <TextField fx:id="txtFiltro"
@@ -104,7 +88,6 @@
 
                     </HBox>
 
-                    <!-- TABLA -->
                     <TableView fx:id="tablaComerciales"
                                VBox.vgrow="ALWAYS"
                                style="-fx-border-color:#d0d0d0; -fx-border-width:2;">
@@ -128,7 +111,6 @@
 
                     </TableView>
 
-                    <!-- PANEL INFERIOR -->
                     <Pane prefHeight="100"
                           style="-fx-background-color:white;
                                  -fx-border-color:#d0d0d0;
@@ -136,22 +118,17 @@
                                  -fx-border-radius:5;
                                  -fx-background-radius:5;"/>
 
-                    <!-- BOTONES -->
                     <HBox spacing="10">
 
-                        <!-- IZQUIERDA -->
                         <Button fx:id="btnAñadirComercial"
                                 text="➕ Añadir Comercial"  onAction="#anadirComercial" style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
-                               
+
                         <Pane HBox.hgrow="ALWAYS"/>
 
-                        <!-- DERECHA -->
+                        <Button text="Detalle" onAction="#verDetalle"/>
                         <Button fx:id="btnModificar" text="Modificar" onAction="#modificarComercial" />
                         <Button fx:id="btnEliminar" text="Eliminar" onAction="#eliminarComercial" />
                         <Button fx:id="btnReactivar" text="Reactivar comercial" onAction="#reactivarComercial" />
-
-                        
-                        
 
                     </HBox>
 

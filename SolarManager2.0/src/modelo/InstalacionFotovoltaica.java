@@ -21,6 +21,8 @@ package modelo;
  * <li>Producción energética estimada</li>
  * <li>Ahorro económico estimado</li>
  * <li>Dirección donde se realizará la instalación</li>
+ * <li>Inversor asociado a la instalación</li>
+ * <li>Indica si la instalación lleva batería</li>
  * </ul>
  *
  * @author ivang
@@ -48,6 +50,12 @@ public class InstalacionFotovoltaica {
     /** Dirección donde se ubica la instalación */
     private Direccion direccion;
 
+    /** Inversor asociado a la instalación */
+    private String inversor;
+
+    /** Indica si la instalación lleva batería */
+    private boolean bateria;
+
     /**
      * Constructor vacío.
      * <p>
@@ -68,10 +76,12 @@ public class InstalacionFotovoltaica {
      * @param produccionEstimada producción energética estimada
      * @param ahorroEstimado ahorro económico estimado
      * @param direccion dirección de la instalación
+     * @param inversor inversor asociado a la instalación
+     * @param bateria true si la instalación lleva batería
      */
     public InstalacionFotovoltaica(String id, String idCliente, double potenciaInstalada, int numeroPaneles,
                                    double produccionEstimada, double ahorroEstimado,
-                                   Direccion direccion) {
+                                   Direccion direccion, String inversor, boolean bateria) {
         this.id = id;
         this.idCliente = idCliente;
         this.potenciaInstalada = potenciaInstalada;
@@ -79,6 +89,8 @@ public class InstalacionFotovoltaica {
         this.produccionEstimada = produccionEstimada;
         this.ahorroEstimado = ahorroEstimado;
         this.direccion = direccion;
+        this.inversor = inversor;
+        this.bateria = bateria;
     }
 
     /**
@@ -208,6 +220,42 @@ public class InstalacionFotovoltaica {
     }
 
     /**
+     * Obtiene el inversor asociado a la instalación.
+     *
+     * @return inversor de la instalación
+     */
+    public String getInversor() {
+        return inversor;
+    }
+
+    /**
+     * Establece el inversor asociado a la instalación.
+     *
+     * @param inversor inversor de la instalación
+     */
+    public void setInversor(String inversor) {
+        this.inversor = inversor;
+    }
+
+    /**
+     * Indica si la instalación lleva batería.
+     *
+     * @return true si la instalación lleva batería
+     */
+    public boolean getBateria() {
+        return bateria;
+    }
+
+    /**
+     * Establece si la instalación lleva batería.
+     *
+     * @param bateria true si la instalación lleva batería
+     */
+    public void setBateria(boolean bateria) {
+        this.bateria = bateria;
+    }
+
+    /**
      * Devuelve una representación en texto de la instalación.
      *
      * @return descripción textual de la instalación
@@ -220,6 +268,8 @@ public class InstalacionFotovoltaica {
                 + " | Paneles: " + numeroPaneles
                 + " | Producción estimada: " + produccionEstimada
                 + " | Ahorro estimado: " + ahorroEstimado
-                + " | Dirección: " + direccion;
+                + " | Dirección: " + direccion
+                + " | Inversor: " + inversor
+                + " | Batería: " + bateria;
     }
 }

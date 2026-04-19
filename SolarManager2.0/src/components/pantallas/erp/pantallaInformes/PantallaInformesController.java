@@ -39,6 +39,7 @@ import java.time.LocalDate;
 import java.util.*;
 import net.sf.jasperreports.view.JasperViewer;
 import org.bson.types.ObjectId;
+import utils.AlertasSolarManager;
 
 /**
  * Controlador principal de la pantalla de informes del ERP SolarManager.
@@ -79,6 +80,9 @@ public class PantallaInformesController implements Initializable {
 
         compilarInformes();
     }
+    private void mostrarAlerta(String msg, Alert.AlertType tipo) {
+            AlertasSolarManager.mostrar(tipo, null, msg);
+        }
 
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
@@ -234,7 +238,7 @@ public class PantallaInformesController implements Initializable {
         String comercial = comboComerciales.getValue();
 
         if (comercial == null || comercial.isEmpty()) {
-            mostrarMensaje("Selecciona un comercial");
+            mostrarAlerta("Selecciona un comercial", Alert.AlertType.INFORMATION);
             return;
         }
 
@@ -245,21 +249,10 @@ public class PantallaInformesController implements Initializable {
                 boolean hayDatos = datos.stream()
                         .anyMatch(m -> ((Number)m.get("total")).doubleValue() > 0);
 
-                if (!hayDatos) {
-                    Platform.runLater(() -> mostrarMensaje("Este comercial aún no tiene clientes asignados"));
+                if (!hayDatos || datos.isEmpty()) {
+                    Platform.runLater(() -> mostrarAlerta("Este comercial aún no tiene clientes asignados", Alert.AlertType.INFORMATION));
                     return;
                 }
-
-                if (!hayDatos) {
-                    Platform.runLater(() -> mostrarMensaje("Este comercial aún no tiene clientes asignados"));
-                    return;
-                }
-
-                if (datos.isEmpty()) {
-                    Platform.runLater(() -> mostrarMensaje("Este comercial aún no tiene clientes asignados"));
-                    return;
-                }
-
                 Map<String, Object> params = new HashMap<>();
                 params.put("COMERCIAL", comercial);
 
@@ -276,7 +269,7 @@ public class PantallaInformesController implements Initializable {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Platform.runLater(() -> mostrarMensaje("Error generando informe: " + e.getMessage()));
+                Platform.runLater(() -> mostrarAlerta("Error generando informe: ", Alert.AlertType.ERROR) );
             }
         }).start();
     }
@@ -384,7 +377,7 @@ public class PantallaInformesController implements Initializable {
         String comercial = comboComerciales.getValue();
 
         if (comercial == null || comercial.isEmpty()) {
-            mostrarMensaje("Selecciona un comercial");
+            mostrarAlerta("Selecciona un comercial",Alert.AlertType.INFORMATION);
             return;
         }
 
@@ -396,7 +389,7 @@ public class PantallaInformesController implements Initializable {
             List<Map<String, Object>> datos = obtenerVentasPorMes(comercial);
 
             if (datos.isEmpty()) {
-                mostrarMensaje("No hay ventas este mes para este comercial");
+                mostrarAlerta("No hay ventas este mes para este comercial", Alert.AlertType.INFORMATION);
                 return;
             }
 
@@ -417,7 +410,7 @@ public class PantallaInformesController implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarMensaje("Error generando informe: " + e.getMessage());
+            mostrarAlerta("Error generando informe: ", Alert.AlertType.INFORMATION);
         }
     }
 
@@ -485,8 +478,7 @@ public class PantallaInformesController implements Initializable {
         String comercial = comboComerciales.getValue();
 
         if (comercial == null || comercial.isEmpty()) {
-            mostrarMensaje("Selecciona un comercial");
-            return;
+            mostrarAlerta("Selecciona un comercial",Alert.AlertType.INFORMATION);
         }
 
         JasperPrint print = generarInformeRelacionVentas(comercial);
@@ -589,32 +581,7 @@ public class PantallaInformesController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        } catch (Exception e) {
-        e.printStackTrace();
-        }
     }
 
     
-    /**
-    * Muestra un mensaje informativo en un cuadro de diálogo.
-    *
-    * @param mensaje texto a mostrar
-    */
-    private void mostrarMensaje(String mensaje) {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle("Mensaje");
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensaje);
-        alerta.showAndWait();
-    }
-
-    private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
-        Platform.runLater(() -> {
-            Alert alerta = new Alert(tipo);
-            alerta.setTitle("Mensaje");
-            alerta.setHeaderText(null);
-            alerta.setContentText(mensaje);
-            alerta.showAndWait();
-        });
-    }
 }

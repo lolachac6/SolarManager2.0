@@ -119,9 +119,6 @@ public class CalculoInstalacionController implements Initializable {
      *
      * @param e Evento de acción
      */
-      // =========================
-    // VOLVER NUEVO / CANCELAR
-    // =========================
     @FXML
     private void volverInicio(ActionEvent e) {
 
@@ -133,8 +130,8 @@ public class CalculoInstalacionController implements Initializable {
             destino = "/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml";
         }
 
-    cambiarPantalla((Node) e.getSource(), destino);
-}
+        cambiarPantalla((Node) e.getSource(), destino);
+    }
 
     /**
      * Llama al servicio solar para calcular la instalación y muestra los resultados.
@@ -246,6 +243,8 @@ public class CalculoInstalacionController implements Initializable {
                     .append("numeroPaneles", convertirAInteger(txtPanelesNecesarios))
                     .append("produccionEstimada", convertirADouble(txtHorasSol))
                     .append("ahorroEstimado", convertirADouble(txtPresupuesto))
+                    .append("inversor", "")
+                    .append("bateria", chkBateria.isSelected())
                     .append("direccion", direccionInstalacion);
 
             coleccionInstalaciones.insertOne(instalacion);
@@ -301,7 +300,7 @@ public class CalculoInstalacionController implements Initializable {
 
         if (confirm.showAndWait().get() == ButtonType.OK) {
             volverInicio(event);
-            
+
         }
     }
 

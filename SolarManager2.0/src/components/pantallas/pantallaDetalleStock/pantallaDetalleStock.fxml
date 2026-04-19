@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="components.pantallas.pantallaDetalleStock.PantallaDetalleStockController">
+
+    <children>
+        <VBox spacing="15" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+
+            <Label text="Detalle Producto" style="-fx-font-size:18px; -fx-font-weight:bold;" />
+
+            <TextField fx:id="txtNombre" promptText="Nombre" editable="false"/>
+            <TextField fx:id="txtTipo" promptText="Tipo" editable="false"/>
+            <TextField fx:id="txtPrecio" promptText="Precio" editable="false"/>
+            <TextField fx:id="txtStock" promptText="Stock" editable="false"/>
+
+            <Button fx:id="btnCerrar" text="Cerrar" onAction="#cerrar"/>
+
+        </VBox>
+    </children>
+</AnchorPane>

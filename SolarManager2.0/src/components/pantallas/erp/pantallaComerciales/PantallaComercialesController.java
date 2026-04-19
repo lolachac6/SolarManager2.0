@@ -18,11 +18,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.Comercial;
 import modelo.Direccion;
@@ -49,13 +49,6 @@ public class PantallaComercialesController implements Initializable {
 
     private ObservableList<Comercial> listaOriginal = FXCollections.observableArrayList();
 
-    /**
-     * Inicializa el controlador configurando columnas, carga de datos
-     * y filtro de búsqueda.
-     *
-     * @param url URL de inicialización
-     * @param rb recursos asociados
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -85,11 +78,6 @@ public class PantallaComercialesController implements Initializable {
         txtFiltro.textProperty().addListener((obs, oldVal, newVal) -> buscarFiltro());
     }
 
-    /**
-     * Obtiene los comerciales desde MongoDB y los carga en la tabla.
-     *
-     * @throws IOException si ocurre un error de acceso
-     */
     public void obtenerComercialesTabla() throws IOException {
         MongoDatabase db = MongoConnection.conectar();
         MongoCollection<Document> coleccion = db.getCollection("Comerciales");
@@ -129,51 +117,77 @@ public class PantallaComercialesController implements Initializable {
         tablaComerciales.setItems(listaOriginal);
     }
 
-    /**
-     * Abre la pantalla de edición del comercial seleccionado.
-     *
-     * @param event evento de acción
-     */
     @FXML
-public void modificarComercial(ActionEvent event) {
-    Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
+    private void verDetalle(ActionEvent event) {
+        Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
 
-    if (seleccionado == null) {
-        AlertasSolarManager.seleccionarComercial();
-        return;
+        if (seleccionado == null) {
+            AlertasSolarManager.warning("Aviso", "Debe seleccionar un comercial");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/components/pantallas/pantallaDetalleComerciales/pantallaDetalleComerciales.fxml")
+            );
+
+            Parent root = loader.load();
+
+            components.pantallas.pantallaDetalleComerciales.PantallaDetalleComercialesController controller =
+                    loader.getController();
+            controller.cargarComercial(seleccionado);
+
+            Stage modal = new Stage();
+            modal.initModality(Modality.WINDOW_MODAL);
+            modal.initOwner(((Node) event.getSource()).getScene().getWindow());
+            modal.setResizable(false);
+            modal.setTitle("Detalle Comercial");
+            modal.setScene(new Scene(root));
+            modal.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertasSolarManager.errorGenerico("Error al abrir detalle del comercial");
+        }
     }
 
-    try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                "/components/pantallas/erp/pantallaAltaComercial/pantallaAltaComercial.fxml"));
-        Parent root = loader.load();
+    @FXML
+    public void modificarComercial(ActionEvent event) {
+        Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
 
-        PantallaAltaComercialController controller = loader.getController();
-        controller.cargarDatos(seleccionado);
+        if (seleccionado == null) {
+            AlertasSolarManager.seleccionarComercial();
+            return;
+        }
 
-        Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stageActual.close();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/components/pantallas/erp/pantallaAltaComercial/pantallaAltaComercial.fxml"));
+            Parent root = loader.load();
 
-        Stage nuevoStage = new Stage();
-        nuevoStage.setScene(new Scene(root));
-        nuevoStage.setResizable(true);
+            PantallaAltaComercialController controller = loader.getController();
+            controller.cargarDatos(seleccionado);
 
-        Platform.runLater(() -> {
-            nuevoStage.setMaximized(true);
-            nuevoStage.centerOnScreen();
-        });
+            Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stageActual.close();
 
-        nuevoStage.show();
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
 
-    } catch (Exception e) {
-        e.printStackTrace();
-        AlertasSolarManager.errorGenerico("Error al abrir la pantalla de modificar comercial");
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertasSolarManager.errorGenerico("Error al abrir la pantalla de modificar comercial");
+        }
     }
-}
 
-    /**
-     * Filtra los comerciales según el texto introducido.
-     */
     @FXML
     public void buscarFiltro() {
         String texto = txtFiltro.getText().toLowerCase();
@@ -194,71 +208,36 @@ public void modificarComercial(ActionEvent event) {
         tablaComerciales.setItems(listaFiltrada);
     }
 
-    /**
-     * Vuelve a la plantilla general.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void volverInicio(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml");
     }
 
-    /**
-     * Abre la pantalla de alta de comercial.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void anadirComercial(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaAltaComercial/pantallaAltaComercial.fxml");
     }
 
-    /**
-     * Navega a la pantalla de clientes.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irClientes(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaClientes/PantallaClientes.fxml");
     }
 
-    /**
-     * Navega a la pantalla de comerciales.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irComerciales(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
     }
 
-    /**
-     * Navega a la pantalla de proveedores.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irProveedores(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaProveedor/PantallaProveedor.fxml");
     }
 
-    /**
-     * Navega a la pantalla de stock.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irStock(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaStock/PantallaStock.fxml");
     }
 
-    /**
-     * Navega a la pantalla de presupuestos.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irPresupuestos(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
@@ -270,22 +249,11 @@ public void modificarComercial(ActionEvent event) {
             "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
     }
 
-    /**
-     * Navega a la pantalla de informes.
-     *
-     * @param e evento de acción
-     */
     @FXML
     private void irInformes(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
 
-    /**
-     * Cambia la pantalla actual por otra indicada.
-     *
-     * @param nodo nodo origen
-     * @param rutaFXML ruta del fichero FXML
-     */
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
@@ -310,11 +278,6 @@ public void modificarComercial(ActionEvent event) {
         }
     }
 
-    /**
-     * Desactiva el comercial seleccionado.
-     *
-     * @param event evento de acción
-     */
     @FXML
     private void eliminarComercial(ActionEvent event) {
         Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
@@ -345,9 +308,6 @@ public void modificarComercial(ActionEvent event) {
         }
     }
 
-    /**
-     * Reactiva el comercial seleccionado.
-     */
     @FXML
     private void reactivarComercial() {
         Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
