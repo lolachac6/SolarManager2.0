@@ -1,5 +1,6 @@
 package components.pantallas.erp.pantallaComerciales;
 
+
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -7,45 +8,39 @@ import components.pantallas.erp.pantallaAltaComercial.PantallaAltaComercialContr
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import modelo.Comercial;
 import modelo.Direccion;
 import org.bson.Document;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
 import org.bson.types.ObjectId;
-import utils.AlertasSolarManager;
 
-/**
- * Controlador de la pantalla de gestión de comerciales.
- *
- * <p>Gestiona la carga de comerciales en tabla, la búsqueda,
- * la navegación entre pantallas y las operaciones de edición,
- * desactivación y reactivación.</p>
- *
- * @author Iván
- */
 public class PantallaComercialesController implements Initializable {
 
-    @FXML private TableView<Comercial> tablaComerciales;
-    @FXML private TableColumn<Comercial, String> colId, colNombre, colActivo, colApellidos,
-            colTelefono, colEmail, colDireccion, colTipoContrato, colDni,
-            colNumeroCuenta, colCentroTrabajo, colObservaciones;
-    @FXML private TextField txtFiltro;
+ 
+
+    @FXML
+    private TableView<Comercial> tablaComerciales;
+    @FXML
+    private TableColumn<Comercial, String> colId, colNombre, colActivo, colApellidos, colTelefono, colEmail, colDireccion, colTipoContrato, colDni, colNumeroCuenta, colCentroTrabajo, colObservaciones;
+    @FXML
+    private TextField txtFiltro;
 
     private ObservableList<Comercial> listaOriginal = FXCollections.observableArrayList();
 
@@ -118,73 +113,25 @@ public class PantallaComercialesController implements Initializable {
     }
 
     @FXML
-    private void verDetalle(ActionEvent event) {
-        Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
-
-        if (seleccionado == null) {
-            AlertasSolarManager.warning("Aviso", "Debe seleccionar un comercial");
-            return;
-        }
-
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/components/pantallas/pantallaDetalleComerciales/pantallaDetalleComerciales.fxml")
-            );
-
-            Parent root = loader.load();
-
-            components.pantallas.pantallaDetalleComerciales.PantallaDetalleComercialesController controller =
-                    loader.getController();
-            controller.cargarComercial(seleccionado);
-
-            Stage modal = new Stage();
-            modal.initModality(Modality.WINDOW_MODAL);
-            modal.initOwner(((Node) event.getSource()).getScene().getWindow());
-            modal.setResizable(false);
-            modal.setTitle("Detalle Comercial");
-            modal.setScene(new Scene(root));
-            modal.showAndWait();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            AlertasSolarManager.errorGenerico("Error al abrir detalle del comercial");
-        }
-    }
-
-    @FXML
     public void modificarComercial(ActionEvent event) {
         Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
-
         if (seleccionado == null) {
-            AlertasSolarManager.seleccionarComercial();
+            mostrarAlerta("Atención", AlertType.WARNING);
             return;
         }
-
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/components/pantallas/erp/pantallaAltaComercial/pantallaAltaComercial.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/pantallas/erp/pantallaAltaComercial/pantallaAltaComercial.fxml"));
             Parent root = loader.load();
 
             PantallaAltaComercialController controller = loader.getController();
             controller.cargarDatos(seleccionado);
 
-            Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stageActual.close();
-
-            Stage nuevoStage = new Stage();
-            nuevoStage.setScene(new Scene(root));
-            nuevoStage.setResizable(true);
-
-            Platform.runLater(() -> {
-                nuevoStage.setMaximized(true);
-                nuevoStage.centerOnScreen();
-            });
-
-            nuevoStage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            AlertasSolarManager.errorGenerico("Error al abrir la pantalla de modificar comercial");
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            mostrarAlerta("Error", AlertType.ERROR);
         }
     }
 
@@ -244,38 +191,27 @@ public class PantallaComercialesController implements Initializable {
     }
 
     @FXML
-    private void irInstalaciones(javafx.event.ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
-            "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
-    }
-
-    @FXML
     private void irInformes(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
 
-    private void cambiarPantalla(Node nodo, String rutaFXML) {
+    private void cambiarPantalla(Node nodo, String ruta) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
-            Parent root = loader.load();
-
-            Stage stageActual = (Stage) nodo.getScene().getWindow();
-            stageActual.close();
-
-            Stage nuevoStage = new Stage();
-            nuevoStage.setScene(new Scene(root));
-            nuevoStage.setResizable(true);
-
-            Platform.runLater(() -> {
-                nuevoStage.setMaximized(true);
-                nuevoStage.centerOnScreen();
-            });
-
-            nuevoStage.show();
-
+            Parent root = FXMLLoader.load(getClass().getResource(ruta));
+            Stage stage = (Stage) nodo.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
         } catch (IOException e) {
-            e.printStackTrace();
+            mostrarAlerta("Error de navegación", AlertType.ERROR);
         }
+    }
+
+    private void mostrarAlerta(String titulo, AlertType tipo) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle("Solar Manager");
+        alert.setHeaderText(titulo);
+
+        alert.showAndWait();
     }
 
     @FXML
@@ -283,11 +219,17 @@ public class PantallaComercialesController implements Initializable {
         Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            AlertasSolarManager.seleccionarComercial();
+            mostrarAlerta("Atención", AlertType.WARNING);
             return;
         }
 
-        if (!AlertasSolarManager.confirmarEliminarComercial()) {
+       
+        Alert confirm = new Alert(AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar eliminación");
+        confirm.setHeaderText("Eliminar comercial");
+        confirm.setContentText("¿Estás seguro que deseas eliminar el comercial?");
+
+        if (confirm.showAndWait().get() != ButtonType.OK) {
             return;
         }
 
@@ -300,24 +242,32 @@ public class PantallaComercialesController implements Initializable {
                     new Document("$set", new Document("activo", false))
             );
 
-            AlertasSolarManager.operacionCorrecta();
+            mostrarAlerta("Correcto", AlertType.INFORMATION);
+
             obtenerComercialesTabla();
 
         } catch (IOException e) {
-            AlertasSolarManager.errorGenerico("Error");
+            mostrarAlerta("Error", AlertType.ERROR);
         }
     }
+
 
     @FXML
     private void reactivarComercial() {
         Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            AlertasSolarManager.seleccionarComercial();
+            mostrarAlerta("Atención", AlertType.WARNING);
             return;
         }
 
-        if (!AlertasSolarManager.confirmarReactivarComercial()) {
+       
+        Alert confirm = new Alert(AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar reactivacion");
+       confirm.setHeaderText("Reactivar comercial");
+        confirm.setContentText("¿Estás seguro que deseas reactivar el comercial?");
+
+        if (confirm.showAndWait().get() != ButtonType.OK) {
             return;
         }
 
@@ -330,11 +280,13 @@ public class PantallaComercialesController implements Initializable {
                     new Document("$set", new Document("activo", true))
             );
 
-            AlertasSolarManager.operacionCorrecta();
+            mostrarAlerta("Correcto", AlertType.INFORMATION);
+
             obtenerComercialesTabla();
 
         } catch (IOException e) {
-            AlertasSolarManager.errorGenerico("Error");
+            mostrarAlerta("Error", AlertType.ERROR);
         }
+
     }
 }
