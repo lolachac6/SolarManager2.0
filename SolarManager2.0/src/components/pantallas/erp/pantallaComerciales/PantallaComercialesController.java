@@ -49,7 +49,7 @@ public class PantallaComercialesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        colId.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getId() != null ? data.getValue().getId() : ""));
+        
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
         colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
