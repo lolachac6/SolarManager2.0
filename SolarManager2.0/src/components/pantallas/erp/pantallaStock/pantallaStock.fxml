@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.pantallas.erp.pantallaStock.PantallaStockController">
+<AnchorPane styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.pantallas.erp.pantallaStock.PantallaStockController">
 
     <stylesheets>
         <URL value="@pantallaStock.css" />
@@ -86,12 +86,11 @@
                     <!-- TABLA -->
                     <TableView fx:id="tablaStock" style="-fx-border-color:#d0d0d0; -fx-border-width:2;" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="colId" prefWidth="100" text="ID" />
-                            <TableColumn fx:id="colNombre" prefWidth="220" text="Nombre" />
-                            <TableColumn fx:id="colTipo" prefWidth="180" text="Tipo Producto" />
-                            <TableColumn fx:id="colPrecio" prefWidth="140" text="Precio (€)" />
-                            <TableColumn fx:id="colProveedor" prefWidth="180" text="Proveedor" />
-                            <TableColumn fx:id="colStock" prefWidth="120" text="Stock" />
+                            <TableColumn fx:id="colNombre" prefWidth="283.99999046325684" text="Nombre" />
+                            <TableColumn fx:id="colTipo" prefWidth="200.00006103515625" text="Tipo Producto" />
+                            <TableColumn fx:id="colPrecio" prefWidth="111.19992065429688" text="Precio (€)" />
+                            <TableColumn fx:id="colProveedor" prefWidth="166.39996337890625" text="Proveedor" />
+                            <TableColumn fx:id="colStock" prefWidth="87.19989013671875" text="Stock" />
                         </columns>
                     </TableView>
 

@@ -115,9 +115,9 @@ public class CalculoInstalacionController implements Initializable {
     }
 
     /**
-     * Vuelve a la pantalla principal.
+     * Vuelve a la pantalla principal según el rol del usuario actual.
      *
-     * @param e Evento de acción
+     * @param e evento de acción
      */
     @FXML
     private void volverInicio(ActionEvent e) {
@@ -125,9 +125,9 @@ public class CalculoInstalacionController implements Initializable {
         String destino;
 
         if (SessionContext.isAdmin()) {
-            destino = "/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml";
-        } else {
             destino = "/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml";
+        } else {
+            destino = "/components/pantallas/erp/pantallaClientes/pantallaClientes.fxml";
         }
 
         cambiarPantalla((Node) e.getSource(), destino);
@@ -280,28 +280,31 @@ public class CalculoInstalacionController implements Initializable {
     }
 
     /**
-     * Cancela la operación y vuelve atrás previa confirmación.
+     * Cancela la operación actual previa confirmación.
      *
-     * @param event Evento de acción
+     * @param e evento de acción
      */
     @FXML
-    private void cancelar(ActionEvent event) {
-        if (AlertasSolarManager.confirmar("Salir sin guardar", "¿Desea salir sin guardar?")) {
-            cambiarPantalla(
-                    (Node) event.getSource(),
-                    "/components/pantallas/comercial/pantallaGeneral/PantallaGeneral.fxml"
-            );
+    private void cancelar(ActionEvent e) {
+        if (!AlertasSolarManager.confirmar(
+                "Salir sin guardar",
+                "¿Desea salir sin guardar los cambios?"
+        )) {
+            return;
         }
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmación");
-        confirm.setHeaderText("Salir sin guardar");
-        confirm.setContentText("¿Desea salir sin guardar?");
-
-        if (confirm.showAndWait().get() == ButtonType.OK) {
-            volverInicio(event);
-
-        }
+        volver(e);
+    }
+    
+    /**
+     * Vuelve a la pantalla de listado de clientes.
+     *
+     * @param event evento de acción
+     */
+    @FXML
+    private void volver(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(),
+                "/components/pantallas/erp/pantallaClientes/pantallaClientes.fxml");
     }
 
     /**

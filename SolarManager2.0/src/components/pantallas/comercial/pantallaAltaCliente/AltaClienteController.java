@@ -410,9 +410,9 @@ public class AltaClienteController implements Initializable {
         String destino;
 
         if (SessionContext.isAdmin()) {
-            destino = "/components/pantallas/erp/plantillaGeneral/plantillaGeneral.fxml";
-        } else {
             destino = "/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml";
+        } else {
+            destino = "/components/pantallas/erp/pantallaClientes/pantallaClientes.fxml";
         }
 
         cambiarPantalla((Node) e.getSource(), destino);
@@ -423,6 +423,7 @@ public class AltaClienteController implements Initializable {
      *
      * @param event evento de acción
      */
+    @FXML
     private void volver(ActionEvent event) {
         cambiarPantalla((Node) event.getSource(),
                 "/components/pantallas/erp/pantallaClientes/pantallaClientes.fxml");
@@ -437,9 +438,11 @@ public class AltaClienteController implements Initializable {
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(rutaFXML));
+            
             Stage stage = (Stage) nodo.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.centerOnScreen();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
