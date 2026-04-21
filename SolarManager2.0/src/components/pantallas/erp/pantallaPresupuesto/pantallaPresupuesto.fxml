@@ -76,7 +76,6 @@
                                VBox.vgrow="ALWAYS">
 
                         <columns>
-                            <TableColumn fx:id="colId" prefWidth="190" text="ID" />
                             <TableColumn fx:id="colIdCliente" prefWidth="220" text="Cliente" />
                             <TableColumn fx:id="colIdComercial" prefWidth="180" text="Comercial" />
                             <TableColumn fx:id="colFechaCreacion" prefWidth="120" text="Fecha" />
@@ -100,12 +99,12 @@
                                 onAction="#hacerFactura"
                                 text="Hacer factura"
                                 style="-fx-background-color: #2f6fda; -fx-text-fill: white;" />
+                        <Button fx:id="btnverFactura" text="Ver Factura" onAction="#verFactura" />
 
                         <Pane HBox.hgrow="ALWAYS" />
 
-                        <Button fx:id="btnGuardar" onAction="#guardarPresupuesto" text="Guardar" />
-                        <Button fx:id="btnModificar" onAction="#modificarPresupuesto" text="Modificar" />
-                        <Button fx:id ="btnEliminar" text="Eliminar" onAction="#eliminarPresupuesto"  />
+                        <Button fx:id="btnDetalle" onAction="#irDetallePresupuesto" text="Detalle" />
+                        <Button fx:id="btnEliminar" text="Eliminar" onAction="#eliminarPresupuesto" />
                     </HBox>
 
                 </VBox>

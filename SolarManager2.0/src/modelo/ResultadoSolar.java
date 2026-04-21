@@ -12,6 +12,15 @@ public class ResultadoSolar {
     private double energiaPorPanel;
     private double presupuesto;
     private boolean autosuficiente;
+    private double potenciaInstalada;
+
+    public double getPotenciaInstalada() {
+        return potenciaInstalada;
+    }
+
+    public void setPotenciaInstalada(double potenciaInstalada) {
+        this.potenciaInstalada = potenciaInstalada;
+    }
 
     public double getHorasSol() { return horasSol; }
     public void setHorasSol(double horasSol) { this.horasSol = horasSol; }

@@ -56,6 +56,10 @@
                                     <Label text="Nombre y Apellidos" focusTraversable="false" />
                                     <TextField fx:id="txtNombreApellidos" editable="false" focusTraversable="false" />
                                 </VBox>
+                                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                    <Label text="Telefono" focusTraversable="false" />
+                                    <TextField fx:id="txtTelefono" editable="false" focusTraversable="false" />
+                                </VBox>
 
                                 <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
                                     <Label text="DNI / CIF" focusTraversable="false" />
@@ -108,7 +112,7 @@
 
                                 <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                     <Label text="Batería" focusTraversable="false" />
-                                    <CheckBox fx:id="chkBateria" focusTraversable="false" disable="true" />
+                                    <CheckBox fx:id="chkBateria" disable="true" focusTraversable="false" />
                                 </VBox>
 
                                 <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
@@ -167,21 +171,20 @@
                 </content>
             </ScrollPane>
 
-            <HBox spacing="12" alignment="CENTER_LEFT">
+            <HBox alignment="CENTER_LEFT" spacing="12">
                 <VBox spacing="5">
                     <Label text="Estado" focusTraversable="false" />
                     <ComboBox fx:id="comboEstado" prefWidth="220.0" />
                 </VBox>
 
                 <AnchorPane HBox.hgrow="ALWAYS" />
-
-                <Button onAction="#cancelar"
-                        text="Cancelar"
-                        style="-fx-min-width:120;" />
-
                 <Button onAction="#guardarPresupuesto"
-                        text="Guardar"
-                        style="-fx-min-width:120; -fx-background-color:#2f6fda; -fx-text-fill:white;" />
+                        style="-fx-min-width:120; -fx-background-color:#2f6fda; -fx-text-fill:white;"
+                        text="Guardar" />
+                
+                <Button onAction="#cancelar"
+                        style="-fx-min-width:120;"
+                        text="Cancelar" />
             </HBox>
 
         </VBox>

@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package modelo;
 
 import java.time.LocalDate;
@@ -32,26 +27,50 @@ import java.time.LocalDate;
  */
 public class Factura {
 
-    /** Identificador único de la factura */
+    /**
+     * Identificador único de la factura.
+     */
     private String id;
 
-    /** Número de factura (ejemplo: 2026-001) */
+    /**
+     * Número de factura.
+     */
     private String numeroFactura;
 
-    /** Identificador del presupuesto del que se genera la factura */
+    /**
+     * Identificador del presupuesto del que se genera la factura.
+     */
     private String idPresupuesto;
 
-    /** Fecha en la que se emite la factura */
+    /**
+     * Fecha en la que se emite la factura.
+     */
     private LocalDate fechaEmision;
 
-    /** Base imponible de la factura */
+    /**
+     * Base imponible de la factura.
+     */
     private double baseImponible;
 
-    /** Importe correspondiente al IVA */
+    /**
+     * Importe correspondiente al IVA.
+     */
     private double iva;
 
-    /** Importe total de la factura */
+    /**
+     * Importe total de la factura.
+     */
     private double total;
+
+    /**
+     * PDF binario de la factura.
+     */
+    private byte[] pdfFactura;
+
+    /**
+     * Nombre lógico del archivo PDF de la factura.
+     */
+    private String nombreArchivo;
 
     /**
      * Constructor vacío.
@@ -63,7 +82,8 @@ public class Factura {
     }
 
     /**
-     * Constructor completo para inicializar todos los atributos de la factura.
+     * Constructor completo para inicializar todos los atributos principales
+     * de la factura.
      *
      * @param id identificador de la factura
      * @param numeroFactura número de factura
@@ -76,7 +96,6 @@ public class Factura {
     public Factura(String id, String numeroFactura, String idPresupuesto,
                    LocalDate fechaEmision, double baseImponible,
                    double iva, double total) {
-
         this.id = id;
         this.numeroFactura = numeroFactura;
         this.idPresupuesto = idPresupuesto;
@@ -210,6 +229,42 @@ public class Factura {
      */
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    /**
+     * Obtiene el PDF binario de la factura.
+     *
+     * @return PDF en binario
+     */
+    public byte[] getPdfFactura() {
+        return pdfFactura;
+    }
+
+    /**
+     * Establece el PDF binario de la factura.
+     *
+     * @param pdfFactura PDF en binario
+     */
+    public void setPdfFactura(byte[] pdfFactura) {
+        this.pdfFactura = pdfFactura;
+    }
+
+    /**
+     * Obtiene el nombre lógico del archivo PDF.
+     *
+     * @return nombre del archivo
+     */
+    public String getNombreArchivo() {
+        return nombreArchivo;
+    }
+
+    /**
+     * Establece el nombre lógico del archivo PDF.
+     *
+     * @param nombreArchivo nombre del archivo
+     */
+    public void setNombreArchivo(String nombreArchivo) {
+        this.nombreArchivo = nombreArchivo;
     }
 
     /**
