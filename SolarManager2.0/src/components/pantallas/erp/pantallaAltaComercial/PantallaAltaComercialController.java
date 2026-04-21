@@ -1,237 +1,432 @@
 package components.pantallas.erp.pantallaAltaComercial;
 
+import ConexionSupabase.config;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import java.io.IOException;
 import modelo.Comercial;
+import org.mindrot.jbcrypt.BCrypt;
+
+import java.net.HttpURLConnection;
+import java.io.OutputStream;
+import java.util.Scanner;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import com.mongodb.client.model.Filters;
 import utils.AlertasSolarManager;
 
-/**
- * Controlador de la pantalla de alta y modificación de comerciales.
- *
- * Gestiona la carga de datos del comercial, el guardado en MongoDB
- * y la navegación de vuelta a la pantalla de comerciales.
- *
- * @author Iván
- */
 public class PantallaAltaComercialController implements Initializable {
 
-    @FXML private TextField txtNombre;
-    @FXML private TextField txtApellidos;
-    @FXML private TextField txtTelefono;
-    @FXML private TextField txtEmail;
-    @FXML private TextField txtDireccion;
-    @FXML private TextField txtUsuario;
-    @FXML private PasswordField txtPassword;
-    @FXML private CheckBox chkActivo;
+    @FXML
+    private TextField txtNombre;
+    @FXML
+    private TextField txtApellidos;
+    @FXML
+    private TextField txtTelefono;
+    @FXML
+    private TextField txtEmail;
+    @FXML
+    private TextField txtCalle;
+    @FXML
+    private TextField txtNumero;
+    @FXML
+    private TextField txtCodigoPostal;
+    @FXML
+    private TextField txtMunicipio;
+    @FXML
+    private TextField txtProvincia;
+    @FXML
+    private TextField txtDni;
+    @FXML
+    private PasswordField txtPassword;
+    @FXML
+    private TextField txtNumeroCuenta;
+    @FXML
+    private TextField txtCentroTrabajo;
+    @FXML
+    private TextField txtObservaciones;
+    @FXML
+    private CheckBox chkActivo;
+    @FXML
+    private ComboBox<Comercial.TipoContrato> cmbTipoContrato;
+    @FXML
+    private Label txtTituloAltaModificacion;
 
-    @FXML private TextField txtDni;
-    @FXML private TextField txtNumeroCuenta;
-    @FXML private TextField txtCentroTrabajo;
-    @FXML private TextArea txtObservaciones;
-
-    @FXML private TextField txtCalle;
-    @FXML private TextField txtNumero;
-    @FXML private TextField txtCodigoPostal;
-    @FXML private TextField txtMunicipio;
-    @FXML private TextField txtProvincia;
-
-    @FXML private ComboBox<Comercial.TipoContrato> cbTipoContrato;
-
-    private Comercial comercialEditar;
+    private boolean modoEdicion = false;
+    private String idComercialSeleccionado;
+    private String idSupabaseSeleccionado;
+    private final String SUPABASE_URL = config.get("supabase.key");
+    private final String SERVICE_ROLE_KEY = config.get("supabase.url");
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        cbTipoContrato.getItems().setAll(Comercial.TipoContrato.values());
-    }
-
-    /**
-     * Carga los datos del comercial seleccionado en el formulario.
-     *
-     * @param comercial comercial a editar
-     */
-    public void cargarDatos(Comercial comercial) {
-        if (comercial == null) {
-            return;
-        }
-
-        this.comercialEditar = comercial;
-
-        txtNombre.setText(comercial.getNombre() != null ? comercial.getNombre() : "");
-        txtApellidos.setText(comercial.getApellidos() != null ? comercial.getApellidos() : "");
-        txtTelefono.setText(comercial.getTelefono() != null ? comercial.getTelefono() : "");
-        txtEmail.setText(comercial.getEmail() != null ? comercial.getEmail() : "");
-        txtDni.setText(comercial.getDni() != null ? comercial.getDni() : "");
-        txtNumeroCuenta.setText(comercial.getNumeroCuenta() != null ? comercial.getNumeroCuenta() : "");
-        txtCentroTrabajo.setText(comercial.getCentroTrabajo() != null ? comercial.getCentroTrabajo() : "");
-        txtObservaciones.setText(comercial.getObservaciones() != null ? comercial.getObservaciones() : "");
-        chkActivo.setSelected(comercial.getActivo());
-
-        if (comercial.getTipoContrato() != null) {
-            cbTipoContrato.setValue(comercial.getTipoContrato());
-        }
-
-        if (comercial.getDireccion() != null) {
-            txtCalle.setText(comercial.getDireccion().getCalle() != null ? comercial.getDireccion().getCalle() : "");
-            txtNumero.setText(comercial.getDireccion().getNumero() != null ? comercial.getDireccion().getNumero() : "");
-            txtCodigoPostal.setText(comercial.getDireccion().getCodigoPostal() != null ? comercial.getDireccion().getCodigoPostal() : "");
-            txtMunicipio.setText(comercial.getDireccion().getMunicipio() != null ? comercial.getDireccion().getMunicipio() : "");
-            txtProvincia.setText(comercial.getDireccion().getProvincia() != null ? comercial.getDireccion().getProvincia() : "");
-
-            String direccionTexto = "";
-            if (comercial.getDireccion().getCalle() != null) {
-                direccionTexto += comercial.getDireccion().getCalle();
-            }
-            if (comercial.getDireccion().getNumero() != null && !comercial.getDireccion().getNumero().trim().isEmpty()) {
-                direccionTexto += " " + comercial.getDireccion().getNumero();
-            }
-            if (comercial.getDireccion().getMunicipio() != null && !comercial.getDireccion().getMunicipio().trim().isEmpty()) {
-                direccionTexto += ", " + comercial.getDireccion().getMunicipio();
-            }
-            if (comercial.getDireccion().getProvincia() != null && !comercial.getDireccion().getProvincia().trim().isEmpty()) {
-                direccionTexto += ", " + comercial.getDireccion().getProvincia();
-            }
-            if (comercial.getDireccion().getCodigoPostal() != null && !comercial.getDireccion().getCodigoPostal().trim().isEmpty()) {
-                direccionTexto += " (" + comercial.getDireccion().getCodigoPostal() + ")";
-            }
-
-            txtDireccion.setText(direccionTexto.trim());
-        } else {
-            txtDireccion.setText("");
-        }
-
-        cargarCamposAdicionalesDesdeMongo();
-    }
-
-    /**
-     * Carga desde MongoDB los campos que no vienen informados
-     * en el objeto usado en la tabla.
-     */
-    private void cargarCamposAdicionalesDesdeMongo() {
-        if (comercialEditar == null || comercialEditar.getId() == null || comercialEditar.getId().trim().isEmpty()) {
-            return;
-        }
+        chkActivo.setSelected(true);
+        chkActivo.setDisable(true);
+        cmbTipoContrato.getItems().setAll(Comercial.TipoContrato.values());
 
         try {
             MongoDatabase db = MongoConnection.conectar();
             MongoCollection<Document> coleccion = db.getCollection("Comerciales");
 
-            Document doc = coleccion.find(new Document("_id", new ObjectId(comercialEditar.getId()))).first();
-
-            if (doc != null) {
-                txtUsuario.setText(doc.getString("usuario") != null ? doc.getString("usuario") : "");
-                txtPassword.setText(doc.getString("password") != null ? doc.getString("password") : "");
-                chkActivo.setSelected(doc.getBoolean("activo", true));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            coleccion.createIndex(
+                    com.mongodb.client.model.Indexes.ascending("email"),
+                    new com.mongodb.client.model.IndexOptions().unique(true)
+            );
+        } catch (IOException e) {
+            System.out.println("El índice ya existe o hay duplicados: " + e.getMessage());
         }
+
     }
 
-    /**
-     * Guarda el comercial en MongoDB.
-     *
-     * @param event evento de acción
-     */
     @FXML
-    private void guardarComercial(ActionEvent event) {
+    private void guardarComercial(ActionEvent event) throws IOException {
+
+        if (!validarCampos()) {
+            return;
+        }
+
+        MongoDatabase db = MongoConnection.conectar();
+        MongoCollection<Document> coleccion = db.getCollection("Comerciales");
+
+        String passwordPlana = txtPassword.getText();
+        String passwordHasheada = null;
+
+        if (!passwordPlana.isEmpty()) {
+            passwordHasheada = BCrypt.hashpw(passwordPlana, BCrypt.gensalt(12));
+        }
+
+        Document doc = new Document()
+                .append("nombre", txtNombre.getText())
+                .append("apellidos", txtApellidos.getText())
+                .append("telefono", txtTelefono.getText())
+                .append("email", txtEmail.getText())
+                .append("direccion", new Document()
+                        .append("calle", txtCalle.getText())
+                        .append("numero", txtNumero.getText())
+                        .append("codigoPostal", txtCodigoPostal.getText())
+                        .append("municipio", txtMunicipio.getText())
+                        .append("provincia", txtProvincia.getText()))
+                .append("dni", txtDni.getText())
+                .append("numeroCuenta", txtNumeroCuenta.getText())
+                .append("centroTrabajo", txtCentroTrabajo.getText())
+                .append("observaciones", txtObservaciones.getText())
+                .append("tipoContrato",
+                        cmbTipoContrato.getValue() != null ? cmbTipoContrato.getValue().toString() : "NO_ASIGNADO");
+
+        if (passwordHasheada != null) {
+            doc.append("password", passwordHasheada);
+        }
+        if (!modoEdicion) {
+            doc.append("activo", true);
+        }
+
         try {
-            MongoDatabase db = MongoConnection.conectar();
-            MongoCollection<Document> coleccion = db.getCollection("Comerciales");
 
-            Document direccion = new Document()
-                    .append("calle", txtCalle.getText())
-                    .append("numero", txtNumero.getText())
-                    .append("codigoPostal", txtCodigoPostal.getText())
-                    .append("municipio", txtMunicipio.getText())
-                    .append("provincia", txtProvincia.getText());
+            if (modoEdicion) {
+                if (emailExiste(txtEmail.getText().trim())) {
+                    AlertasSolarManager.emailComercialDuplicado();
+                    return;
+                }
+                ObjectId objectId = new ObjectId(idComercialSeleccionado);
 
-            Document comercialDoc = new Document()
-                    .append("nombre", txtNombre.getText())
-                    .append("apellidos", txtApellidos.getText())
-                    .append("telefono", txtTelefono.getText())
-                    .append("email", txtEmail.getText())
-                    .append("direccionTexto", txtDireccion.getText())
-                    .append("usuario", txtUsuario.getText())
-                    .append("password", txtPassword.getText())
-                    .append("dni", txtDni.getText())
-                    .append("numeroCuenta", txtNumeroCuenta.getText())
-                    .append("centroTrabajo", txtCentroTrabajo.getText())
-                    .append("observaciones", txtObservaciones.getText())
-                    .append("direccion", direccion)
-                    .append("activo", chkActivo.isSelected());
+                coleccion.updateOne(Filters.eq("_id", objectId), new Document("$set", doc));
 
-            if (cbTipoContrato.getValue() != null) {
-                comercialDoc.append("tipoContrato", cbTipoContrato.getValue().toString());
-            }
+                if (idSupabaseSeleccionado != null) {
 
-            if (comercialEditar == null) {
-                coleccion.insertOne(comercialDoc);
+                    actualizarUsuarioSupabase(idSupabaseSeleccionado, txtEmail.getText(), passwordPlana);
+                    actualizarTablaUsuariosSupabase(idSupabaseSeleccionado, txtEmail.getText(), txtNombre.getText(), passwordHasheada);
+                }
+
+                AlertasSolarManager.comercialActualizadoCorrectamente();
             } else {
-                coleccion.updateOne(
-                        new Document("_id", new ObjectId(comercialEditar.getId())),
-                        new Document("$set", comercialDoc)
-                );
+
+                String supabaseId = crearUsuarioSupabase(txtEmail.getText(), passwordPlana);
+
+                insertarEnTablaUsuariosSupabase(supabaseId, txtEmail.getText(), txtNombre.getText(), passwordHasheada);
+
+                doc.append("supabase_id", supabaseId);
+                coleccion.insertOne(doc);
+
+                AlertasSolarManager.comercialCreadoCorrectamente();
             }
 
-            AlertasSolarManager.operacionCorrecta();
-            volver(event);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            AlertasSolarManager.errorGenerico("Error al guardar el comercial");
-        }
-    }
-
-    /**
-     * Cancela la edición y vuelve a la pantalla anterior.
-     *
-     * @param event evento de acción
-     */
-    @FXML
-    private void cancelar(ActionEvent event) {
-        volver(event);
-    }
-
-    /**
-     * Vuelve a la pantalla de comerciales.
-     *
-     * @param event evento de acción
-     */
-    @FXML
-    private void volver(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setMaximized(true);
-            stage.centerOnScreen();
+            cambiarPantalla(event, "/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml");
 
         } catch (IOException e) {
-            e.printStackTrace();
-            AlertasSolarManager.errorGenerico("Error al volver a la pantalla de comerciales");
+            AlertasSolarManager.error("Error", e.getMessage());
         }
     }
+
+    private String crearUsuarioSupabase(String email, String password) throws IOException {
+        URL url = new URL("https://yhwsvqefbaefaxdfekzo.supabase.co" + "/auth/v1/admin/users");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        configurarHeadersBase(conn);
+
+        String json = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\",\"email_confirm\":true}";
+
+        try (OutputStream os = conn.getOutputStream()) {
+            os.write(json.getBytes("utf-8"));
+        }
+
+        int code = conn.getResponseCode();
+        if (code == 200 || code == 201) {
+            try (Scanner sc = new Scanner(conn.getInputStream())) {
+                String response = sc.useDelimiter("\\A").next();
+                return response.split("\"id\":\"")[1].split("\"")[0];
+            }
+        }
+        throw new RuntimeException("Error Auth Supabase. Código: " + code);
+    }
+
+    private void insertarEnTablaUsuariosSupabase(String uuid, String email, String nombre, String passwordHash) throws IOException {
+        URL url = new URL("https://yhwsvqefbaefaxdfekzo.supabase.co" + "/rest/v1/usuarios");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        configurarHeadersBase(conn);
+
+        String json = "{\"id\":\"" + uuid + "\",\"email\":\"" + email + "\",\"nombre\":\"" + nombre + "\","
+                + "\"password_hash\":\"" + passwordHash + "\",\"rol\":\"comercial\"}";
+
+        try (OutputStream os = conn.getOutputStream()) {
+            os.write(json.getBytes("utf-8"));
+        }
+
+        if (conn.getResponseCode() >= 300) {
+            throw new RuntimeException("Error insert tabla usuarios Supabase: " + conn.getResponseCode());
+        }
+    }
+
+    private void actualizarUsuarioSupabase(String uuid, String email, String password) {
+
+        try {
+            URL url = new URL("https://yhwsvqefbaefaxdfekzo.supabase.co" + "/auth/v1/admin/users/" + uuid);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("PUT");
+            conn.setDoOutput(true);
+            configurarHeadersBase(conn);
+
+            String json = "{\"email\":\"" + email + "\""
+                    + (password != null && !password.isEmpty()
+                    ? ",\"password\":\"" + password + "\""
+                    : "")
+                    + "}";
+
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(json.getBytes("utf-8"));
+            }
+
+            int code = conn.getResponseCode();
+
+            if (code >= 300) {
+                String msg = "No se pudo guardar el comercial.\nPosible email duplicado o error en Supabase.";
+                AlertasSolarManager.error("Error", msg);
+            }
+
+        } catch (IOException e) {
+            String msg = "Fallo al actualizar usuario en Supabase:\n";
+            AlertasSolarManager.error("Error", msg);
+
+        }
+    }
+
+    private void actualizarTablaUsuariosSupabase(String uuid, String email, String nombre, String passwordHash) {
+
+        try {
+            
+
+            URL url = new URL("https://yhwsvqefbaefaxdfekzo.supabase.co" + "/rest/v1/usuarios?id=eq." + uuid);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+
+            configurarHeadersBase(conn);
+
+            conn.setRequestProperty("Prefer", "resolution=merge-duplicates");
+            conn.setDoOutput(true);
+
+            String json = "{\"id\":\"" + uuid + "\",\"email\":\"" + email + "\",\"nombre\":\"" + nombre + "\""
+                    + (passwordHash != null ? ",\"password_hash\":\"" + passwordHash + "\"" : "") + "}";
+
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(json.getBytes("utf-8"));
+            }
+
+            int code = conn.getResponseCode();
+
+            if (code >= 300) {
+                String msg = "Fallo al actualizar tabla de usuarios usuario:\n";
+                AlertasSolarManager.error("Error", msg);
+
+            }
+
+        } catch (IOException e) {
+            String msg = "Fallo al actualizar usuario:\n";
+            AlertasSolarManager.error("Error", msg);
+
+        }
+    }
+
+    private void configurarHeadersBase(HttpURLConnection conn) {
+        conn.setRequestProperty("apikey", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlod3N2cWVmYmFlZmF4ZGZla3pvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjgxNjc2MCwiZXhwIjoyMDg4MzkyNzYwfQ.B6jgKqTKjwMOnRbDaqRUI1GbliH2eSEZUFPOQ-os27A");
+        conn.setRequestProperty("Authorization", "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlod3N2cWVmYmFlZmF4ZGZla3pvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjgxNjc2MCwiZXhwIjoyMDg4MzkyNzYwfQ.B6jgKqTKjwMOnRbDaqRUI1GbliH2eSEZUFPOQ-os27A");
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
+    }
+
+    public void cargarDatos(Comercial c) {
+        this.modoEdicion = true;
+        this.idComercialSeleccionado = c.getId();
+        this.idSupabaseSeleccionado = c.getSupabaseId();
+
+        txtTituloAltaModificacion.setText("Modificar Comercial");
+        txtNombre.setText(c.getNombre());
+        txtApellidos.setText(c.getApellidos());
+        txtTelefono.setText(c.getTelefono());
+        txtEmail.setText(c.getEmail());
+        txtDni.setText(c.getDni());
+        txtNumeroCuenta.setText(c.getNumeroCuenta());
+        txtCentroTrabajo.setText(c.getCentroTrabajo());
+        txtObservaciones.setText(c.getObservaciones());
+        chkActivo.setSelected(true);
+        chkActivo.setDisable(true);
+        cmbTipoContrato.setValue(c.getTipoContrato());
+        txtPassword.setText("");
+
+        if (c.getDireccion() != null) {
+            txtCalle.setText(c.getDireccion().getCalle());
+            txtNumero.setText(c.getDireccion().getNumero());
+            txtCodigoPostal.setText(c.getDireccion().getCodigoPostal());
+            txtMunicipio.setText(c.getDireccion().getMunicipio());
+            txtProvincia.setText(c.getDireccion().getProvincia());
+        }
+    }
+
+    private boolean validarCampos() throws IOException {
+
+        if (txtNombre.getText().isEmpty()) {
+            return alerta("Nombre obligatorio");
+        }
+
+        if (!txtNombre.getText().matches("^[A-Za-zÁÉÍÓÚáéíóúñÑ ]{2,}$")) {
+            return alerta("Nombre inválido");
+        }
+
+        if (txtApellidos.getText().isEmpty()) {
+            return alerta("Apellidos obligatorios");
+        }
+
+        if (!txtApellidos.getText().matches("^[A-Za-zÁÉÍÓÚáéíóúñÑ ]{2,}$")) {
+            return alerta("Apellidos inválidos");
+        }
+
+        if (txtEmail.getText().isEmpty()) {
+            return alerta("Email obligatorio");
+        }
+
+        if (!txtEmail.getText().matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            return alerta("Email inválido");
+        }
+
+        if (!txtTelefono.getText().isEmpty()
+                && !txtTelefono.getText().matches("^\\d{9}$")) {
+            return alerta("Teléfono inválido (9 dígitos)");
+        }
+
+        if (!txtDni.getText().isEmpty()
+                && !txtDni.getText().matches("^\\d{8}[A-Za-z]$")) {
+            return alerta("DNI inválido");
+        }
+
+        if (!txtCodigoPostal.getText().isEmpty()
+                && !txtCodigoPostal.getText().matches("^\\d{5}$")) {
+            return alerta("Código postal inválido");
+        }
+
+        if (txtNumeroCuenta.getText().isEmpty()) {
+            return alerta("Cuenta bancaria obligatoria");
+        }
+
+        if (!txtNumeroCuenta.getText().matches("^ES\\d{22}$")) {
+            return alerta("Cuenta bancaria inválida (IBAN)");
+        }
+
+        if (emailExiste(txtEmail.getText().trim()) && !modoEdicion) {
+            return alerta("Ya existe un comercial con este email");
+        }
+
+        if (!modoEdicion && txtPassword.getText().isEmpty()) {
+            return alerta("Password obligatoria");
+        }
+
+        if (!txtPassword.getText().isEmpty()
+                && !txtPassword.getText().matches("^(?=.*[A-Z])(?=.*\\d).{8,}$")) {
+            return alerta("Password débil (mín 8 caracteres, 1 mayúscula y 1 número)");
+        }
+        if (cmbTipoContrato.getValue() == null) {
+            return alerta("Debe seleccionar un tipo de contrato");
+        }
+
+        return true;
+    }
+
+    private boolean emailExiste(String email) throws IOException {
+        MongoDatabase db = MongoConnection.conectar();
+        MongoCollection<Document> coleccion = db.getCollection("Comerciales");
+
+        Document filtro;
+
+        if (modoEdicion && idComercialSeleccionado != null) {
+
+            filtro = new Document("email", email.trim())
+                    .append("_id", new Document("$ne", new ObjectId(idComercialSeleccionado)));
+        } else {
+
+            filtro = new Document("email", email.trim());
+        }
+
+        return coleccion.find(filtro).first() != null;
+    }
+
+    private boolean alerta(String msg) {
+        AlertasSolarManager.error("Error", msg);
+        return false;
+    }
+
+    private void cambiarPantalla(ActionEvent event, String ruta) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource(ruta));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+    }
+
+    @FXML
+    private void cancelar(ActionEvent e) throws IOException {
+        volver(e);
+    }
+
+    @FXML
+    public void volver(ActionEvent event) {
+        try {
+            cambiarPantalla(event, "/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml");
+        } catch (IOException e) {
+            AlertasSolarManager.error("No es posible volver", e.getMessage());
+        }
+    }
+
 }
