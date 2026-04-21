@@ -60,6 +60,11 @@ public class PantallaInstalacionesController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         configurarColumnas();
         cargarInstalaciones();
+        txtFiltro.textProperty().addListener((obs, oldValue, newValue) -> {
+        buscar();
+    });
+        
+        
     }
 
     /**
@@ -440,34 +445,68 @@ public class PantallaInstalacionesController implements Initializable {
     }
 
     /**
-     * Filtra las instalaciones según el texto introducido.
-     */
-    @FXML
-    private void buscar() {
+ * Filtra las instalaciones según el texto introducido.
+ */
+@FXML
+private void buscar() {
 
-        String filtro = txtFiltro.getText() != null
-                ? txtFiltro.getText().toLowerCase().trim()
-                : "";
+    String filtro = txtFiltro.getText() != null
+            ? txtFiltro.getText().toLowerCase().trim()
+            : "";
 
-        if (filtro.isEmpty()) {
-            tablaInstalaciones.setItems(listaInstalaciones);
-            return;
-        }
-
-        ObservableList<InstalacionFotovoltaica> filtrados = FXCollections.observableArrayList();
-
-        for (InstalacionFotovoltaica i : listaInstalaciones) {
-
-            String nombreCliente = obtenerNombreClienteVisible(i).toLowerCase();
-
-            if (String.valueOf(i.getPotenciaInstalada()).toLowerCase().contains(filtro)
-                    || String.valueOf(i.getNumeroPaneles()).toLowerCase().contains(filtro)
-                    || nombreCliente.contains(filtro)) {
-
-                filtrados.add(i);
-            }
-        }
-
-        tablaInstalaciones.setItems(filtrados);
+    if (filtro.isEmpty()) {
+        tablaInstalaciones.setItems(listaInstalaciones);
+        return;
     }
+
+    ObservableList<InstalacionFotovoltaica> filtrados = FXCollections.observableArrayList();
+
+    for (InstalacionFotovoltaica i : listaInstalaciones) {
+
+        String nombreCliente = obtenerNombreClienteVisible(i).toLowerCase();
+        String potencia = String.valueOf(i.getPotenciaInstalada()).toLowerCase();
+        String paneles = String.valueOf(i.getNumeroPaneles()).toLowerCase();
+        String produccion = String.valueOf(i.getProduccionEstimada()).toLowerCase();
+        String ahorro = String.valueOf(i.getAhorroEstimado()).toLowerCase();
+        String inversor = i.getInversor() != null ? i.getInversor().toLowerCase() : "";
+        String bateria = i.getBateria() ? "sí" : "no";
+        String direccion = obtenerDireccionVisible(i).toLowerCase();
+
+        if (nombreCliente.contains(filtro)
+                || potencia.contains(filtro)
+                || paneles.contains(filtro)
+                || produccion.contains(filtro)
+                || ahorro.contains(filtro)
+                || inversor.contains(filtro)
+                || bateria.contains(filtro)
+                || direccion.contains(filtro)) {
+
+            filtrados.add(i);
+        }
+    }
+
+    tablaInstalaciones.setItems(filtrados);
+}
+
+/**
+ * Devuelve la dirección visible de la instalación tal como se muestra en tabla.
+ *
+ * @param instalacion instalación
+ * @return dirección formateada
+ */
+private String obtenerDireccionVisible(InstalacionFotovoltaica instalacion) {
+    if (instalacion == null || instalacion.getDireccion() == null) {
+        return "";
+    }
+
+    Direccion d = instalacion.getDireccion();
+
+    String calle = d.getCalle() != null ? d.getCalle() : "";
+    String numero = d.getNumero() != null ? d.getNumero() : "";
+    String municipio = d.getMunicipio() != null ? d.getMunicipio() : "";
+    String provincia = d.getProvincia() != null ? d.getProvincia() : "";
+    String codigoPostal = d.getCodigoPostal() != null ? d.getCodigoPostal() : "";
+
+    return (calle + " " + numero + ", " + municipio + ", " + provincia + " " + codigoPostal).trim();
+}
 }

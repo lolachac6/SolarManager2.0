@@ -100,6 +100,11 @@ public class PantallaPresupuestoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         configurarColumnas();
         cargarPresupuestos();
+
+        txtFiltro.textProperty().addListener((obs, oldValue, newValue) -> {
+            buscarPresupuestos();
+        });
+
     }
 
     /**
@@ -252,7 +257,9 @@ public class PantallaPresupuestoController implements Initializable {
      */
     @FXML
     private void buscarPresupuestos() {
-        String filtro = txtFiltro.getText() != null ? txtFiltro.getText().toLowerCase().trim() : "";
+        String filtro = txtFiltro.getText() != null
+                ? txtFiltro.getText().toLowerCase().trim()
+                : "";
 
         if (filtro.isEmpty()) {
             tablaPresupuestos.setItems(listaPresupuestos);
@@ -262,30 +269,136 @@ public class PantallaPresupuestoController implements Initializable {
         ObservableList<Document> filtrados = FXCollections.observableArrayList();
 
         for (Document doc : listaPresupuestos) {
-            String id = valorComoTexto(doc.get("_id")).toLowerCase();
-            String idCliente = valorComoTexto(doc.get("idCliente")).toLowerCase();
-            String idComercial = valorComoTexto(doc.get("idComercial")).toLowerCase();
+            String cliente = obtenerNombreCliente(doc).toLowerCase();
+            String comercial = obtenerNombreComercial(doc).toLowerCase();
             String fecha = valorComoTexto(doc.get("fechaCreacion")).toLowerCase();
             String estado = valorComoTexto(doc.get("estado")).toLowerCase();
+            String subtotal = valorComoTexto(doc.get("subtotal")).toLowerCase();
+            String iva = valorComoTexto(doc.get("iva")).toLowerCase();
+            String total = valorComoTexto(doc.get("total")).toLowerCase();
+            String id = valorComoTexto(doc.get("_id")).toLowerCase();
 
-            Document cliente = doc.get("cliente", Document.class);
-            String nombreCliente = "";
-            if (cliente != null) {
-                nombreCliente = (valorComoTexto(cliente.get("nombre")) + " "
-                        + valorComoTexto(cliente.get("apellidos"))).trim().toLowerCase();
-            }
-
-            if (id.contains(filtro)
-                    || idCliente.contains(filtro)
-                    || idComercial.contains(filtro)
+            if (cliente.contains(filtro)
+                    || comercial.contains(filtro)
                     || fecha.contains(filtro)
                     || estado.contains(filtro)
-                    || nombreCliente.contains(filtro)) {
+                    || subtotal.contains(filtro)
+                    || iva.contains(filtro)
+                    || total.contains(filtro)
+                    || id.contains(filtro)) {
                 filtrados.add(doc);
             }
         }
 
         tablaPresupuestos.setItems(filtrados);
+    }
+
+    /**
+     * Obtiene el nombre completo del cliente asociado al presupuesto.
+     *
+     * @param doc documento del presupuesto
+     * @return nombre completo del cliente o cadena vacía
+     */
+    private String obtenerNombreCliente(Document doc) {
+        try {
+            Object idClienteObj = doc.get("idCliente");
+            if (idClienteObj == null) {
+                return "";
+            }
+
+            String idCliente = String.valueOf(idClienteObj);
+
+            MongoDatabase db = MongoConnection.conectar();
+            MongoCollection<Document> coleccionClientes = db.getCollection("Clientes");
+
+            Document clienteDoc;
+
+            try {
+                clienteDoc = coleccionClientes.find(new Document("_id", new ObjectId(idCliente))).first();
+            } catch (Exception e) {
+                clienteDoc = coleccionClientes.find(new Document("_id", idCliente)).first();
+            }
+
+            if (clienteDoc != null) {
+                String nombre = valorComoTexto(clienteDoc.get("nombre"));
+                String apellidos = valorComoTexto(clienteDoc.get("apellidos"));
+                return (nombre + " " + apellidos).trim();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
+    /**
+     * Obtiene el nombre del comercial asociado al cliente del presupuesto.
+     *
+     * @param doc documento del presupuesto
+     * @return nombre del comercial o cadena vacía
+     */
+    private String obtenerNombreComercial(Document doc) {
+        try {
+            Object idClienteObj = doc.get("idCliente");
+            if (idClienteObj == null) {
+                return "";
+            }
+
+            String idCliente = String.valueOf(idClienteObj);
+
+            MongoDatabase db = MongoConnection.conectar();
+            MongoCollection<Document> coleccionClientes = db.getCollection("Clientes");
+            MongoCollection<Document> coleccionComerciales = db.getCollection("Comerciales");
+
+            Document clienteDoc;
+
+            try {
+                clienteDoc = coleccionClientes.find(new Document("_id", new ObjectId(idCliente))).first();
+            } catch (Exception e) {
+                clienteDoc = coleccionClientes.find(new Document("_id", idCliente)).first();
+            }
+
+            if (clienteDoc == null) {
+                return "";
+            }
+
+            Object idComercialAsignadoObj = clienteDoc.get("idComercialAsignado");
+            if (idComercialAsignadoObj == null) {
+                return "";
+            }
+
+            Document comercialDoc = null;
+
+            if (idComercialAsignadoObj instanceof ObjectId) {
+                comercialDoc = coleccionComerciales
+                        .find(new Document("_id", (ObjectId) idComercialAsignadoObj))
+                        .first();
+            } else {
+                String idComercialAsignado = String.valueOf(idComercialAsignadoObj);
+
+                try {
+                    comercialDoc = coleccionComerciales
+                            .find(new Document("_id", new ObjectId(idComercialAsignado)))
+                            .first();
+                } catch (Exception e) {
+                    comercialDoc = coleccionComerciales
+                            .find(new Document("_id", idComercialAsignado))
+                            .first();
+                }
+            }
+
+            if (comercialDoc != null) {
+                String nombre = valorComoTexto(comercialDoc.get("nombre"));
+                String apellidos = valorComoTexto(comercialDoc.get("apellidos"));
+                return (nombre + " " + apellidos).trim();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     /**
