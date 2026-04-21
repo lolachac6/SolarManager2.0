@@ -29,6 +29,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import org.bson.types.ObjectId;
 import utils.AlertasSolarManager;
 
@@ -252,6 +253,39 @@ public class PantallaComercialesController implements Initializable {
         }
     }
 
+    
+    @FXML
+    private void verDetalle(ActionEvent event) {
+        Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
+
+        if (seleccionado == null) {
+            AlertasSolarManager.warning("Aviso", "Debe seleccionar un comercial");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/components/pantallas/pantallaDetalleComerciales/pantallaDetalleComerciales.fxml")
+            );
+
+            Parent root = loader.load();
+
+            components.pantallas.pantallaDetalleComerciales.PantallaDetalleComercialesController controller =
+                    loader.getController();
+            controller.cargarComercial(seleccionado);
+
+            Stage modal = new Stage();
+            modal.initModality(Modality.WINDOW_MODAL);
+            modal.initOwner(((Node) event.getSource()).getScene().getWindow());
+            modal.setResizable(false);
+            modal.setTitle("Detalle Comercial");
+            modal.setScene(new Scene(root));
+            modal.showAndWait();
+
+        } catch (IOException e) {
+            AlertasSolarManager.errorGenerico("Error al abrir detalle del comercial");
+        }
+    }
 
     @FXML
     private void reactivarComercial() {

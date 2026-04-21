@@ -161,6 +161,7 @@
                         <Pane HBox.hgrow="ALWAYS"/>
 
                         <!-- DERECHA -->
+                        <Button fx:id="btnVerDetalle" text="Ver detalle" onAction="#verDetalle" />
                         <Button fx:id="btnModificar" text="Modificar" onAction="#modificarComercial" />
                         <Button fx:id="btnEliminar" text="Eliminar" onAction="#eliminarComercial" />
                         <Button fx:id="btnReactivar" text="Reactivar comercial" onAction="#reactivarComercial" />
