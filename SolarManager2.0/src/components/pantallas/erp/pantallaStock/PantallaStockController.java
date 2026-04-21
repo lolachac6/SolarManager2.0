@@ -42,8 +42,7 @@ import utils.AlertasSolarManager;
  */
 public class PantallaStockController implements Initializable {
 
-    @FXML private TableView<Producto> tablaStock;
-    @FXML private TableColumn<Producto, String> colId;
+    @FXML private TableView<Producto> tablaStock;   
     @FXML private TableColumn<Producto, String> colNombre;
     @FXML private TableColumn<Producto, String> colTipo;
     @FXML private TableColumn<Producto, String> colPrecio;
@@ -52,14 +51,17 @@ public class PantallaStockController implements Initializable {
     @FXML private TextField txtFiltro;
 
     private ObservableList<Producto> listaOriginal = FXCollections.observableArrayList();
-
+    
+    /**
+    * Inicializa la pantalla configurando las columnas de la tabla,
+    * cargando los productos desde MongoDB y activando el filtro dinámico.
+    *
+    * @param url ubicación del archivo FXML
+    * @param rb recursos internacionales
+    */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        colId.setCellValueFactory(data ->
-                new SimpleStringProperty(
-                        data.getValue().getId() != null ? data.getValue().getId() : ""
-                )
-        );
+        
 
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colTipo.setCellValueFactory(new PropertyValueFactory<>("tipoProducto"));
@@ -75,7 +77,15 @@ public class PantallaStockController implements Initializable {
 
         txtFiltro.textProperty().addListener((obs, oldVal, newVal) -> buscarFiltro());
     }
-
+    
+    /**
+    * Cambia la pantalla actual por otra indicada mediante su ruta FXML.
+    *
+    * <p>Cierra la ventana actual y abre una nueva maximizada.</p>
+    *
+    * @param nodo nodo que dispara el evento (para obtener el Stage actual)
+    * @param rutaFXML ruta del archivo FXML a cargar
+    */
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
@@ -99,7 +109,14 @@ public class PantallaStockController implements Initializable {
             e.printStackTrace();
         }
     }
-
+    
+    /**
+    * Abre la pantalla de alta de producto.
+    *
+    * <p>Si el archivo FXML no se encuentra, se muestra un mensaje en consola.</p>
+    *
+    * @param e evento de acción del botón
+    */
     @FXML
     private void abrirAltaProducto(javafx.event.ActionEvent e) {
         try {
@@ -134,61 +151,114 @@ public class PantallaStockController implements Initializable {
             ex.printStackTrace();
         }
     }
-
+    
+    /**
+    * Navega a la pantalla de inicio del ERP.
+    *
+    * @param e evento de acción
+    */
     @FXML
     private void volverInicio(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml");
     }
-
+    
+    /**
+    * Navega a la pantalla de clientes.
+    *
+    * @param e evento de acción
+    */
     @FXML
-    private void irClientes(javafx.event.ActionEvent e) {
+    private void irClientes(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaClientes/PantallaClientes.fxml");
     }
-
+    
+    /**
+    * Navega a la pantalla de comerciales.
+    *
+    * @param e evento de acción
+    */
     @FXML
-    private void irComerciales(javafx.event.ActionEvent e) {
+    private void irComerciales(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
     }
-
+    
+    /**
+    * Navega a la pantalla de proveedores.
+    *
+    * @param e evento de acción
+    */
     @FXML
-    private void irProveedores(javafx.event.ActionEvent e) {
+    private void irProveedores(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaProveedor/PantallaProveedor.fxml");
     }
-
+    
+    /**
+    * Recarga la pantalla de stock.
+    *
+    * @param e evento de acción
+    */
     @FXML
-    private void irStock(javafx.event.ActionEvent e) {
+    private void irStock(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaStock/PantallaStock.fxml");
     }
-
+    
+    /**
+    * Navega a la pantalla de presupuestos.
+    *
+    * @param e evento de acción
+    */
     @FXML
-    private void irPresupuestos(javafx.event.ActionEvent e) {
+    private void irPresupuestos(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
-
+    
+    /**
+    * Navega a la pantalla de instalaciones.
+    *
+    * @param e evento de acción
+    */
     @FXML
-    private void irInstalaciones(javafx.event.ActionEvent e) {
+    private void irInstalaciones(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
     }
-
+    
+    /**
+    * Navega a la pantalla de informes.
+    *
+    * @param e evento de acción
+    */
     @FXML
-    private void irInformes(javafx.event.ActionEvent e) {
+    private void irInformes(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
-
+    
+    /**
+    * Abre la pantalla de alta de producto desde el botón "Añadir".
+    *
+    * @param e evento de acción
+    */
     @FXML
-    private void anadirProducto(javafx.event.ActionEvent e) {
+    private void anadirProducto(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
             "/components/pantallas/erp/pantallaAltaProducto/PantallaAltaProducto.fxml");
     }
-
+    
+    /**
+    * Obtiene todos los productos desde MongoDB y los carga en la tabla.
+    *
+    * <p>Convierte los documentos BSON en objetos {@link Producto} y los almacena
+    * en la lista observable utilizada por la tabla.</p>
+    *
+    * @throws IOException si ocurre un error al acceder a la base de datos
+    */
     public void obtenerProductosTabla() throws IOException {
         MongoDatabase db = MongoConnection.conectar();
         MongoCollection<Document> coleccion = db.getCollection("Productos");
@@ -239,7 +309,13 @@ public class PantallaStockController implements Initializable {
 
         tablaStock.setItems(listaOriginal);
     }
-
+    
+    /**
+    * Filtra dinámicamente los productos mostrados en la tabla según el texto
+    * introducido en el campo de búsqueda.
+    *
+    * <p>El filtro se aplica sobre nombre, tipo, proveedor, precio, stock e ID.</p>
+    */
     @FXML
     public void buscarFiltro() {
         String filtro = txtFiltro.getText().toLowerCase();
@@ -269,7 +345,13 @@ public class PantallaStockController implements Initializable {
 
         tablaStock.setItems(filtrada);
     }
-
+    
+    /**
+    * Abre la pantalla de modificación de producto cargando previamente
+    * los datos del producto seleccionado en la tabla.
+    *
+    * <p>Si no hay ningún producto seleccionado, se muestra una alerta.</p>
+    */
     @FXML
     private void modificarProducto() {
         Producto seleccionado = tablaStock.getSelectionModel().getSelectedItem();
@@ -307,7 +389,13 @@ public class PantallaStockController implements Initializable {
             e.printStackTrace();
         }
     }
-
+    
+    /**
+    * Elimina el producto seleccionado de la base de datos tras confirmación
+    * del usuario y actualiza la tabla.
+    *
+    * <p>Si no hay selección o ocurre un error en MongoDB, se muestra una alerta.</p>
+    */
     @FXML
     private void eliminarProducto() {
         Producto seleccionado = tablaStock.getSelectionModel().getSelectedItem();
@@ -343,7 +431,13 @@ public class PantallaStockController implements Initializable {
             AlertasSolarManager.errorEliminarProducto(e.getMessage());
         }
     }
-
+    
+    /**
+    * Muestra una alerta utilizando el sistema de alertas del ERP.
+    *
+    * @param mensaje texto a mostrar
+    * @param tipo tipo de alerta (información, advertencia, error)
+    */
     private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
         AlertasSolarManager.mostrar(tipo, null, mensaje);
     }

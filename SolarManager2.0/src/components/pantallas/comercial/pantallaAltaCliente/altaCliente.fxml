@@ -1,41 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="700.0"
-            prefWidth="1200.0"
-            styleClass="mainFxmlClass"
-            xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="components.pantallas.comercial.pantallaAltaCliente.AltaClienteController">
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.pantallas.comercial.pantallaAltaCliente.AltaClienteController">
 
     <stylesheets>
-        <URL value="@plantillageneral.css"/>
+        <URL value="@plantillageneral.css" />
     </stylesheets>
 
     <children>
 
-        <BorderPane AnchorPane.topAnchor="0"
-                    AnchorPane.bottomAnchor="0"
-                    AnchorPane.leftAnchor="0"
-                    AnchorPane.rightAnchor="0">
+        <BorderPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
             <top>
-                <HBox alignment="CENTER_LEFT"
-                      spacing="10"
-                      style="-fx-background-color:#f4f4f4; -fx-padding:10;">
+                <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color:#f4f4f4; -fx-padding:10;">
 
-                    <Button fx:id="btnVolver"
-                            text="← Volver"
-                            onAction="#volverInicio"/>
+                    <Button fx:id="btnVolver" onAction="#volver" text="← Volver" />
 
-                    <Label text="Solar Manager"
-                           style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+                    <Label style="-fx-font-size:18px; -fx-font-weight:bold;" text="Solar Manager" />
 
-                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Pane HBox.hgrow="ALWAYS" />
 
                 </HBox>
             </top>
@@ -44,109 +41,109 @@
 
                 <VBox spacing="20" style="-fx-padding:20;">
 
-                    <Label text="Alta de Cliente"
-                           style="-fx-font-size:22px; -fx-font-weight:bold;"/>
+                    <Label style="-fx-font-size:22px; -fx-font-weight:bold;" text="Alta de Cliente" />
 
-                    <VBox spacing="20"
-                          style="
-                                -fx-background-color:white;
-                                -fx-border-color:#d0d0d0;
-                                -fx-border-width:2;
-                                -fx-background-radius:5;
-                                -fx-border-radius:5;
-                                -fx-padding:20;">
+                    <VBox spacing="20" style="                                 -fx-background-color:white;                                 -fx-border-color:#d0d0d0;                                 -fx-border-width:2;                                 -fx-background-radius:5;                                 -fx-border-radius:5;                                 -fx-padding:20;">
 
-                        <Label text="Datos personales"
-                               style="-fx-font-weight:bold;"/>
+                        <Label style="-fx-font-weight:bold;" text="Datos personales" />
 
                         <GridPane hgap="15" vgap="10">
 
                             <columnConstraints>
-                                <ColumnConstraints percentWidth="15"/>
-                                <ColumnConstraints percentWidth="35"/>
-                                <ColumnConstraints percentWidth="15"/>
-                                <ColumnConstraints percentWidth="35"/>
+                                <ColumnConstraints percentWidth="15" />
+                                <ColumnConstraints percentWidth="35" />
+                                <ColumnConstraints percentWidth="15" />
+                                <ColumnConstraints percentWidth="35" />
                             </columnConstraints>
 
-                            <Label text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                            <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                            <Label text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                            <Label text="Apellidos:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-                            <TextField fx:id="txtApellidos" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                            <Label text="Apellidos:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                            <TextField fx:id="txtApellidos" GridPane.columnIndex="3" GridPane.rowIndex="0" />
 
-                            <Label text="Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                            <TextField fx:id="txtTelefono" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                            <Label text="Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <TextField fx:id="txtTelefono" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                            <Label text="Email:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                            <TextField fx:id="txtEmail" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                            <Label text="Email:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                            <TextField fx:id="txtEmail" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
 
                         </GridPane>
 
-                        <Label text="Datos del cliente"
-                               style="-fx-font-weight:bold;"/>
+                        <Label style="-fx-font-weight:bold;" text="Datos del cliente" />
 
                         <GridPane hgap="15" vgap="10">
 
                             <columnConstraints>
-                                <ColumnConstraints percentWidth="15"/>
-                                <ColumnConstraints percentWidth="35"/>
-                                <ColumnConstraints percentWidth="15"/>
-                                <ColumnConstraints percentWidth="35"/>
+                                <ColumnConstraints percentWidth="15" />
+                                <ColumnConstraints percentWidth="35" />
+                                <ColumnConstraints percentWidth="15" />
+                                <ColumnConstraints percentWidth="35" />
                             </columnConstraints>
 
-                            <Label text="ID:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                            <TextField fx:id="txtId" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                            <Label text="ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <TextField fx:id="txtId" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                            <Label text="Tipo cliente:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-                            <ComboBox fx:id="cbTipoCliente" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                            <Label text="Tipo cliente:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                            <ComboBox fx:id="cbTipoCliente" GridPane.columnIndex="3" GridPane.rowIndex="0" />
 
-                            <Label text="DNI:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                            <TextField fx:id="txtDni" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                            <Label text="DNI:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <TextField fx:id="txtDni" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                            <Label text="CIF:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                            <TextField fx:id="txtCif" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                            <Label text="CIF:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                            <TextField fx:id="txtCif" GridPane.columnIndex="3" GridPane.rowIndex="1" />
 
-                            <Label text="Cuenta bancaria:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                            <TextField fx:id="txtCuenta" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                            <Label text="Cuenta bancaria:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                            <TextField fx:id="txtCuenta" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                            <Label text="Comercial asignado:" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                            <ComboBox fx:id="cbComercialAsignado" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+                            <Label text="Comercial asignado:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                            <ComboBox fx:id="cbComercialAsignado" GridPane.columnIndex="3" GridPane.rowIndex="2" />
 
-                            <Label text="Observaciones:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                            <TextArea fx:id="txtObservaciones"
-                                      GridPane.columnIndex="1"
-                                      GridPane.rowIndex="3"
-                                      GridPane.columnSpan="3"
-                                      prefRowCount="3"/>
+                            <Label text="Observaciones:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                            <TextArea fx:id="txtObservaciones" prefRowCount="3" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
 
                         </GridPane>
 
-                        <Label text="Dirección"
-                               style="-fx-font-weight:bold;"/>
+                        <Label style="-fx-font-weight:bold;" text="Dirección" />
 
                         <GridPane hgap="15" vgap="10">
 
                             <columnConstraints>
-                                <ColumnConstraints percentWidth="15"/>
-                                <ColumnConstraints percentWidth="35"/>
-                                <ColumnConstraints percentWidth="15"/>
-                                <ColumnConstraints percentWidth="35"/>
+                                <ColumnConstraints percentWidth="15" />
+                                <ColumnConstraints percentWidth="35" />
+                                <ColumnConstraints percentWidth="15" />
+                                <ColumnConstraints percentWidth="35" />
                             </columnConstraints>
 
-                            <Label text="Calle:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                            <TextField fx:id="txtCalle" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                            <Label text="Calle:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <TextField fx:id="txtCalle" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                            <Label text="Número:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-                            <TextField fx:id="txtNumero" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                            <Label text="Número:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                            <TextField fx:id="txtNumero" GridPane.columnIndex="3" GridPane.rowIndex="0" />
 
-                            <Label text="Ciudad:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                            <TextField fx:id="txtCiudad" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                            <Label text="Ciudad:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <TextField fx:id="txtCiudad" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                            <Label text="Provincia:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                            <TextField fx:id="txtProvincia" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                            <Label text="Provincia:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                            <TextField fx:id="txtProvincia" GridPane.columnIndex="3" GridPane.rowIndex="1" />
 
-                            <Label text="Código Postal:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                            <TextField fx:id="txtCodigoPostal" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                            <Label text="Código Postal:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                            <TextField fx:id="txtCodigoPostal" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
 
                         </GridPane>
 
@@ -158,16 +155,15 @@
 
             <bottom>
 
-                <HBox spacing="15"
-                      style="-fx-background-color:#f4f4f4; -fx-padding:10;">
+                <HBox spacing="15" style="-fx-background-color:#f4f4f4; -fx-padding:10;">
 
                   
-                  <Button fx:id="btnCalcular" text="Calcular Instalación"/>
+                  <Button fx:id="btnCalcular" text="Calcular Instalación" />
 
-                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Pane HBox.hgrow="ALWAYS" />
 
-                    <Button fx:id="btnGuardar" text="Guardar"/>
-                    <Button fx:id="btnCancelar" text="Cancelar"/>
+                    <Button fx:id="btnGuardar" text="Guardar" />
+                    <Button fx:id="btnCancelar" text="Cancelar" />
                   
                   
               </HBox>

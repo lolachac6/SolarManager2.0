@@ -3,8 +3,6 @@ package components.pantallas.erp.pantallaInformes;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Sorts;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -18,7 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -34,28 +31,26 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.*;
-import net.sf.jasperreports.view.JasperViewer;
 import org.bson.types.ObjectId;
 import utils.AlertasSolarManager;
+
 
 
 /**
  * Controlador principal de la pantalla de informes del ERP SolarManager.
  *
- * <p>Gestiona la navegación entre pantallas, la carga de comerciales desde MongoDB,
+ * <p>Gestiona la navegación entre pantallas, la carga dinámica de comerciales,
  * la compilación de informes JasperReports y la generación de vistas previas
- * de los informes dentro del panel JavaFX.</p>
+ * dentro del panel JavaFX.</p>
  *
- * <p>Incluye informes de:
+ * <p>Incluye informes de:</p>
  * <ul>
  *   <li>Clientes por comercial por mes</li>
  *   <li>Presupuestos generados/aprobados</li>
  *   <li>Ventas del mes actual</li>
+ *   <li>Relación ventas del comercial vs instalaciones totales</li>
  * </ul>
- *
- * <p>El identificador real del comercial es su nombre.</p>
  */
 public class PantallaInformesController implements Initializable {
 
@@ -67,7 +62,14 @@ public class PantallaInformesController implements Initializable {
     @FXML private Button btnRatioVentas;
 
     private MongoDatabase database;
-
+    
+    /**
+    * Inicializa la pantalla cargando la conexión a MongoDB,
+    * los comerciales disponibles y compilando los informes Jasper.
+    *
+    * @param url ubicación del FXML
+    * @param rb recursos internacionales
+    */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -80,10 +82,25 @@ public class PantallaInformesController implements Initializable {
 
         compilarInformes();
     }
+    
+    /**
+    * Muestra una alerta genérica utilizando el sistema de alertas del ERP.
+    *
+    * @param msg mensaje a mostrar
+    * @param tipo tipo de alerta (información, error, advertencia)
+    */
     private void mostrarAlerta(String msg, Alert.AlertType tipo) {
             AlertasSolarManager.mostrar(tipo, null, msg);
         }
-
+    
+    /**
+    * Cambia la pantalla actual por otra indicada mediante su ruta FXML.
+    *
+    * <p>Cierra la ventana actual y abre una nueva maximizada.</p>
+    *
+    * @param nodo nodo que dispara el evento (para obtener el Stage actual)
+    * @param rutaFXML ruta del archivo FXML a cargar
+    */
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
@@ -107,39 +124,88 @@ public class PantallaInformesController implements Initializable {
             e.printStackTrace();
         }
     }
-
+    
+    /**
+    * Navega a la pantalla de inicio del ERP.
+    *
+    * @param e evento de acción
+    */
     @FXML private void volverInicio(ActionEvent e) {
         cambiarPantalla((Node)e.getSource(), "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml");
     }
-
+    
+    /**
+    * Navega a la pantalla de clientes.
+    *
+    * @param e evento de acción
+    */
     @FXML private void irClientes(ActionEvent e) {
         cambiarPantalla((Node)e.getSource(), "/components/pantallas/erp/pantallaClientes/PantallaClientes.fxml");
     }
-
+    
+    /**
+    * Navega a la pantalla de comerciales.
+    *
+    * @param e evento de acción
+    */
     @FXML private void irComerciales(ActionEvent e) {
         cambiarPantalla((Node)e.getSource(), "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
     }
-
+    
+    /**
+    * Navega a la pantalla de proveedores.
+    *
+    * @param e evento de acción
+    */
     @FXML private void irProveedores(ActionEvent e) {
         cambiarPantalla((Node)e.getSource(), "/components/pantallas/erp/pantallaProveedor/PantallaProveedor.fxml");
     }
-
+    
+    /**
+    * Navega a la pantalla de stock.
+    *
+    * @param e evento de acción
+    */
     @FXML private void irStock(ActionEvent e) {
         cambiarPantalla((Node)e.getSource(), "/components/pantallas/erp/pantallaStock/PantallaStock.fxml");
     }
-
+    
+     /**
+     * Navega a la pantalla de presupuestos.
+     *
+     * @param e evento de acción
+     */
     @FXML private void irPresupuestos(ActionEvent e) {
         cambiarPantalla((Node)e.getSource(), "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
     
+    /**
+    * Navega a la pantalla de instalaciones.
+    *
+    * @param e evento de acción
+    */
     @FXML private void irInstalaciones(javafx.event.ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),"/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
     }
-
+    
+    /**
+    * Recarga la pantalla de informes.
+    *
+    * @param e evento de acción
+    */
     @FXML private void irInformes(ActionEvent e) {
         cambiarPantalla((Node)e.getSource(), "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
 
+    /**
+    * Genera un informe Jasper de forma asíncrona y muestra su vista previa.
+    *
+    * <p>El informe se carga en segundo plano para evitar bloquear la interfaz.
+    * Una vez generado, se convierte en imagen y se muestra en el panel central.</p>
+    *
+    * @param rutaJasper ruta del archivo .jasper a cargar
+    * @param supplier proveedor del JRDataSource necesario para el informe
+    */
     private interface DataSourceSupplier { JRDataSource get() throws Exception; }
 
     private void generarInformeAsync(String rutaJasper, DataSourceSupplier supplier) {
@@ -187,7 +253,13 @@ public class PantallaInformesController implements Initializable {
             }
         }).start();
     }
-
+    
+    /**
+    * Compila todos los informes JRXML de la pantalla y genera sus
+    * correspondientes archivos .jasper en tiempo de ejecución.
+    *
+    * <p>Si algún archivo JRXML no se encuentra, se muestra un aviso en consola.</p>
+    */
     public void compilarInformes() {
 
         String base = "/components/pantallas/erp/pantallaInformes/";
@@ -224,7 +296,12 @@ public class PantallaInformesController implements Initializable {
             }
         }
     }
-
+    
+    /**
+    * Carga la lista de comerciales desde MongoDB y la asigna al ComboBox.
+    *
+    * <p>Los comerciales se identifican por su nombre real.</p>
+    */
     private void cargarComerciales() {
 
         List<String> nombres = mongoService.obtenerNombresComerciales();
@@ -235,7 +312,12 @@ public class PantallaInformesController implements Initializable {
 
         comboComerciales.getItems().setAll(nombres);
     }
-
+    
+    /**
+    * Genera el informe de clientes por comercial por mes.
+    *
+    * @param event evento de acción del botón
+    */
     @FXML
     private void onInformeComercial(ActionEvent event) {
 
@@ -277,7 +359,15 @@ public class PantallaInformesController implements Initializable {
             }
         }).start();
     }
-
+    
+    /**
+    * Obtiene el número de clientes asignados a un comercial por cada mes del año.
+    *
+    * <p>La fecha se obtiene a partir del timestamp del ObjectId del documento.</p>
+    *
+    * @param comercial nombre del comercial
+    * @return lista de mapas con mes, orden y total de clientes
+    */
     public List<Map<String, Object>> obtenerClientesPorComercialPorMes(String comercial) {
 
         MongoCollection<Document> col = database.getCollection("Clientes");
@@ -319,7 +409,12 @@ public class PantallaInformesController implements Initializable {
 
         return lista;
     }
-
+    
+    /**
+    * Genera el informe de presupuestos generados y aprobados.
+    *
+    * @param e evento de acción
+    */
     @FXML
     private void onPresupuestos(ActionEvent e) {
         generarInformeAsync(
@@ -327,7 +422,13 @@ public class PantallaInformesController implements Initializable {
                 this::crearDataSourcePresupuestos
         );
     }
-
+    
+    /**
+    * Crea el datasource para el informe de presupuestos.
+    *
+    * @return JRDataSource con los datos agregados por estado
+    * @throws Exception si ocurre un error al consultar MongoDB
+    */
     public JRDataSource crearDataSourcePresupuestos() throws Exception {
 
         MongoCollection<Document> col = database.getCollection("Presupuestos");
@@ -374,7 +475,12 @@ public class PantallaInformesController implements Initializable {
                 (Collection<Map<String,?>>)(Collection<?>) lista
         );
     }
-
+    
+    /**
+    * Genera el informe de ventas del mes actual para un comercial.
+    *
+    * @param event evento de acción
+    */
     @FXML
     private void onVentasMes(ActionEvent event) {
 
@@ -387,7 +493,12 @@ public class PantallaInformesController implements Initializable {
 
         generarInformeVentasMes(comercial);
     }
-
+    
+    /**
+    * Genera el informe Jasper de ventas del mes actual.
+    *
+    * @param comercial nombre del comercial
+    */
     private void generarInformeVentasMes(String comercial) {
         try {
             List<Map<String, Object>> datos = obtenerVentasPorMes(comercial);
@@ -417,7 +528,13 @@ public class PantallaInformesController implements Initializable {
             AlertasSolarManager.errorGenerico("Error generando informe: " + e.getMessage());
         }
     }
-
+    
+    /**
+    * Obtiene el número de ventas facturadas por mes para un comercial.
+    *
+    * @param comercial nombre del comercial
+    * @return lista de mapas con mes, orden y total de ventas
+    */
     public List<Map<String, Object>> obtenerVentasPorMes(String comercial) {
 
         MongoCollection<Document> col = database.getCollection("Presupuestos");
@@ -475,7 +592,12 @@ public class PantallaInformesController implements Initializable {
         return lista;
     }
     
-    
+    /**
+    * Genera el informe comparativo entre ventas del comercial
+    * y ventas totales de la empresa.
+    *
+    * @param event evento de acción
+    */
     @FXML
     private void onVentasVsEmpresa(ActionEvent event) throws Exception {
 
@@ -489,7 +611,13 @@ public class PantallaInformesController implements Initializable {
 
         generarImagenAjustada(print);
     }
-
+    
+    /**
+    * Construye el JasperPrint del informe de relación ventas comercial vs empresa.
+    *
+    * @param comercial nombre del comercial
+    * @return JasperPrint generado
+    */
     private JasperPrint generarInformeRelacionVentas(String comercial) {
     try {
 

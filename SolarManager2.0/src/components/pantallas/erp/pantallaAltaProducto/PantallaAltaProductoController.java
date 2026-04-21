@@ -3,8 +3,13 @@ package components.pantallas.erp.pantallaAltaProducto;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import java.io.IOException;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -14,12 +19,13 @@ import org.bson.Document;
 import utils.AlertasSolarManager;
 
 /**
- * Controlador de la pantalla de alta y edición de productos.
+ * Controlador de la pantalla de alta y edición de productos del ERP SolarManager.
  *
- * <p>Gestiona la validación del formulario, el guardado del producto,
- * la carga de datos para edición y el cierre de la ventana modal.</p>
+ * <p>Gestiona la validación del formulario, el guardado o actualización del producto
+ * en MongoDB, la carga de datos cuando se edita un producto existente y la navegación
+ * de vuelta a la pantalla de stock.</p>
  *
- * @author Iván
+ * <p>Permite tanto crear nuevos productos como modificar productos ya existentes.</p>
  */
 public class PantallaAltaProductoController {
 
@@ -86,7 +92,21 @@ public class PantallaAltaProductoController {
             }
 
             AlertasSolarManager.productoGuardadoCorrectamente();
-            cerrarVentana();
+            try {
+                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                getClass().getResource("/components/pantallas/erp/pantallaStock/PantallaStock.fxml")
+            );
+            javafx.scene.Parent root = loader.load();
+
+            Stage stage = (Stage) txtNombre.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.setResizable(true);
+            stage.show();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            
+        }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -160,11 +180,15 @@ public class PantallaAltaProductoController {
      * @param e evento de acción
      */
     @FXML
-    private void cancelar(javafx.event.ActionEvent e) {
-        if (!AlertasSolarManager.confirmarCancelarProducto()) {
+    private void cancelar(ActionEvent e) {
+        if (!AlertasSolarManager.confirmar(
+                "Salir sin guardar",
+                "¿Desea salir sin guardar los cambios?"
+        )) {
             return;
         }
-        cerrarVentana();
+
+        volver(e);
     }
 
     /**
@@ -181,11 +205,27 @@ public class PantallaAltaProductoController {
      * @param e evento de acSción
      */
     @FXML
-    private void volver(javafx.event.ActionEvent e) {
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        stage.close();
+     private void volver(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(),
+                "/components/pantallas/erp/pantallaStock/pantallaStock.fxml");
     }
-
+    
+    /**
+    * Cambia la pantalla actual por otra indicada mediante su ruta FXML.
+    *
+    * @param nodo nodo que dispara el evento (para obtener el Stage actual)
+    * @param rutaFXML ruta del archivo FXML a cargar
+    */
+    private void cambiarPantalla(Node nodo, String rutaFXML) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(rutaFXML));
+            Stage stage = (Stage) nodo.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * Limpia todos los campos del formulario.
      */
