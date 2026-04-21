@@ -30,6 +30,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import org.bson.types.ObjectId;
+import utils.AlertasSolarManager;
 
 public class PantallaComercialesController implements Initializable {
 
@@ -116,7 +117,7 @@ public class PantallaComercialesController implements Initializable {
     public void modificarComercial(ActionEvent event) {
         Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
-            mostrarAlerta("Atención", AlertType.WARNING);
+            AlertasSolarManager.seleccionarComercial();
             return;
         }
         try {
@@ -131,7 +132,7 @@ public class PantallaComercialesController implements Initializable {
             stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
-            mostrarAlerta("Error", AlertType.ERROR);
+           AlertasSolarManager.error("Error", e.getMessage());
         }
     }
 
@@ -202,7 +203,7 @@ public class PantallaComercialesController implements Initializable {
             stage.setScene(new Scene(root));
             stage.centerOnScreen();
         } catch (IOException e) {
-            mostrarAlerta("Error de navegación", AlertType.ERROR);
+            AlertasSolarManager.error("Error de navegacion", e.getMessage());
         }
     }
 
@@ -219,7 +220,7 @@ public class PantallaComercialesController implements Initializable {
         Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            mostrarAlerta("Atención", AlertType.WARNING);
+             AlertasSolarManager.seleccionarComercial();
             return;
         }
 
@@ -242,12 +243,12 @@ public class PantallaComercialesController implements Initializable {
                     new Document("$set", new Document("activo", false))
             );
 
-            mostrarAlerta("Correcto", AlertType.INFORMATION);
+            AlertasSolarManager.operacionCorrecta();
 
             obtenerComercialesTabla();
 
         } catch (IOException e) {
-            mostrarAlerta("Error", AlertType.ERROR);
+           AlertasSolarManager.error("Error", e.getMessage());
         }
     }
 
@@ -257,14 +258,14 @@ public class PantallaComercialesController implements Initializable {
         Comercial seleccionado = tablaComerciales.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            mostrarAlerta("Atención", AlertType.WARNING);
+             AlertasSolarManager.seleccionarComercial();
             return;
         }
 
        
         Alert confirm = new Alert(AlertType.CONFIRMATION);
         confirm.setTitle("Confirmar reactivacion");
-       confirm.setHeaderText("Reactivar comercial");
+        confirm.setHeaderText("Reactivar comercial");
         confirm.setContentText("¿Estás seguro que deseas reactivar el comercial?");
 
         if (confirm.showAndWait().get() != ButtonType.OK) {
@@ -280,12 +281,12 @@ public class PantallaComercialesController implements Initializable {
                     new Document("$set", new Document("activo", true))
             );
 
-            mostrarAlerta("Correcto", AlertType.INFORMATION);
+            AlertasSolarManager.operacionCorrecta();
 
             obtenerComercialesTabla();
 
         } catch (IOException e) {
-            mostrarAlerta("Error", AlertType.ERROR);
+            AlertasSolarManager.error("Error",e.getMessage());
         }
 
     }

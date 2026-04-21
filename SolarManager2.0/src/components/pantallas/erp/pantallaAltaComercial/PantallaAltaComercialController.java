@@ -26,6 +26,7 @@ import java.util.Scanner;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import com.mongodb.client.model.Filters;
+import utils.AlertasSolarManager;
 
 public class PantallaAltaComercialController implements Initializable {
 
@@ -69,6 +70,7 @@ public class PantallaAltaComercialController implements Initializable {
     private String idSupabaseSeleccionado;
     private final String SUPABASE_URL = config.get("supabase.key");
     private final String SERVICE_ROLE_KEY = config.get("supabase.url");
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         chkActivo.setSelected(true);
@@ -135,7 +137,7 @@ public class PantallaAltaComercialController implements Initializable {
 
             if (modoEdicion) {
                 if (emailExiste(txtEmail.getText().trim())) {
-                    mostrarAlerta("No se puede actualizar: El email ya está en uso.", Alert.AlertType.ERROR);
+                    AlertasSolarManager.emailComercialDuplicado();
                     return;
                 }
                 ObjectId objectId = new ObjectId(idComercialSeleccionado);
@@ -148,7 +150,7 @@ public class PantallaAltaComercialController implements Initializable {
                     actualizarTablaUsuariosSupabase(idSupabaseSeleccionado, txtEmail.getText(), txtNombre.getText(), passwordHasheada);
                 }
 
-                mostrarAlerta("Comercial actualizado correctamente", Alert.AlertType.INFORMATION);
+                AlertasSolarManager.comercialActualizadoCorrectamente();
             } else {
 
                 String supabaseId = crearUsuarioSupabase(txtEmail.getText(), passwordPlana);
@@ -158,18 +160,18 @@ public class PantallaAltaComercialController implements Initializable {
                 doc.append("supabase_id", supabaseId);
                 coleccion.insertOne(doc);
 
-                mostrarAlerta("Comercial creado correctamente", Alert.AlertType.INFORMATION);
+                AlertasSolarManager.comercialCreadoCorrectamente();
             }
 
             cambiarPantalla(event, "/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml");
 
         } catch (IOException e) {
-            mostrarAlerta("Error: " + e.getMessage(), Alert.AlertType.ERROR);
+            AlertasSolarManager.error("Error", e.getMessage());
         }
     }
 
     private String crearUsuarioSupabase(String email, String password) throws IOException {
-        URL url = new URL("https://yhwsvqefbaefaxdfekzo.supabase.co"+ "/auth/v1/admin/users");
+        URL url = new URL("https://yhwsvqefbaefaxdfekzo.supabase.co" + "/auth/v1/admin/users");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         configurarHeadersBase(conn);
@@ -231,24 +233,21 @@ public class PantallaAltaComercialController implements Initializable {
             int code = conn.getResponseCode();
 
             if (code >= 300) {
-                mostrarAlerta("No se pudo guardar el comercial.\nPosible email duplicado o error en Supabase.",
-                        Alert.AlertType.ERROR
-                );
+                String msg = "No se pudo guardar el comercial.\nPosible email duplicado o error en Supabase.";
+                AlertasSolarManager.error("Error", msg);
             }
 
         } catch (IOException e) {
-            mostrarAlerta("Fallo al actualizar usuario en Supabase:\n" + e.getMessage(),
-                    Alert.AlertType.ERROR
-            );
+            String msg = "Fallo al actualizar usuario en Supabase:\n";
+            AlertasSolarManager.error("Error", msg);
 
-            System.err.println("Supabase error: " + e.getMessage());
         }
     }
 
     private void actualizarTablaUsuariosSupabase(String uuid, String email, String nombre, String passwordHash) {
 
         try {
-            System.out.println("aqui es el actualizarTablaUsuariosSupabase " + uuid);
+            
 
             URL url = new URL("https://yhwsvqefbaefaxdfekzo.supabase.co" + "/rest/v1/usuarios?id=eq." + uuid);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -271,15 +270,14 @@ public class PantallaAltaComercialController implements Initializable {
             int code = conn.getResponseCode();
 
             if (code >= 300) {
-                mostrarAlerta("No se pudo actualizar la tabla de usuarios.\nCódigo HTTP: " + code,
-                        Alert.AlertType.ERROR
-                );
+                String msg = "Fallo al actualizar tabla de usuarios usuario:\n";
+                AlertasSolarManager.error("Error", msg);
+
             }
 
         } catch (IOException e) {
-            mostrarAlerta("Fallo al actualizar usuario:\n" + e.getMessage(),
-                    Alert.AlertType.ERROR
-            );
+            String msg = "Fallo al actualizar usuario:\n";
+            AlertasSolarManager.error("Error", msg);
 
         }
     }
@@ -360,8 +358,11 @@ public class PantallaAltaComercialController implements Initializable {
             return alerta("Código postal inválido");
         }
 
-        if (!txtNumeroCuenta.getText().isEmpty()
-                && !txtNumeroCuenta.getText().matches("^ES\\d{22}$")) {
+        if (txtNumeroCuenta.getText().isEmpty()) {
+            return alerta("Cuenta bancaria obligatoria");
+        }
+
+        if (!txtNumeroCuenta.getText().matches("^ES\\d{22}$")) {
             return alerta("Cuenta bancaria inválida (IBAN)");
         }
 
@@ -376,6 +377,9 @@ public class PantallaAltaComercialController implements Initializable {
         if (!txtPassword.getText().isEmpty()
                 && !txtPassword.getText().matches("^(?=.*[A-Z])(?=.*\\d).{8,}$")) {
             return alerta("Password débil (mín 8 caracteres, 1 mayúscula y 1 número)");
+        }
+        if (cmbTipoContrato.getValue() == null) {
+            return alerta("Debe seleccionar un tipo de contrato");
         }
 
         return true;
@@ -400,7 +404,7 @@ public class PantallaAltaComercialController implements Initializable {
     }
 
     private boolean alerta(String msg) {
-        mostrarAlerta(msg, Alert.AlertType.WARNING);
+        AlertasSolarManager.error("Error", msg);
         return false;
     }
 
@@ -421,15 +425,8 @@ public class PantallaAltaComercialController implements Initializable {
         try {
             cambiarPantalla(event, "/components/pantallas/erp/pantallaComerciales/pantallaComerciales.fxml");
         } catch (IOException e) {
-            mostrarAlerta("Error al volver: " + e.getMessage(), Alert.AlertType.ERROR);
+            AlertasSolarManager.error("No es posible volver", e.getMessage());
         }
     }
 
-    private void mostrarAlerta(String msg, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle("Sistema");
-        alert.setHeaderText(null);
-        alert.setContentText(msg);
-        alert.showAndWait();
-    }
 }
