@@ -5,6 +5,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -29,15 +31,19 @@ import org.bson.types.ObjectId;
 import utils.AlertasSolarManager;
 
 /**
- * Controlador de la pantalla de instalaciones.
+ * Controlador de la pantalla de instalaciones fotovoltaicas.
+ *
+ * Se encarga de cargar las instalaciones desde MongoDB, mostrar el nombre del
+ * cliente en la tabla manteniendo internamente el id real del cliente, abrir la
+ * ventana de detalle, abrir la ventana de alta de presupuesto y eliminar la
+ * instalación seleccionada previa confirmación.
  *
  * @author Iván
  */
 public class PantallaInstalacionesController implements Initializable {
 
     @FXML private TableView<InstalacionFotovoltaica> tablaInstalaciones;
-    @FXML private TableColumn<InstalacionFotovoltaica, String> colId;
-    @FXML private TableColumn<InstalacionFotovoltaica, String> colIdCliente;
+    @FXML private TableColumn<InstalacionFotovoltaica, String> colCliente;
     @FXML private TableColumn<InstalacionFotovoltaica, String> colPotencia;
     @FXML private TableColumn<InstalacionFotovoltaica, String> colPaneles;
     @FXML private TableColumn<InstalacionFotovoltaica, String> colProduccion;
@@ -48,6 +54,7 @@ public class PantallaInstalacionesController implements Initializable {
     @FXML private TextField txtFiltro;
 
     private ObservableList<InstalacionFotovoltaica> listaInstalaciones;
+    private final Map<String, String> nombresClientePorInstalacion = new HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -56,15 +63,12 @@ public class PantallaInstalacionesController implements Initializable {
     }
 
     /**
-     * Configura las columnas de la tabla de instalaciones.
+     * Configura las columnas de la tabla.
      */
     private void configurarColumnas() {
 
-        colId.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getId()));
-
-        colIdCliente.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getIdCliente()));
+        colCliente.setCellValueFactory(data ->
+                new SimpleStringProperty(obtenerNombreClienteVisible(data.getValue())));
 
         colPotencia.setCellValueFactory(data ->
                 new SimpleStringProperty(String.valueOf(data.getValue().getPotenciaInstalada())));
@@ -79,7 +83,7 @@ public class PantallaInstalacionesController implements Initializable {
                 new SimpleStringProperty(String.valueOf(data.getValue().getAhorroEstimado())));
 
         colInversor.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getInversor()));
+                new SimpleStringProperty(data.getValue().getInversor() != null ? data.getValue().getInversor() : ""));
 
         colBateria.setCellValueFactory(data ->
                 new SimpleStringProperty(data.getValue().getBateria() ? "Sí" : "No"));
@@ -87,50 +91,83 @@ public class PantallaInstalacionesController implements Initializable {
         colDireccion.setCellValueFactory(data -> {
             Direccion d = data.getValue().getDireccion();
             if (d != null) {
-                return new SimpleStringProperty(
-                        d.getCalle() + " " + d.getNumero() + ", " + d.getMunicipio()
-                );
+                String calle = d.getCalle() != null ? d.getCalle() : "";
+                String numero = d.getNumero() != null ? d.getNumero() : "";
+                String municipio = d.getMunicipio() != null ? d.getMunicipio() : "";
+                return new SimpleStringProperty((calle + " " + numero + ", " + municipio).trim());
             }
             return new SimpleStringProperty("");
         });
     }
 
     /**
-     * Carga las instalaciones desde MongoDB en la tabla.
+     * Devuelve el nombre visible del cliente asociado a la instalación.
+     *
+     * @param instalacion instalación de la fila
+     * @return nombre del cliente para mostrar en la tabla
+     */
+    private String obtenerNombreClienteVisible(InstalacionFotovoltaica instalacion) {
+        if (instalacion == null || instalacion.getId() == null) {
+            return "";
+        }
+        String nombre = nombresClientePorInstalacion.get(instalacion.getId());
+        return nombre != null ? nombre : "";
+    }
+
+    /**
+     * Carga las instalaciones desde MongoDB.
      */
     private void cargarInstalaciones() {
 
         listaInstalaciones = FXCollections.observableArrayList();
+        nombresClientePorInstalacion.clear();
 
         try {
             MongoDatabase db = MongoConnection.conectar();
-            MongoCollection<Document> coleccion = db.getCollection("Instalaciones");
+            MongoCollection<Document> coleccionInstalaciones = db.getCollection("Instalaciones");
+            MongoCollection<Document> coleccionClientes = db.getCollection("Clientes");
 
-            for (Document doc : coleccion.find()) {
+            for (Document doc : coleccionInstalaciones.find()) {
 
-                InstalacionFotovoltaica i = new InstalacionFotovoltaica();
+                InstalacionFotovoltaica instalacion = new InstalacionFotovoltaica();
 
-                i.setId(doc.getObjectId("_id").toHexString());
-                i.setIdCliente(String.valueOf(doc.get("idCliente")));
+                ObjectId objectId = doc.getObjectId("_id");
+                if (objectId != null) {
+                    instalacion.setId(objectId.toHexString());
+                }
+
+                Object idClienteObj = doc.get("idCliente");
+                String idCliente = idClienteObj != null ? String.valueOf(idClienteObj) : "";
+                instalacion.setIdCliente(idCliente);
+
+                Document clienteDoc = buscarClientePorId(coleccionClientes, idCliente);
+
+                if (clienteDoc != null) {
+                    String nombre = clienteDoc.getString("nombre");
+                    String apellidos = clienteDoc.getString("apellidos");
+                    String nombreCompleto = ((nombre != null ? nombre : "") + " " + (apellidos != null ? apellidos : "")).trim();
+                    nombresClientePorInstalacion.put(instalacion.getId(), nombreCompleto);
+                } else {
+                    nombresClientePorInstalacion.put(instalacion.getId(), "");
+                }
 
                 Number potencia = doc.get("potenciaInstalada", Number.class);
                 Number paneles = doc.get("numeroPaneles", Number.class);
                 Number produccion = doc.get("produccionEstimada", Number.class);
                 Number ahorro = doc.get("ahorroEstimado", Number.class);
 
-                i.setPotenciaInstalada(potencia != null ? potencia.doubleValue() : 0.0);
-                i.setNumeroPaneles(paneles != null ? paneles.intValue() : 0);
-                i.setProduccionEstimada(produccion != null ? produccion.doubleValue() : 0.0);
-                i.setAhorroEstimado(ahorro != null ? ahorro.doubleValue() : 0.0);
-
-                i.setInversor(doc.getString("inversor"));
+                instalacion.setPotenciaInstalada(potencia != null ? potencia.doubleValue() : 0.0);
+                instalacion.setNumeroPaneles(paneles != null ? paneles.intValue() : 0);
+                instalacion.setProduccionEstimada(produccion != null ? produccion.doubleValue() : 0.0);
+                instalacion.setAhorroEstimado(ahorro != null ? ahorro.doubleValue() : 0.0);
+                instalacion.setInversor(doc.getString("inversor"));
 
                 Boolean bateria = doc.getBoolean("bateria");
-                i.setBateria(bateria != null ? bateria : false);
+                instalacion.setBateria(bateria != null ? bateria : false);
 
                 Document dir = doc.get("direccion", Document.class);
                 if (dir != null) {
-                    i.setDireccion(new Direccion(
+                    instalacion.setDireccion(new Direccion(
                             dir.getString("calle"),
                             dir.getString("numero"),
                             dir.getString("codigoPostal"),
@@ -139,7 +176,7 @@ public class PantallaInstalacionesController implements Initializable {
                     ));
                 }
 
-                listaInstalaciones.add(i);
+                listaInstalaciones.add(instalacion);
             }
 
             tablaInstalaciones.setItems(listaInstalaciones);
@@ -151,7 +188,26 @@ public class PantallaInstalacionesController implements Initializable {
     }
 
     /**
-     * Abre la pantalla modal de detalle de la instalación seleccionada.
+     * Busca un cliente en la colección por su identificador.
+     *
+     * @param coleccionClientes colección de clientes
+     * @param idCliente identificador del cliente
+     * @return documento del cliente o null si no existe
+     */
+    private Document buscarClientePorId(MongoCollection<Document> coleccionClientes, String idCliente) {
+        if (idCliente == null || idCliente.trim().isEmpty()) {
+            return null;
+        }
+
+        try {
+            return coleccionClientes.find(new Document("_id", new ObjectId(idCliente))).first();
+        } catch (Exception e) {
+            return coleccionClientes.find(new Document("_id", idCliente)).first();
+        }
+    }
+
+    /**
+     * Abre la ventana de detalle de la instalación seleccionada.
      *
      * @param event evento del botón
      */
@@ -175,7 +231,7 @@ public class PantallaInstalacionesController implements Initializable {
             components.pantallas.pantallaDetalleInstalaciones.PantallaDetalleInstalacionesController controller =
                     loader.getController();
 
-            controller.cargarInstalacionPorId(seleccionada.getId());
+            controller.cargarInstalacion(seleccionada, obtenerNombreClienteVisible(seleccionada));
 
             Stage modal = new Stage();
             modal.initModality(Modality.WINDOW_MODAL);
@@ -192,12 +248,13 @@ public class PantallaInstalacionesController implements Initializable {
     }
 
     /**
-     * Abre la pantalla de alta de presupuesto cargando los datos de la instalación seleccionada.
+     * Abre la pantalla de alta de presupuesto con la instalación seleccionada.
      *
      * @param event evento del botón
      */
     @FXML
     private void hacerPresupuesto(ActionEvent event) {
+
         InstalacionFotovoltaica seleccionada = tablaInstalaciones.getSelectionModel().getSelectedItem();
 
         if (seleccionada == null) {
@@ -232,7 +289,7 @@ public class PantallaInstalacionesController implements Initializable {
     }
 
     /**
-     * Elimina la instalación seleccionada de la tabla y de MongoDB.
+     * Elimina la instalación seleccionada de la base de datos tras confirmación.
      *
      * @param event evento del botón
      */
@@ -261,6 +318,7 @@ public class PantallaInstalacionesController implements Initializable {
             MongoCollection<Document> coleccion = db.getCollection("Instalaciones");
 
             coleccion.deleteOne(new Document("_id", new ObjectId(seleccionada.getId())));
+            nombresClientePorInstalacion.remove(seleccionada.getId());
 
             cargarInstalaciones();
             AlertasSolarManager.operacionCorrecta();
@@ -272,7 +330,7 @@ public class PantallaInstalacionesController implements Initializable {
     }
 
     /**
-     * Cambia la pantalla actual por otra indicada mediante su ruta FXML.
+     * Cambia la pantalla actual.
      *
      * @param nodo nodo origen
      * @param rutaFXML ruta del archivo FXML
@@ -400,9 +458,11 @@ public class PantallaInstalacionesController implements Initializable {
 
         for (InstalacionFotovoltaica i : listaInstalaciones) {
 
+            String nombreCliente = obtenerNombreClienteVisible(i).toLowerCase();
+
             if (String.valueOf(i.getPotenciaInstalada()).toLowerCase().contains(filtro)
                     || String.valueOf(i.getNumeroPaneles()).toLowerCase().contains(filtro)
-                    || (i.getIdCliente() != null && i.getIdCliente().toLowerCase().contains(filtro))) {
+                    || nombreCliente.contains(filtro)) {
 
                 filtrados.add(i);
             }

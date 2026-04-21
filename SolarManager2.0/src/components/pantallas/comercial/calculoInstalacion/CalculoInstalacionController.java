@@ -55,7 +55,7 @@ public class CalculoInstalacionController implements Initializable {
     @FXML private TextField txtMaxPaneles;
     @FXML private TextField txtPanelesNecesarios;
     @FXML private TextField txtEnergiaPanel;
-    @FXML private TextField txtPresupuesto;
+   
     @FXML private TextField txtIdCliente;
     @FXML private CheckBox chkBateria;
 
@@ -173,7 +173,7 @@ public class CalculoInstalacionController implements Initializable {
             txtMaxPaneles.setText(String.valueOf(resultado.getMaxPaneles()));
             txtPanelesNecesarios.setText(String.valueOf(resultado.getPanelesNecesarios()));
             txtEnergiaPanel.setText(String.valueOf(Math.round(resultado.getEnergiaPorPanel())));
-            txtPresupuesto.setText(String.valueOf(resultado.getPresupuesto()));
+            
 
             if (resultado.isAutosuficiente()) {
                 AlertasSolarManager.instalacionAutosuficiente();
@@ -237,13 +237,17 @@ public class CalculoInstalacionController implements Initializable {
                     .append("municipio", direccionCliente.getString("municipio"))
                     .append("provincia", direccionCliente.getString("provincia"));
 
+            double potenciaPanel = 0.55;
+            int numeroPaneles = convertirAInteger(txtPanelesNecesarios);
+            double potenciaInstalada = Math.round(numeroPaneles * potenciaPanel * 100.0) / 100.0;
+            int numeroInversores = (int) Math.ceil(potenciaInstalada / 5.0);
+
             Document instalacion = new Document()
                     .append("idCliente", idCliente)
-                    .append("potenciaInstalada", convertirADouble(txtEnergiaPanel))
-                    .append("numeroPaneles", convertirAInteger(txtPanelesNecesarios))
+                    .append("potenciaInstalada", potenciaInstalada)
+                    .append("numeroPaneles", numeroPaneles)
                     .append("produccionEstimada", convertirADouble(txtHorasSol))
-                    .append("ahorroEstimado", convertirADouble(txtPresupuesto))
-                    .append("inversor", "")
+                    .append("inversor", String.valueOf(numeroInversores))
                     .append("bateria", chkBateria.isSelected())
                     .append("direccion", direccionInstalacion);
 
@@ -620,6 +624,6 @@ public class CalculoInstalacionController implements Initializable {
         txtMaxPaneles.clear();
         txtPanelesNecesarios.clear();
         txtEnergiaPanel.clear();
-        txtPresupuesto.clear();
+       
     }
 }

@@ -77,7 +77,7 @@ public class SolarService {
             throw new RuntimeException("Los datos devueltos por la API Solar no son válidos");
         }
 
-        double potenciaPanel = 0.4;
+        double potenciaPanel = 0.55;
         double factor = 0.85;
 
         double energiaPorPanel = potenciaPanel * horasSol * factor;
@@ -92,6 +92,8 @@ public class SolarService {
             throw new RuntimeException("El número de paneles calculado no es válido");
         }
 
+        double potenciaInstalada = panelesNecesarios * potenciaPanel;
+
         double precioPorPanel = 250.0;
         double presupuesto = panelesNecesarios * precioPorPanel;
 
@@ -101,6 +103,7 @@ public class SolarService {
         resultado.setMaxPaneles(maxPaneles);
         resultado.setPanelesNecesarios(panelesNecesarios);
         resultado.setEnergiaPorPanel(energiaPorPanel);
+        resultado.setPotenciaInstalada(potenciaInstalada);
         resultado.setPresupuesto(presupuesto);
         resultado.setAutosuficiente(panelesNecesarios <= maxPaneles);
 

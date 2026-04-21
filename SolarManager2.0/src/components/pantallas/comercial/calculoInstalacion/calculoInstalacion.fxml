@@ -126,9 +126,6 @@
                             <Label text="Energía/panel:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                             <TextField fx:id="txtEnergiaPanel" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-                            <Label text="Presupuesto (€):" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                            <TextField fx:id="txtPresupuesto" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
-
                             <Label text="Batería:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                             <CheckBox fx:id="chkBateria" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
