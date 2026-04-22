@@ -261,6 +261,7 @@ public class CalculoInstalacionController implements Initializable {
             e.printStackTrace();
             AlertasSolarManager.errorGuardarInstalacion();
         }
+        volver(event);
     }
 
     /**
