@@ -3,8 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Usuario/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaAltaProveedor/PantallaAltaProveedorController.java</file>
-            <file>file:/C:/Users/Usuario/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaProveedor/pantallaProveedor.fxml</file>
+            <file>file:/C:/Users/aleix/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/calculoInstalacion/CalculoInstalacionController.java</file>
+            <file>file:/C:/Users/aleix/Desktop/SolarManager2.0/SolarManager2.0/src/utils/CifradoDatos.java</file>
+            <file>file:/C:/Users/aleix/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaStock/PantallaStockController.java</file>
+            <file>file:/C:/Users/aleix/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaClientes/PantallaClientesController.java</file>
+            <file>file:/C:/Users/aleix/Desktop/SolarManager2.0/SolarManager2.0/src/solarmanager/SolarManager.java</file>
+            <file>file:/C:/Users/aleix/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaAltaProducto/PantallaAltaProductoController.java</file>
+            <file>file:/C:/Users/aleix/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/pantallaAltaCliente/AltaClienteController.java</file>
         </group>
     </open-files>
 </project-private>
