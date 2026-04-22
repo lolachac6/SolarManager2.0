@@ -27,6 +27,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import modelo.Direccion;
 import modelo.Proveedor;
 import components.pantallas.erp.pantallaAltaProveedor.PantallaAltaProveedorController;
+import javafx.stage.Modality;
 import utils.AlertasSolarManager;
 
 /**
@@ -42,7 +43,8 @@ public class PantallaProveedorController implements Initializable {
 
     @FXML private TableView<Proveedor> tablaProveedores;
     @FXML private TableColumn<Proveedor, String> colId;
-    @FXML private TableColumn<Proveedor, String> colNombre;
+    @FXML private TableColumn<Proveedor, String> colNombreEmpresa;
+    @FXML private TableColumn<Proveedor, String> colRazonSocial;
     @FXML private TableColumn<Proveedor, String> colTelefono;
     @FXML private TableColumn<Proveedor, String> colEmail;
     @FXML private TableColumn<Proveedor, String> colDireccion;
@@ -52,12 +54,16 @@ public class PantallaProveedorController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        colId.setVisible(false); // Eliminar la columna ID sin perder funcionalidades
+        
         colId.setCellValueFactory(data ->
             new SimpleStringProperty(
                 data.getValue().getId() != null ? data.getValue().getId() : ""
             )
         );
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colNombreEmpresa.setCellValueFactory(new PropertyValueFactory<>("nombreEmpresa"));
+        colRazonSocial.setCellValueFactory(new PropertyValueFactory<>("razonSocial"));
         colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colDireccion.setCellValueFactory(data ->
@@ -169,6 +175,51 @@ public class PantallaProveedorController implements Initializable {
             ex.printStackTrace();
         }
     }
+    
+
+    @FXML
+private void detalle(ActionEvent event) {
+    Proveedor seleccionado = tablaProveedores.getSelectionModel().getSelectedItem();
+
+    if (seleccionado == null) {
+        AlertasSolarManager.mostrar(
+            Alert.AlertType.WARNING,
+            null,
+            "Selecciona un proveedor para ver el detalle"
+        );
+        return;
+    }
+
+    try {
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("/components/pantallas/pantallaDetalleProveedor/pantalladetalleproveedor.fxml")
+        );
+
+        Parent root = loader.load();
+
+        components.pantallas.pantallaDetalleProveedor.PantallaDetalleProveedorController controller =
+                loader.getController();
+
+        controller.cargarProveedor(seleccionado);
+
+        Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        Stage modal = new Stage();
+        modal.initOwner(stageActual);
+        modal.initModality(Modality.APPLICATION_MODAL);
+        modal.setResizable(false);
+        modal.setScene(new Scene(root));
+        modal.showAndWait();
+
+    } catch (IOException e) {
+        e.printStackTrace();
+        AlertasSolarManager.mostrar(
+            Alert.AlertType.ERROR,
+            null,
+            "No se pudo abrir el detalle del proveedor."
+        );
+    }
+}
 
     @FXML
     private void eliminarProveedor() {
@@ -278,8 +329,7 @@ public class PantallaProveedorController implements Initializable {
 
             Proveedor c = new Proveedor();
             c.setId(doc.getObjectId("_id").toString());
-            c.setNombre(doc.getString("nombre"));
-            c.setApellidos(doc.getString("apellidos"));
+            c.setRazonSocial(doc.getString("razonSocial"));
             c.setTelefono(doc.getString("telefono"));
             c.setEmail(doc.getString("email"));
             c.setDireccion(direccion);
@@ -305,10 +355,9 @@ public class PantallaProveedorController implements Initializable {
         ObservableList<Proveedor> filtrada = FXCollections.observableArrayList();
 
         for (Proveedor c : listaOriginal) {
-            if ((c.getNombre() != null && c.getNombre().toLowerCase().contains(filtro))
-                    || (c.getApellidos() != null && c.getApellidos().toLowerCase().contains(filtro))
+            if ((c.getNombreEmpresa() != null && c.getNombreEmpresa().toLowerCase().contains(filtro))
+                    || (c.getRazonSocial() != null && c.getRazonSocial().toLowerCase().contains(filtro))
                     || (c.getEmail() != null && c.getEmail().toLowerCase().contains(filtro))
-                    || (c.getNombreEmpresa() != null && c.getNombreEmpresa().toLowerCase().contains(filtro))
                     || (c.getTelefono() != null && c.getTelefono().toLowerCase().contains(filtro))) {
 
                 filtrada.add(c);
