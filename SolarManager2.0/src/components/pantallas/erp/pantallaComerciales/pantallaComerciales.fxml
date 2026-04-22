@@ -125,20 +125,14 @@
                                style="-fx-border-color:#d0d0d0; -fx-border-width:2;">
 
                         <columns>
-
-                            
                             <TableColumn fx:id="colActivo" prefWidth="80" text="Activo"/>
                             <TableColumn fx:id="colNombre" prefWidth="120" text="Nombre"/>
                             <TableColumn fx:id="colApellidos" prefWidth="140" text="Apellidos"/>
-                            <TableColumn fx:id="colTelefono" prefWidth="110" text="Teléfono"/>
                             <TableColumn fx:id="colEmail" prefWidth="160" text="Email"/>
                             <TableColumn fx:id="colDireccion" prefWidth="160" text="Dirección"/>
                             <TableColumn fx:id="colTipoContrato" prefWidth="120" text="Tipo Contrato"/>
-                            <TableColumn fx:id="colDni" prefWidth="110" text="DNI"/>
-                            <TableColumn fx:id="colNumeroCuenta" prefWidth="150" text="Cuenta"/>
                             <TableColumn fx:id="colCentroTrabajo" prefWidth="140" text="Centro Trabajo"/>
                             <TableColumn fx:id="colObservaciones" prefWidth="180" text="Observaciones"/>
-
                         </columns>
 
                     </TableView>

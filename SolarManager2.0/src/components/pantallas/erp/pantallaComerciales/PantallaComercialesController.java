@@ -52,10 +52,7 @@ public class PantallaComercialesController implements Initializable {
         
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colApellidos.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
-        colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        colDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
-        colNumeroCuenta.setCellValueFactory(new PropertyValueFactory<>("numeroCuenta"));
         colCentroTrabajo.setCellValueFactory(new PropertyValueFactory<>("centroTrabajo"));
         colObservaciones.setCellValueFactory(new PropertyValueFactory<>("observaciones"));
 
