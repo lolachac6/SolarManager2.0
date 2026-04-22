@@ -424,8 +424,7 @@ public class AltaClienteController implements Initializable {
      * @param event evento de acción
      */
     private void volver(ActionEvent event) {
-        cambiarPantalla((Node) event.getSource(),
-                "/components/pantallas/erp/pantallaClientes/pantallaClientes.fxml");
+        volverInicio(event);
     }
 
     /**

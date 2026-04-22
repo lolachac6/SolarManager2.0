@@ -127,8 +127,8 @@ public class PantallaGeneralController implements Initializable {
      */
     @FXML
     private void abrirCalculoInstalacion(ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
-                "/components/pantallas/comercial/calculoInstalacion/CalculoInstalacion.fxml");
+      /**  cambiarPantalla((Node) e.getSource(),
+                "/components/pantallas/comercial/calculoInstalacion/CalculoInstalacion.fxml");*/
 
         if (tablaClientesController == null) {
             AlertasSolarManager.warning(
@@ -180,13 +180,14 @@ public class PantallaGeneralController implements Initializable {
     }
 
     /**
-     * Muestra la acción asociada al botón de instalaciones.
+     * Carga la tabla de Instalaciones en el panel cental
      *
      * @param e evento de acción
      */
     @FXML
     private void mostrarInstalaciones(ActionEvent e) {
-        System.out.println("👉 Instalaciones aún no implementado");
+        //System.out.println("👉 Instalaciones aún no implementado");
+        cargarEnPanel("/components/tablaInstalaciones/tablaInstalaciones.fxml");
     }
 
     /**

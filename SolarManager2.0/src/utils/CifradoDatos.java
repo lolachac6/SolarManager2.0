@@ -30,7 +30,7 @@ public class CifradoDatos {
     /**
      * Sustituir por una clave Base64 real.
      */
-    private static final String CLAVE_BASE64 = "wzWbM0m9bM0mK7B4Qp6x2v7H8bN3rL5tY1uC9dE4fG8=";
+    private static final String CLAVE_BASE64 = "n+rH+fH1o4WqWRidlG39hA==";
 
     private CifradoDatos() {
     }
@@ -135,7 +135,7 @@ public class CifradoDatos {
     public static String generarClaveBase64() {
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-            keyGenerator.init(256);
+            keyGenerator.init(128);
             SecretKey secretKey = keyGenerator.generateKey();
             return Base64.getEncoder().encodeToString(secretKey.getEncoded());
         } catch (Exception e) {

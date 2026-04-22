@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10"
+      style="-fx-padding:15;"
+      xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="components.tablaInstalaciones.TablaInstalacionesController">
+
+    <Label text="Listado de Instalaciones"
+           style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+
+    <TableView fx:id="tablaInstalaciones" VBox.vgrow="ALWAYS">
+
+        <columns>
+            <TableColumn fx:id="colCliente" text="Cliente" />
+            <TableColumn fx:id="colPotencia" text="Potencia(kW)"/>
+            <TableColumn fx:id="colPaneles" text="Paneles"/>
+            <TableColumn fx:id="colProduccion" text="Produccion"/>
+            <TableColumn fx:id="colAhorro" text="Ahorro"/>
+            <TableColumn fx:id="colInversor" text="Inversor"/>
+            <TableColumn fx:id="colBateria" text="Bateria"/>
+        </columns>
+
+    </TableView>
+
+</VBox>
