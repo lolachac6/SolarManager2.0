@@ -19,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import modelo.Direccion;
 import modelo.Proveedor;
+import static okhttp3.Cache.key;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import utils.AlertasSolarManager;
@@ -36,11 +37,15 @@ public class PantallaAltaProveedorController {
     private ObjectId proveedorId;
     private boolean modoEdicion = false;
 
-    @FXML private TextField txtNombre;
-    @FXML private TextField txtEmpresa;
+    @FXML private TextField txtNombreEmpresa;
+    @FXML private TextField txtRazonSocial;
     @FXML private TextField txtTelefono;
     @FXML private TextField txtEmail;
     @FXML private TextField txtDireccion;
+    @FXML private TextField txtNumero;
+    @FXML private TextField txtMunicipio;
+    @FXML private TextField txtProvincia;
+    @FXML private TextField txtCodigoPostal;
     @FXML private TextArea txtObservaciones;
 
     /**
@@ -57,8 +62,8 @@ public class PantallaAltaProveedorController {
      * @param bloquear true para bloquear, false para desbloquear
      */
     private void bloquearFormulario(boolean bloquear) {
-        txtNombre.setDisable(bloquear);
-        txtEmpresa.setDisable(bloquear);
+        txtNombreEmpresa.setDisable(bloquear);
+        txtRazonSocial.setDisable(bloquear);
         txtTelefono.setDisable(bloquear);
         txtEmail.setDisable(bloquear);
         txtDireccion.setDisable(bloquear);
@@ -70,8 +75,8 @@ public class PantallaAltaProveedorController {
      */
     @FXML
     private void nuevoProveedor() {
-        txtNombre.clear();
-        txtEmpresa.clear();
+        txtNombreEmpresa.clear();
+        txtRazonSocial.clear();
         txtTelefono.clear();
         txtEmail.clear();
         txtDireccion.clear();
@@ -104,22 +109,23 @@ public class PantallaAltaProveedorController {
 
         try {
             Proveedor nuevoProveedor = new Proveedor();
-            nuevoProveedor.setNombre(txtNombre.getText());
+            nuevoProveedor.setNombreEmpresa(txtNombreEmpresa.getText());
             nuevoProveedor.setTelefono(txtTelefono.getText());
             nuevoProveedor.setEmail(txtEmail.getText());
             nuevoProveedor.setDireccion(new Direccion());
-            nuevoProveedor.setNombreEmpresa(txtEmpresa.getText());
+            nuevoProveedor.setRazonSocial(txtRazonSocial.getText());
             nuevoProveedor.setObservaciones(txtObservaciones.getText());
 
             Document direccionDoc = new Document()
                     .append("calle", txtDireccion.getText())
-                    .append("numero", "")
-                    .append("codigoPostal", "")
-                    .append("municipio", "")
-                    .append("provincia", "");
+                    .append("numero", txtNumero.getText())
+                    .append("codigoPostal", txtCodigoPostal.getText())
+                    .append("municipio", txtMunicipio.getText())
+                    .append("provincia", txtProvincia.getText());
 
             Document doc = new Document()
-                    .append("nombre", nuevoProveedor.getNombre())
+                    .append("nombreEmpresa", nuevoProveedor.getNombreEmpresa())
+                    .append("razonSocial", nuevoProveedor.getRazonSocial())
                     .append("telefono", nuevoProveedor.getTelefono())
                     .append("email", nuevoProveedor.getEmail())
                     .append("direccion", direccionDoc)
@@ -130,24 +136,15 @@ public class PantallaAltaProveedorController {
             MongoCollection<Document> coleccion = db.getCollection("Proveedor");
 
             if (proveedorId != null) {
-                coleccion.updateOne(
-                        new Document("_id", proveedorId),
-                        new Document("$set", doc)
-                );
-            } else {
-                Document existente = coleccion.find(
-                        new Document("nombre", txtNombre.getText())
-                ).first();
-
-                if (existente != null) {
                     coleccion.updateOne(
-                            new Document("nombre", txtNombre.getText()),
+                            new Document("_id", proveedorId),
                             new Document("$set", doc)
                     );
+
                 } else {
+
                     coleccion.insertOne(doc);
                 }
-            }
 
                     AlertasSolarManager.proveedorGuardadoCorrectamente();
 
@@ -163,7 +160,12 @@ public class PantallaAltaProveedorController {
 
     private boolean validarCampos() {
 
-        if (txtNombre.getText().isEmpty()) {
+        if (txtNombreEmpresa.getText().isEmpty()) {
+            AlertasSolarManager.nombreProveedorObligatorio();
+            return false;
+        }
+        
+        if (txtRazonSocial.getText().isEmpty()) {
             AlertasSolarManager.nombreProveedorObligatorio();
             return false;
         }
@@ -185,11 +187,6 @@ public class PantallaAltaProveedorController {
 
         if (txtDireccion.getText().isEmpty()) {
             AlertasSolarManager.direccionObligatoria();
-            return false;
-        }
-
-        if (txtEmpresa.getText().isEmpty()) {
-            AlertasSolarManager.empresaObligatoria();
             return false;
         }
 
@@ -251,15 +248,26 @@ public class PantallaAltaProveedorController {
      * @param p proveedor a mostrar
      */
     public void cargarProveedor(Proveedor p) {
+        
+        this.proveedorId = new ObjectId(p.getId());
+        this.modoEdicion = true;
 
-        txtNombre.setText(p.getNombre());
+        txtNombreEmpresa.setText(p.getNombreEmpresa());
+        txtRazonSocial.setText(p.getRazonSocial());
         txtTelefono.setText(p.getTelefono());
         txtEmail.setText(p.getEmail());
-        txtEmpresa.setText(p.getNombreEmpresa());
         txtObservaciones.setText(p.getObservaciones());
 
         if (p.getDireccion() != null) {
-            txtDireccion.setText(p.getDireccion().toString());
+            Direccion d = p.getDireccion();
+
+                if (d != null) {
+                    txtDireccion.setText(d.getCalle());
+                    txtNumero.setText(d.getNumero());
+                    txtCodigoPostal.setText(d.getCodigoPostal());
+                    txtMunicipio.setText(d.getMunicipio());
+                    txtProvincia.setText(d.getProvincia());
+                }
         }
 
         bloquearFormulario(false);
@@ -270,8 +278,8 @@ public class PantallaAltaProveedorController {
      * Limpia el formulario y restablece su estado inicial.
      */
     private void limpiarFormulario() {
-        txtNombre.clear();
-        txtEmpresa.clear();
+        txtNombreEmpresa.clear();
+        txtRazonSocial.clear();
         txtTelefono.clear();
         txtEmail.clear();
         txtDireccion.clear();

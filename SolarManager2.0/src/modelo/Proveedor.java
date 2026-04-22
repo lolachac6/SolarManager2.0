@@ -36,6 +36,9 @@ public class Proveedor extends Persona {
 
     /** Nombre de la empresa proveedora */
     private String nombreEmpresa;
+    
+     /** Nombre legal de la empresa proveedora */
+    private String razonSocial;
 
     /** Página web del proveedor */
     private String web;
@@ -56,26 +59,34 @@ public class Proveedor extends Persona {
      * Constructor completo para inicializar todos los atributos del proveedor.
      *
      * @param id identificador del proveedor
-     * @param nombre nombre de la persona de contacto
+     * @param nombreEmpresa nombre de la empresa
      * @param apellidos apellidos de la persona de contacto
      * @param telefono teléfono de contacto
      * @param email correo electrónico
      * @param direccion dirección del proveedor
-     * @param nombreEmpresa nombre de la empresa
+     * @param razonSocial nombre legal de la empresa
      * @param web página web
      * @param observaciones notas u observaciones
      */
-    public Proveedor(String id, String nombre, String apellidos, String telefono,
-                     String email, Direccion direccion,
-                     String nombreEmpresa, String web, String observaciones) {
+        public Proveedor(String id,
+                     String nombreContacto,
+                     String apellidos,
+                     String telefono,
+                     String email,
+                     Direccion direccion,
+                     String nombreEmpresa,
+                     String razonSocial,
+                     String web,
+                     String observaciones) {
 
-        super(nombre, apellidos, telefono, email, direccion);
+            super(nombreContacto, apellidos, telefono, email, direccion);
 
-        this.id = id;
-        this.nombreEmpresa = nombreEmpresa;
-        this.web = web;
-        this.observaciones = observaciones;
-    }
+            this.id = id;
+            this.nombreEmpresa = nombreEmpresa;
+            this.razonSocial = razonSocial;
+            this.web = web;
+            this.observaciones = observaciones;
+        }
 
     /**
      * Obtiene el identificador del proveedor.
@@ -105,12 +116,30 @@ public class Proveedor extends Persona {
     }
 
     /**
-     * Establece el nombre de la empresa proveedora.
+    * Establece el nombre legal de la empresa proveedora.
+    *
+    * @param razonSocial nombre legal de la empresa
+    */
+    public void setNombreEmpresa(String nombreEmpresa) {
+        this.nombreEmpresa = nombreEmpresa;
+    }
+    
+    /**
+     * Obtiene el nombre legal de la empresa proveedora.
+     *
+     * @return nombre de la empresa
+     */
+    public String getRazonSocial() {
+        return razonSocial;
+    }
+    
+  /**
+     * Establece el nombre legal de la empresa proveedora.
      *
      * @param nombreEmpresa nombre de la empresa
      */
-    public void setNombreEmpresa(String nombreEmpresa) {
-        this.nombreEmpresa = nombreEmpresa;
+    public void setRazonSocial(String razonSocial) {
+        this.razonSocial = razonSocial;
     }
 
     /**
@@ -159,10 +188,11 @@ public class Proveedor extends Persona {
      * @return descripción del proveedor
      */
     @Override
-    public String toString() {
-        return nombreEmpresa +
-               " | Contacto: " + getNombre() + " " + getApellidos() +
-               " | Tel: " + getTelefono() +
-               " | Web: " + web;
-    }
+        public String toString() {
+            return nombreEmpresa +
+                   " | Razón social: " + razonSocial +
+                   " | Contacto: " + getNombre() + " " + getApellidos() +
+                   " | Tel: " + getTelefono() +
+                   " | Web: " + web;
+        }
 }
