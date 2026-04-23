@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
+import modelo.Comercial;
 import org.bson.types.ObjectId;
 import utils.AlertasSolarManager;
 
@@ -63,6 +64,9 @@ public class PantallaInformesController implements Initializable {
 
     private MongoDatabase database;
     
+
+    private Map<String, String> mapaComerciales = new HashMap<>();
+    
     /**
     * Inicializa la pantalla cargando la conexión a MongoDB,
     * los comerciales disponibles y compilando los informes Jasper.
@@ -74,7 +78,7 @@ public class PantallaInformesController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         try {
-            database = (MongoDatabase) mongoService.getConexion();
+            database = DB.MongoConnection.conectar();  // ← ESTA ES LA CORRECTA
             cargarComerciales();
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,6 +86,7 @@ public class PantallaInformesController implements Initializable {
 
         compilarInformes();
     }
+    
     
     /**
     * Muestra una alerta genérica utilizando el sistema de alertas del ERP.
@@ -304,15 +309,26 @@ public class PantallaInformesController implements Initializable {
     */
     private void cargarComerciales() {
 
-        List<String> nombres = mongoService.obtenerNombresComerciales();
+        MongoCollection<Document> col = database.getCollection("Comerciales");
 
-        if (nombres.isEmpty()) {
-            System.err.println("⚠ No se encontraron comerciales");
+        List<Comercial> lista = new ArrayList<>();
+
+        for (Document doc : col.find()) {
+            Comercial c = new Comercial();
+            c.setId(doc.getObjectId("_id").toString());
+            c.setNombre(doc.getString("nombre"));
+            lista.add(c);
         }
 
-        comboComerciales.getItems().setAll(nombres);
+        mapaComerciales.clear();
+        comboComerciales.getItems().clear();
+
+        for (Comercial c : lista) {
+            mapaComerciales.put(c.getNombre(), c.getId());
+            comboComerciales.getItems().add(c.getNombre());
+        }
     }
-    
+   
     /**
     * Genera el informe de clientes por comercial por mes.
     *
@@ -321,26 +337,30 @@ public class PantallaInformesController implements Initializable {
     @FXML
     private void onInformeComercial(ActionEvent event) {
 
-        String comercial = comboComerciales.getValue();
+    String nombre = comboComerciales.getValue();
 
-        if (comercial == null || comercial.isEmpty()) {
+        if (nombre == null || nombre.isEmpty()) {
             mostrarAlerta("Selecciona un comercial", Alert.AlertType.INFORMATION);
             return;
         }
 
+        // Obtener el ID real del comercial
+        String idComercial = mapaComerciales.get(nombre);
+
         new Thread(() -> {
             try {
-                List<Map<String, Object>> datos = obtenerClientesPorComercialPorMes(comercial);
+                List<Map<String, Object>> datos = obtenerClientesPorComercialPorMes(idComercial);
 
                 boolean hayDatos = datos.stream()
                         .anyMatch(m -> ((Number)m.get("total")).doubleValue() > 0);
 
-                if (!hayDatos || datos.isEmpty()) {
+                if (!hayDatos) {
                     Platform.runLater(() -> mostrarAlerta("Este comercial aún no tiene clientes asignados", Alert.AlertType.INFORMATION));
                     return;
                 }
+
                 Map<String, Object> params = new HashMap<>();
-                params.put("COMERCIAL", comercial);
+                params.put("COMERCIAL", nombre); // mostramos el nombre en el informe
 
                 JasperReport report = JasperCompileManager.compileReport(
                         getClass().getResourceAsStream("clientesPorComercial_Mensual_Barras_Ordenado.jrxml")
@@ -359,6 +379,8 @@ public class PantallaInformesController implements Initializable {
             }
         }).start();
     }
+
+
     
     /**
     * Obtiene el número de clientes asignados a un comercial por cada mes del año.
@@ -368,7 +390,7 @@ public class PantallaInformesController implements Initializable {
     * @param comercial nombre del comercial
     * @return lista de mapas con mes, orden y total de clientes
     */
-    public List<Map<String, Object>> obtenerClientesPorComercialPorMes(String comercial) {
+    public List<Map<String, Object>> obtenerClientesPorComercialPorMes(String idcomercial) {
 
         MongoCollection<Document> col = database.getCollection("Clientes");
 
@@ -376,7 +398,7 @@ public class PantallaInformesController implements Initializable {
         for (int i = 1; i <= 12; i++) conteo.put(i, 0);
 
         List<Document> docs = col.find(
-                Filters.eq("idComercialAsignado", comercial.trim())
+                Filters.eq("idComercialAsignado", idcomercial)
         ).into(new ArrayList<>());
 
         for (Document doc : docs) {
@@ -713,7 +735,5 @@ public class PantallaInformesController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    
+    }    
 }

@@ -409,7 +409,7 @@ public class AltaClienteController implements Initializable {
 
         String destino;
 
-        if (SessionContext.isAdmin()) {
+        if (SessionContext.isComercial()) {
             destino = "/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml";
         } else {
             destino = "/components/pantallas/erp/pantallaClientes/pantallaClientes.fxml";
