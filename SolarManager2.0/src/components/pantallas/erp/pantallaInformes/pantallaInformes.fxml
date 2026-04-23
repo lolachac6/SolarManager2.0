@@ -69,7 +69,12 @@
                     <Button fx:id="btnRatioVentas" layoutX="-1.0" layoutY="312.0" onAction="#onVentasVsEmpresa" prefHeight="26.0" prefWidth="169.0" text="Ventas/Instalaciones" />
 
                     <!-- PREVIEW DEL INFORME -->
-                    <StackPane fx:id="panelPreview" layoutX="196.0" layoutY="93.0" prefHeight="516.0" prefWidth="726.0" style="-fx-background-color:white; -fx-border-color:#ccc;" />
+                    <StackPane fx:id="panelPreview"
+                        AnchorPane.topAnchor="30"
+                        AnchorPane.leftAnchor="220"
+                        AnchorPane.rightAnchor="20"
+                        AnchorPane.bottomAnchor="60"
+                        style="-fx-background-color:white; -fx-border-color:#ccc;" />
                
                 </AnchorPane>
             </center>

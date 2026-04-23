@@ -7,6 +7,7 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Comercial;
 
 /**
  * Servicio centralizado para operaciones relacionadas con MongoDB
@@ -35,26 +36,34 @@ public class mongoService {
      *
      * @return lista de nombres de comerciales
      */
-    public static List<String> obtenerNombresComerciales() {
+    public List<Comercial> obtenerComerciales() {
 
-        List<String> nombres = new ArrayList<>();
+        MongoCollection<Document> col = database.getCollection("Comerciales");
 
-        try {
-            MongoDatabase db = getConexion();
-            if (db == null) return nombres;
+        List<Comercial> lista = new ArrayList<>();
 
-            MongoCollection<Document> col = db.getCollection("Comerciales");
+        for (Document doc : col.find()) {
 
-            col.distinct("nombre", String.class).into(nombres);
+            Comercial c = new Comercial();
+            c.setId(doc.getObjectId("_id").toString());
+            c.setNombre(doc.getString("nombre"));
+            c.setApellidos(doc.getString("apellidos"));
+            c.setEmail(doc.getString("email"));
+            c.setTelefono(doc.getString("telefono"));
+            c.setDni(doc.getString("dni"));
+            c.setNumeroCuenta(doc.getString("numeroCuenta"));
+            c.setCentroTrabajo(doc.getString("centroTrabajo"));
+            c.setObservaciones(doc.getString("observaciones"));
+            c.setActivo(doc.getBoolean("activo", true));
+            c.setSupabaseId(doc.getString("supabaseId"));
 
-            // Limpiar valores inválidos
-            nombres.removeIf(s -> s == null || s.trim().isEmpty());
+            
 
-        } catch (Exception e) {
-            System.err.println("Error obteniendo comerciales: " + e.getMessage());
+            lista.add(c);
         }
 
-        return nombres;
+        return lista;
     }
+
 }
 
