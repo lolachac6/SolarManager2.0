@@ -1,42 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="700.0"
-            prefWidth="1000.0"
-            styleClass="mainFxmlClass"
-            xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="components.pantallas.erp.pantallaAltaProveedor.PantallaAltaProveedorController">
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.pantallas.erp.pantallaAltaProveedor.PantallaAltaProveedorController">
 
     <stylesheets>
-        <URL value="@plantillageneral.css"/>
+        <URL value="@plantillageneral.css" />
     </stylesheets>
 
     <children>
 
-        <BorderPane AnchorPane.topAnchor="0"
-                    AnchorPane.bottomAnchor="0"
-                    AnchorPane.leftAnchor="0"
-                    AnchorPane.rightAnchor="0">
+        <BorderPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
             <!-- ===================== -->
             <!-- CABECERA -->
             <!-- ===================== -->
             <top>
-                <HBox alignment="CENTER_LEFT"
-                      spacing="10"
-                      style="-fx-background-color:#f4f4f4; -fx-padding:10;">
+                <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color:#f4f4f4; -fx-padding:10;">
 
-                    <Button text="← Volver" onAction="#volver"/>
+                    <Button onAction="#volver" text="← Volver" />
 
-                    <Label text="Alta de Proveedor"
-                           style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+                    <Label style="-fx-font-size:18px; -fx-font-weight:bold;" text="Alta de Proveedor" />
 
-                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Pane HBox.hgrow="ALWAYS" />
 
                 </HBox>
             </top>
@@ -45,77 +43,80 @@
             <!-- FORMULARIO -->
             <!-- ===================== -->
             <center>
-                <VBox spacing="20"
-                      style="-fx-padding:20;">
+                <VBox spacing="20" style="-fx-padding:20;">
 
                     <!-- TÍTULO -->
-                    <Label text="Datos del Proveedor"
-                           style="-fx-font-size:22px; -fx-font-weight:bold;"/>
+                    <Label style="-fx-font-size:22px; -fx-font-weight:bold;" text="Datos del Proveedor" />
 
                     <!-- PANEL PRINCIPAL -->
-                    <VBox spacing="20"
-                          style="
-                            -fx-background-color:white;
-                            -fx-border-color:#d0d0d0;
-                            -fx-border-width:2;
-                            -fx-border-radius:5;
-                            -fx-background-radius:5;
-                            -fx-padding:25;
-                          ">
+                    <VBox prefHeight="511.0" prefWidth="960.0" spacing="20" style="                             -fx-background-color:white;                             -fx-border-color:#d0d0d0;                             -fx-border-width:2;                             -fx-border-radius:5;                             -fx-background-radius:5;                             -fx-padding:25;                           ">
 
                         <GridPane hgap="20" vgap="15">
 
                             <columnConstraints>
-                                <ColumnConstraints percentWidth="30"/>
-                                <ColumnConstraints percentWidth="70"/>
+                                <ColumnConstraints percentWidth="30" />
+                                <ColumnConstraints percentWidth="70" />
                             </columnConstraints>
 
-                            <!-- NOMBRE -->
-                            <Label text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                            <TextField fx:id="txtNombre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                            <!-- NOMBRE DE LA EMPRESA-->
+                            <Label text="Nombre de la empresa:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <TextField fx:id="txtNombreEmpresa" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                             <!-- EMPRESA -->
-                            <Label text="Empresa:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                            <TextField fx:id="txtEmpresa" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                            <Label text="Razón social:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <TextField fx:id="txtRazonSocial" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                             <!-- TELÉFONO -->
-                            <Label text="Teléfono:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                            <TextField fx:id="txtTelefono" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                            <Label text="Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                            <TextField fx:id="txtTelefono" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                             <!-- EMAIL -->
-                            <Label text="Email:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                            <TextField fx:id="txtEmail" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                            <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                            <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                             <!-- DIRECCIÓN -->
-                            <Label text="Dirección:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                            <TextField fx:id="txtDireccion" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-
+                            <Label text="Calle:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                            <TextField fx:id="txtDireccion" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                            <TextField fx:id="txtNumero" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                            <Label text="Número" GridPane.rowIndex="5" />
+                            <TextField fx:id="txtMunicipio" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                            <Label text="Municipio" GridPane.rowIndex="6" />
+                            <Label text="Provincia" GridPane.rowIndex="7" />
+                            <TextField fx:id="txtProvincia" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                            <Label text="Código postal" GridPane.rowIndex="8" />
+                            <TextField fx:id="txtCodigoPostal" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+   
                             <!-- OBSERVACIONES -->
-                            <Label text="Observaciones:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-                            <TextArea fx:id="txtObservaciones"
-                                      prefRowCount="3"
-                                      GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                            <Label text="Observaciones:" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                            <TextArea fx:id="txtObservaciones" prefHeight="63.0" prefRowCount="3" prefWidth="619.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                     
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
 
                         </GridPane>
 
                     </VBox>
 
                     <!-- ESPACIO FLEXIBLE -->
-                    <Pane VBox.vgrow="ALWAYS"/>
+                    <Pane VBox.vgrow="ALWAYS" />
 
                     <!-- BOTONES -->
-                    <HBox spacing="15"
-                          alignment="CENTER_RIGHT"
-                          style="-fx-padding:0 0 10 0;">
+                    <HBox alignment="CENTER_RIGHT" spacing="15" style="-fx-padding:0 0 10 0;">
 
-                        <Button text="Cancelar"
-                                styleClass="btn-cancelar"
-                                onAction="#cancelar"/>
+                        <Button onAction="#cancelar" styleClass="btn-cancelar" text="Cancelar" />
 
 
-                        <Button text="Guardar"
-                                styleClass="btn-guardar"
-                                onAction="#guardarProveedor"/>
+                        <Button onAction="#guardarProveedor" styleClass="btn-guardar" text="Guardar" />
 
                     </HBox>
 

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TextArea?>
+
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color:#f4f6f8;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.pantallas.pantallaDetalleProveedor.PantallaDetalleProveedorController">
+
+    <children>
+        <VBox spacing="18" style="-fx-padding:20;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+            <Label style="-fx-font-size:24px; -fx-font-weight:bold;" text="Detalle Proveedor" />
+
+            <GridPane hgap="15" vgap="12" VBox.vgrow="ALWAYS">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50.0" />
+                <ColumnConstraints percentWidth="50.0" />
+            </columnConstraints>
+
+            <!-- FILA 1 -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="Nombre de la empresa" />
+                <TextField fx:id="txtNombreEmpresa" editable="false" focusTraversable="false" />
+            </VBox>
+
+            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="Razón social" />
+                <TextField fx:id="txtRazonSocial" editable="false" focusTraversable="false" />
+            </VBox>
+
+            <!-- FILA 2 -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                <Label text="Teléfono" />
+                <TextField fx:id="txtTelefono" editable="false" focusTraversable="false" />
+            </VBox>
+
+            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <Label text="Email" />
+                <TextField fx:id="txtEmail" editable="false" focusTraversable="false" />
+            </VBox>
+
+            <!-- FILA 3 -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                <Label text="Calle" />
+                <TextField fx:id="txtCalle" editable="false" focusTraversable="false" />
+            </VBox>
+
+            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <Label text="Número" />
+                <TextField fx:id="txtNumero" editable="false" focusTraversable="false" />
+            </VBox>
+
+            <!-- FILA 4 -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                <Label text="Código Postal" />
+                <TextField fx:id="txtCodigoPostal" editable="false" focusTraversable="false" />
+            </VBox>
+
+            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                <Label text="Municipio" />
+                <TextField fx:id="txtMunicipio" editable="false" focusTraversable="false" />
+            </VBox>
+
+            <!-- FILA 5 (NUEVA) -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                <Label text="Provincia" />
+                <TextField fx:id="txtProvincia" editable="false" focusTraversable="false" />
+            </VBox>
+
+            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                <Label text="Observaciones" />
+                <TextArea fx:id="txtObservaciones"
+                          editable="false"
+                          wrapText="true"
+                          prefRowCount="3"
+                          maxWidth="Infinity" />
+            </VBox>
+
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
+</GridPane>
+
+            <HBox alignment="CENTER_RIGHT">
+                <Button onAction="#cerrar" text="Cerrar" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

@@ -68,8 +68,7 @@ public class PantallaAltaComercialController implements Initializable {
     private boolean modoEdicion = false;
     private String idComercialSeleccionado;
     private String idSupabaseSeleccionado;
-    private final String SUPABASE_URL = config.get("supabase.key");
-    private final String SERVICE_ROLE_KEY = config.get("supabase.url");
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

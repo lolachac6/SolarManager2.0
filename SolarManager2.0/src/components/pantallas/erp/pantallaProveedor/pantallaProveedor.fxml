@@ -110,7 +110,8 @@
 
                                 <columns>
                                     <TableColumn fx:id="colId" prefWidth="100" text="ID" />
-                                    <TableColumn fx:id="colNombre" prefWidth="250" text="Nombre" />
+                                    <TableColumn fx:id="colNombreEmpresa" prefWidth="250" text="Nombre de la Empresa" />
+                                    <TableColumn fx:id="colRazonSocial" prefWidth="200" text="Razón Social" />
                                     <TableColumn fx:id="colTelefono" prefWidth="150" text="Teléfono" />
                                     <TableColumn fx:id="colEmail" prefWidth="200" text="Email" />
                                     <TableColumn fx:id="colDireccion" prefWidth="250" text="Dirección" />
@@ -133,6 +134,10 @@
                                         text="➕ Añadir proveedor" />
 
                                 <Pane HBox.hgrow="ALWAYS" />
+                                
+                                <Button fx:id="btnDetalle"
+                                        onAction="#detalle"
+                                        text="Detalle" />
 
                                 <Button fx:id="btnModificar"
                                         onAction="#modificar"
