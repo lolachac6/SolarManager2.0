@@ -475,6 +475,7 @@ public class PantallaPresupuestoController implements Initializable {
 
             if (factura != null && factura.getId() != null && !factura.getId().trim().isEmpty()) {
                 marcarPresupuestoComoFacturado(presupuestoSeleccionado);
+                descontarStockAlFacturar(presupuestoSeleccionado);
                 recargarTabla();
 
                 AlertasSolarManager.info(
@@ -1050,5 +1051,93 @@ public class PantallaPresupuestoController implements Initializable {
             e.printStackTrace();
             AlertasSolarManager.errorGenerico("No se pudo abrir la factura.");
         }
+    }
+
+    /**
+     * Descuenta el stock de los productos incluidos en un presupuesto cuando
+     * este pasa a estado FACTURADO.
+     *
+     * <p>
+     * No descuenta el producto "Material eléctrico", ya que ese producto se
+     * considera genérico y no debe reducir su stock.</p>
+     *
+     * <p>
+     * Si después del descuento cualquier producto queda con un stock igual o
+     * inferior a 5 unidades, muestra una alerta informativa.</p>
+     *
+     * <p>
+     * Además, evita descontar el stock más de una vez mediante el campo
+     * stockDescontado.</p>
+     *
+     * @param presupuesto documento del presupuesto facturado
+     */
+    @SuppressWarnings("unchecked")
+    private void descontarStockAlFacturar(Document presupuesto) throws IOException {
+
+        if (presupuesto == null) {
+            return;
+        }
+
+        Boolean stockDescontado = presupuesto.getBoolean("stockDescontado", false);
+
+        if (stockDescontado) {
+            return;
+        }
+
+        MongoDatabase db = MongoConnection.conectar();
+        MongoCollection<Document> coleccionProductos = db.getCollection("Productos");
+        MongoCollection<Document> coleccionPresupuestos = db.getCollection("Presupuestos");
+
+        List<Document> lineas = (List<Document>) presupuesto.get("lineas");
+
+        if (lineas == null || lineas.isEmpty()) {
+            return;
+        }
+
+        for (Document linea : lineas) {
+
+            String idProducto = linea.getString("idProducto");
+            String nombreProducto = linea.getString("nombreProducto");
+            Integer cantidad = linea.getInteger("cantidad");
+
+            if (idProducto == null || cantidad == null || cantidad <= 0) {
+                continue;
+            }
+
+            if (nombreProducto != null
+                    && nombreProducto.equalsIgnoreCase("Material eléctrico")) {
+                continue;
+            }
+
+            Document filtroProducto = new Document("_id", new ObjectId(idProducto));
+
+            Document updateStock = new Document("$inc",
+                    new Document("stock", -cantidad)
+            );
+
+            coleccionProductos.updateOne(filtroProducto, updateStock);
+
+            Document productoActualizado = coleccionProductos.find(filtroProducto).first();
+
+            if (productoActualizado != null) {
+
+                String nombreActualizado = productoActualizado.getString("nombre");
+                Integer stockActual = productoActualizado.getInteger("stock");
+
+                if (stockActual != null && stockActual <= 5) {
+                    AlertasSolarManager.info(
+                            "Stock bajo",
+                            "Atencion! el stock de " + nombreActualizado + " es de " + stockActual
+                    );
+                }
+            }
+        }
+
+        ObjectId idPresupuesto = presupuesto.getObjectId("_id");
+
+        coleccionPresupuestos.updateOne(
+                new Document("_id", idPresupuesto),
+                new Document("$set", new Document("stockDescontado", true))
+        );
     }
 }

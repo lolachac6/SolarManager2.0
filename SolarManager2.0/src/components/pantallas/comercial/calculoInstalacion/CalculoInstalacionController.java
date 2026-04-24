@@ -246,7 +246,7 @@ public class CalculoInstalacionController implements Initializable {
                     .append("idCliente", idCliente)
                     .append("potenciaInstalada", potenciaInstalada)
                     .append("numeroPaneles", numeroPaneles)
-                    .append("produccionEstimada", convertirADouble(txtHorasSol))
+                    .append("horasSol", convertirADouble(txtHorasSol))
                     .append("inversor", String.valueOf(numeroInversores))
                     .append("bateria", chkBateria.isSelected())
                     .append("direccion", direccionInstalacion);

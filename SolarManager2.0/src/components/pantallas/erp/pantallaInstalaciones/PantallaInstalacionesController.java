@@ -46,8 +46,6 @@ public class PantallaInstalacionesController implements Initializable {
     @FXML private TableColumn<InstalacionFotovoltaica, String> colCliente;
     @FXML private TableColumn<InstalacionFotovoltaica, String> colPotencia;
     @FXML private TableColumn<InstalacionFotovoltaica, String> colPaneles;
-    @FXML private TableColumn<InstalacionFotovoltaica, String> colProduccion;
-    @FXML private TableColumn<InstalacionFotovoltaica, String> colAhorro;
     @FXML private TableColumn<InstalacionFotovoltaica, String> colDireccion;
     @FXML private TableColumn<InstalacionFotovoltaica, String> colInversor;
     @FXML private TableColumn<InstalacionFotovoltaica, String> colBateria;
@@ -80,12 +78,6 @@ public class PantallaInstalacionesController implements Initializable {
 
         colPaneles.setCellValueFactory(data ->
                 new SimpleStringProperty(String.valueOf(data.getValue().getNumeroPaneles())));
-
-        colProduccion.setCellValueFactory(data ->
-                new SimpleStringProperty(String.valueOf(data.getValue().getProduccionEstimada())));
-
-        colAhorro.setCellValueFactory(data ->
-                new SimpleStringProperty(String.valueOf(data.getValue().getAhorroEstimado())));
 
         colInversor.setCellValueFactory(data ->
                 new SimpleStringProperty(data.getValue().getInversor() != null ? data.getValue().getInversor() : ""));

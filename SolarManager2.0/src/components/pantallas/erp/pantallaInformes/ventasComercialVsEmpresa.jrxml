@@ -48,7 +48,7 @@
 			</textField>
 			<pieChart>
 				<chart>
-					<reportElement x="1" y="14" width="822" height="573" uuid="64981ff7-80b9-435a-bd34-53ba068792c0">
+					<reportElement x="1" y="14" width="870" height="1000" uuid="64981ff7-80b9-435a-bd34-53ba068792c0">
 						<printWhenExpression><![CDATA[$P{HAY_DATOS}]]></printWhenExpression>
 					</reportElement>
 					<chartTitle/>

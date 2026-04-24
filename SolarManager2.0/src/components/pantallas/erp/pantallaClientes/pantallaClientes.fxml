@@ -87,25 +87,32 @@
                             </TableView>
 
                             <!-- PANEL INFERIOR -->
-                            <Pane prefHeight="100" style="-fx-background-color:white;                                          -fx-border-color:#d0d0d0;                                          -fx-border-width:2;                                          -fx-border-radius:5;                                          -fx-background-radius:5;" />
+                            <Pane prefHeight="100" style="  -fx-background-color:white;  
+                                                            -fx-border-color:#d0d0d0;-fx-border-width:2;   
+                                                            -fx-border-radius:5;                                          
+                                                            -fx-background-radius:5;" />
 
-                            <HBox spacing="10">
-                                <Pane HBox.hgrow="ALWAYS">
-                           <children>
-      
-                                            <Button fx:id="btnAñadirCliente" layoutX="14.0" layoutY="2.0" onAction="#añadirCliente" style="-fx-background-color:#2f6fda; -fx-text-fill:white;" text="➕ Añadir Cliente" />
-      
-                                      <Button layoutX="171.0" layoutY="2.0" onAction="#calcularInstalacion" text="Calcular Instalación" />
-                           </children></Pane>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
 
+                                <!-- IZQUIERDA -->
+                                <Button fx:id="btnAñadirCliente"
+                                        onAction="#añadirCliente"
+                                        text="➕ Añadir Cliente"
+                                        style="-fx-background-color:#2f6fda; -fx-text-fill:white;" />
+
+                                <Button onAction="#calcularInstalacion"
+                                        text="Calcular Instalación" />
+
+                                <!-- SEPARADOR -->
+                                <Pane HBox.hgrow="ALWAYS" />
+
+                                <!-- DERECHA -->
                                 <Button onAction="#detalle" text="Detalles" />
-
                                 <Button onAction="#modificar" text="Modificar" />
-
                                 <Button onAction="#eliminarCliente" text="Eliminar" />
 
-                            </HBox>
 
+                            </HBox>
                         </VBox>
                     </children>
                 </AnchorPane>

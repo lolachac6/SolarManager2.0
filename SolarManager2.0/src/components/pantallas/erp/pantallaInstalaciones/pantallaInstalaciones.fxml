@@ -79,8 +79,7 @@
                             <TableColumn fx:id="colPotencia" prefWidth="120" text="Potencia (kW)" />
                             <TableColumn fx:id="colInversor" prefWidth="180" text="Inversor" />
                             <TableColumn fx:id="colBateria" prefWidth="100" text="Batería" />
-                            <TableColumn fx:id="colProduccion" prefWidth="150" text="Producción" />
-                            <TableColumn fx:id="colAhorro" prefWidth="150" text="Ahorro" />
+                          
                         </columns>
                     </TableView>
 
@@ -90,14 +89,24 @@
                                  -fx-border-width:2;
                                  -fx-border-radius:5;
                                  -fx-background-radius:5;"/>
+                    
+                    
+                    <HBox spacing="10" alignment="CENTER_LEFT">
 
-                    <HBox spacing="10">
-                        <Pane HBox.hgrow="ALWAYS" />
-                        <Button onAction="#verDetalle" text="Detalle" />
-                        <Button onAction="#hacerPresupuesto" text="Hacer Presupuesto" />
-                        <Button onAction="#eliminar" text="Eliminar" />
+                        <!-- IZQUIERDA -->
+                        <Button onAction="#hacerPresupuesto" text="Hacer Presupuesto"
+                                style="-fx-background-color:#2f6fda; -fx-text-fill:white;"/>
+                        
+                        <!-- SEPARADOR -->
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        
+                        <!-- DERECHA -->
+                        
+                        <Button onAction="#verDetalle" text="Detalle"/>
+                        <Button onAction="#eliminar" text="Eliminar"/>
+                        
+
                     </HBox>
-
                 </VBox>
             </center>
 
