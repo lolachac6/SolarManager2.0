@@ -247,6 +247,13 @@ public final class AlertasSolarManager {
         warning("Campo obligatorio", "El nombre es obligatorio.");
     }
 
+     /**
+     * Muestra una alerta indicando que el nombre es obligatorio.
+     */
+    public static void razonSocialObligatorio() {
+        warning("Campo obligatorio", "La razón social es obligatoria.");
+    }
+    
     /**
      * Muestra una alerta indicando que el nombre no es válido.
      */
@@ -296,6 +303,27 @@ public final class AlertasSolarManager {
         warning("Dato no válido", "El DNI no tiene un formato válido.");
     }
 
+    /**
+     * Muestra una alerta indicando que el CIF es obligatorio.
+     */
+    public static void cifObligatorio() {
+    warning("Campo obligatorio", "El CIF es obligatorio.");
+    }
+    
+    /**
+     * Muestra una alerta indicando que el CIF no es válido.
+     */
+    public static void cifInvalido() {
+        warning("Dato no válido", "El CIF no es válido.");
+    }
+
+     /**
+     * Muestra una alerta indicando que el código postal es obligatorio.
+     */
+    public static void codigoPostalObligatorio() {
+        warning("Dato no válido", "El código postal es obligatorio.");
+    }
+    
     /**
      * Muestra una alerta indicando que el código postal no es válido.
      */
@@ -491,7 +519,28 @@ public final class AlertasSolarManager {
     public static void empresaObligatoria() {
         warning("Campo obligatorio", "La empresa es obligatoria.");
     }
-
+    
+    /**
+     * Muestra una alerta indicando que el municipio es obligatorio.
+     */
+    public static void municipioObligatorio() {
+    warning("Campo obligatorio", "El municipio es obligatorio.");
+    }
+    
+    /**
+     * Muestra una alerta indicando que la provincia es obligatoria.
+     */
+    public static void provinciaObligatoria() {
+    warning("Campo obligatorio", "La provincia es obligatoria.");
+    }
+    
+    /**
+     * Muestra una alerta indicando que la provincia es válida.
+     */
+    public static void provinciaInvalida() {
+        warning("Dato no válido", "La provincia no es válida.");
+    }
+    
     /**
      * Muestra una alerta indicando que el modo edición ha sido activado.
      */

@@ -103,21 +103,22 @@
                             </HBox>
 
                             <TableView fx:id="tablaProveedores"
-                                       maxWidth="Infinity"
-                                       maxHeight="Infinity"
-                                       style="-fx-border-color:#d0d0d0; -fx-border-width:2;"
-                                       VBox.vgrow="ALWAYS">
+                            maxWidth="Infinity"
+                            maxHeight="Infinity"
+                            style="-fx-border-color:#d0d0d0; -fx-border-width:2;"
+                            VBox.vgrow="ALWAYS">
 
-                                <columns>
-                                    <TableColumn fx:id="colId" prefWidth="100" text="ID" />
-                                    <TableColumn fx:id="colNombreEmpresa" prefWidth="250" text="Nombre de la Empresa" />
-                                    <TableColumn fx:id="colRazonSocial" prefWidth="200" text="Razón Social" />
-                                    <TableColumn fx:id="colTelefono" prefWidth="150" text="Teléfono" />
-                                    <TableColumn fx:id="colEmail" prefWidth="200" text="Email" />
-                                    <TableColumn fx:id="colDireccion" prefWidth="250" text="Dirección" />
-                                </columns>
+                     <columns>
+                         <TableColumn fx:id="colId" prefWidth="100" text="ID" />
+                         <TableColumn fx:id="colNombreEmpresa" prefWidth="250" text="Nombre de la Empresa" />
+                         <TableColumn fx:id="colRazonSocial" prefWidth="200" text="Razón Social" />
+                         <TableColumn fx:id="colCif" prefWidth="150" text="CIF" />
+                         <TableColumn fx:id="colTelefono" prefWidth="150" text="Teléfono" />
+                         <TableColumn fx:id="colEmail" prefWidth="200" text="Email" />
+                         <TableColumn fx:id="colDireccion" prefWidth="250" text="Dirección" />
+                     </columns>
 
-                            </TableView>
+                 </TableView>
 
                             <Pane prefHeight="100"
                                   maxWidth="Infinity"

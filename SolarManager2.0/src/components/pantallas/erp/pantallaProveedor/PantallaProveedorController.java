@@ -29,6 +29,7 @@ import modelo.Proveedor;
 import components.pantallas.erp.pantallaAltaProveedor.PantallaAltaProveedorController;
 import javafx.stage.Modality;
 import utils.AlertasSolarManager;
+import utils.CifradoDatos;
 
 /**
  * Controlador de la pantalla de proveedores.
@@ -45,6 +46,7 @@ public class PantallaProveedorController implements Initializable {
     @FXML private TableColumn<Proveedor, String> colId;
     @FXML private TableColumn<Proveedor, String> colNombreEmpresa;
     @FXML private TableColumn<Proveedor, String> colRazonSocial;
+    @FXML private TableColumn<Proveedor, String> colCif;
     @FXML private TableColumn<Proveedor, String> colTelefono;
     @FXML private TableColumn<Proveedor, String> colEmail;
     @FXML private TableColumn<Proveedor, String> colDireccion;
@@ -55,7 +57,7 @@ public class PantallaProveedorController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        colId.setVisible(false); // Eliminar la columna ID sin perder funcionalidades
+        colId.setVisible(false); 
         
         colId.setCellValueFactory(data ->
             new SimpleStringProperty(
@@ -64,6 +66,7 @@ public class PantallaProveedorController implements Initializable {
         );
         colNombreEmpresa.setCellValueFactory(new PropertyValueFactory<>("nombreEmpresa"));
         colRazonSocial.setCellValueFactory(new PropertyValueFactory<>("razonSocial"));
+        colCif.setCellValueFactory(new PropertyValueFactory<>("cif"));
         colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colDireccion.setCellValueFactory(data ->
@@ -330,7 +333,8 @@ private void detalle(ActionEvent event) {
             Proveedor c = new Proveedor();
             c.setId(doc.getObjectId("_id").toString());
             c.setRazonSocial(doc.getString("razonSocial"));
-            c.setTelefono(doc.getString("telefono"));
+            c.setCif(CifradoDatos.descifrarSiEsPosible(doc.getString("cif")));
+            c.setTelefono(CifradoDatos.descifrarSiEsPosible(doc.getString("telefono")));
             c.setEmail(doc.getString("email"));
             c.setDireccion(direccion);
             c.setNombreEmpresa(doc.getString("nombreEmpresa"));
@@ -357,6 +361,7 @@ private void detalle(ActionEvent event) {
         for (Proveedor c : listaOriginal) {
             if ((c.getNombreEmpresa() != null && c.getNombreEmpresa().toLowerCase().contains(filtro))
                     || (c.getRazonSocial() != null && c.getRazonSocial().toLowerCase().contains(filtro))
+                    || (c.getCif() != null && c.getCif().toLowerCase().contains(filtro))
                     || (c.getEmail() != null && c.getEmail().toLowerCase().contains(filtro))
                     || (c.getTelefono() != null && c.getTelefono().toLowerCase().contains(filtro))) {
 

@@ -66,42 +66,47 @@
                             <Label text="Razón social:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                             <TextField fx:id="txtRazonSocial" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
+                            <!-- CIF -->
+                            <Label text="CIF:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                            <TextField fx:id="txtCif" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
                             <!-- TELÉFONO -->
-                            <Label text="Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                            <TextField fx:id="txtTelefono" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                            <Label text="Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                            <TextField fx:id="txtTelefono" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                             <!-- EMAIL -->
-                            <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                            <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                            <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                            <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
                             <!-- DIRECCIÓN -->
-                            <Label text="Calle:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                            <TextField fx:id="txtDireccion" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                            <TextField fx:id="txtNumero" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                            <Label text="Número" GridPane.rowIndex="5" />
-                            <TextField fx:id="txtMunicipio" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                            <Label text="Municipio" GridPane.rowIndex="6" />
-                            <Label text="Provincia" GridPane.rowIndex="7" />
-                            <TextField fx:id="txtProvincia" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                            <Label text="Código postal" GridPane.rowIndex="8" />
-                            <TextField fx:id="txtCodigoPostal" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-   
+                            <Label text="Calle:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                            <TextField fx:id="txtDireccion" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                            <TextField fx:id="txtNumero" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                            <Label text="Número" GridPane.rowIndex="6" />
+                            <TextField fx:id="txtMunicipio" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                            <Label text="Municipio" GridPane.rowIndex="7" />
+                            <Label text="Provincia" GridPane.rowIndex="8" />
+                            <TextField fx:id="txtProvincia" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                            <Label text="Código postal" GridPane.rowIndex="9" />
+                            <TextField fx:id="txtCodigoPostal" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+
                             <!-- OBSERVACIONES -->
-                            <Label text="Observaciones:" GridPane.columnIndex="0" GridPane.rowIndex="9" />
-                            <TextArea fx:id="txtObservaciones" prefHeight="63.0" prefRowCount="3" prefWidth="619.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                     
-                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                     </rowConstraints>
+                            <Label text="Observaciones:" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+                            <TextArea fx:id="txtObservaciones" prefHeight="63.0" prefRowCount="3" prefWidth="619.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+
+                            <rowConstraints>
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                            </rowConstraints>
 
                         </GridPane>
 
