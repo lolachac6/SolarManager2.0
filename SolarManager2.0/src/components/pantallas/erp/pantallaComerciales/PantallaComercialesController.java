@@ -193,13 +193,7 @@ public class PantallaComercialesController implements Initializable {
     private void irInformes(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(), "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
-    
-    /**
-     * Recarga la pantalla de instalaciones.
-     *
-     * @param e evento de acción
-     */
-    @FXML
+     @FXML
     private void irInstalaciones(ActionEvent e) {
         cambiarPantalla((Node) e.getSource(),
                 "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
