@@ -112,11 +112,10 @@
 
                     <!-- BOTONES -->
                     <HBox alignment="CENTER_RIGHT" spacing="15" style="-fx-padding:0 0 10 0;">
+                        
+                        <Button onAction="#guardarProveedor" styleClass="btn-guardar" text="Guardar" />
 
                         <Button onAction="#cancelar" styleClass="btn-cancelar" text="Cancelar" />
-
-
-                        <Button onAction="#guardarProveedor" styleClass="btn-guardar" text="Guardar" />
 
                     </HBox>
 

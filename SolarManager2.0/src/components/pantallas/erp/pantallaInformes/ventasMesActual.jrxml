@@ -19,39 +19,37 @@
     </detail>
 
     <summary>
-        <band height="500">
-            <barChart>
-                <chart>
-                    <reportElement x="0" y="0" width="842" height="500"/>
-                    <chartTitle>
-                        <font size="30" isBold="true"/>
-                        <titleExpression><![CDATA["Ventas Mensuales - Comercial: " + $P{COMERCIAL}]]></titleExpression>
-                    </chartTitle>
-                </chart>
+    <band height="560">
+        <barChart>
+            <chart>
+                <reportElement x="10" y="10" width="822" height="520"/>
+                <chartTitle>
+                    <font size="30" isBold="true"/>
+                    <titleExpression><![CDATA["Ventas Mensuales - Comercial: " + $P{COMERCIAL}]]></titleExpression>
+                </chartTitle>
+            </chart>
 
-                <categoryDataset>
-                    <categorySeries>
-                        <seriesExpression><![CDATA["Ventas"]]></seriesExpression>
-                        <categoryExpression><![CDATA[$F{mes}]]></categoryExpression>
-                        <valueExpression><![CDATA[$F{total}]]></valueExpression>
-                    </categorySeries>
-                </categoryDataset>
+            <categoryDataset>
+                <categorySeries>
+                    <seriesExpression><![CDATA["Ventas"]]></seriesExpression>
+                    <categoryExpression><![CDATA[$F{mes}]]></categoryExpression>
+                    <valueExpression><![CDATA[$F{total}]]></valueExpression>
+                </categorySeries>
+            </categoryDataset>
 
-                <barPlot>
-                    <plot orientation="Vertical" backcolor="#FFFFFF"/>
-                    <!-- Eje X (categorías) -->
-                    <categoryAxisFormat>
-                        <axisFormat/>
-                    </categoryAxisFormat>
-                    <!-- Eje Y (valores enteros) -->
-                    <valueAxisFormat>
-                        <axisFormat tickLabelMask="###0"/>
-                    </valueAxisFormat>
-                </barPlot>
+            <barPlot>
+                <plot orientation="Vertical" backcolor="#FFFFFF"/>
+                <categoryAxisFormat>
+                    <axisFormat/>
+                </categoryAxisFormat>
+                <valueAxisFormat>
+                    <axisFormat tickLabelMask="###0"/>
+                </valueAxisFormat>
+            </barPlot>
 
-            </barChart>
-        </band>
-    </summary>
+        </barChart>
+    </band>
+</summary>
 
 </jasperReport>
 

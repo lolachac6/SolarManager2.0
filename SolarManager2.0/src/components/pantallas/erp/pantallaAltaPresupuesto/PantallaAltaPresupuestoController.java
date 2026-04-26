@@ -4,6 +4,7 @@ import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
+import java.rmi.server.ObjID;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,7 @@ public class PantallaAltaPresupuestoController {
 
     private InstalacionFotovoltaica instalacionSeleccionada;
     private String idCliente;
+    private String idComercial;
     private List<LineaPresupuesto> lineasCalculadas;
     private double subtotalCalculado;
     private double ivaCalculado;
@@ -129,10 +131,14 @@ public class PantallaAltaPresupuestoController {
             String apellidos = clienteDoc.getString("apellidos");
             txtNombreApellidos.setText(((nombre != null ? nombre : "") + " " + (apellidos != null ? apellidos : "")).trim());
             
+            Object idComercialObj = clienteDoc.get("idComercialAsignado");
+            idComercial = idComercialObj !=null ? String.valueOf(idComercialObj): "";
+            
             String telefonoCifrado = clienteDoc.getString("telefono");
             String telefono = CifradoDatos.descifrar(telefonoCifrado);
             txtTelefono.setText(telefono);
-
+            
+       
             String dniCifrado = clienteDoc.getString("dni");
             String dni = CifradoDatos.descifrarSiEsPosible(dniCifrado);
 
@@ -451,7 +457,7 @@ public class PantallaAltaPresupuestoController {
 
             Document presupuestoDoc = new Document();
             presupuestoDoc.append("idCliente", idCliente);
-            presupuestoDoc.append("idComercial", "");
+            presupuestoDoc.append("idComercial", idComercial);
             presupuestoDoc.append("fechaCreacion", LocalDate.now().toString());
             presupuestoDoc.append("estado", comboEstado.getValue() != null ? comboEstado.getValue() : Presupuesto.EstadoPresupuesto.BORRADOR.name());
             presupuestoDoc.append("instalacion", convertirInstalacionADocument(instalacionSeleccionada));

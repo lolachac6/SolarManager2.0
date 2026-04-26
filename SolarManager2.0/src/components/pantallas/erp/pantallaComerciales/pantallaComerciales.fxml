@@ -87,6 +87,11 @@
                             maxWidth="Infinity"
                             styleClass="menu-button"
                             onAction="#irPresupuestos"/>
+               
+                    <Button maxWidth="Infinity" 
+                            onAction="#irInstalaciones" 
+                            styleClass="menu-button" 
+                            text="Instalaciones" />
 
                     <Button text="Informes"
                             maxWidth="Infinity"
@@ -157,7 +162,7 @@
                         <!-- DERECHA -->
                         <Button fx:id="btnVerDetalle" text="Ver detalle" onAction="#verDetalle" />
                         <Button fx:id="btnModificar" text="Modificar" onAction="#modificarComercial" />
-                        <Button fx:id="btnEliminar" text="Eliminar" onAction="#eliminarComercial" />
+                        <Button fx:id="btnEliminar" text="Desactivar comercial" onAction="#eliminarComercial" />
                         <Button fx:id="btnReactivar" text="Reactivar comercial" onAction="#reactivarComercial" />
 
                         
