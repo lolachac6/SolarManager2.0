@@ -87,6 +87,8 @@
                             maxWidth="Infinity"
                             styleClass="menu-button"
                             onAction="#irPresupuestos"/>
+                    
+                    <Button maxWidth="Infinity" onAction="#irInstalaciones" styleClass="menu-button" text="Instalaciones" />
 
                     <Button text="Informes"
                             maxWidth="Infinity"

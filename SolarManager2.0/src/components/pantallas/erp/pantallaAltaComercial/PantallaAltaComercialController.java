@@ -415,7 +415,14 @@ public class PantallaAltaComercialController implements Initializable {
     }
 
     @FXML
-    private void cancelar(ActionEvent e) throws IOException {
+    private void cancelar(ActionEvent e) {
+        if (!AlertasSolarManager.confirmar(
+                "Salir sin guardar",
+                "¿Desea salir sin guardar los cambios?"
+        )) {
+            return;
+        }
+
         volver(e);
     }
 
