@@ -78,7 +78,7 @@ public class PantallaInformesController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         try {
-            database = DB.MongoConnection.conectar();  // ← ESTA ES LA CORRECTA
+            database = DB.MongoConnection.conectar(); 
             cargarComerciales();
         } catch (Exception e) {
             e.printStackTrace();
@@ -317,6 +317,7 @@ public class PantallaInformesController implements Initializable {
             Comercial c = new Comercial();
             c.setId(doc.getObjectId("_id").toString());
             c.setNombre(doc.getString("nombre"));
+            c.setApellidos(doc.getString("apellidos"));
             lista.add(c);
         }
 
@@ -324,8 +325,9 @@ public class PantallaInformesController implements Initializable {
         comboComerciales.getItems().clear();
 
         for (Comercial c : lista) {
-            mapaComerciales.put(c.getNombre(), c.getId());
-            comboComerciales.getItems().add(c.getNombre());
+            String nombreCompleto = c.getNombre() + " " + c.getApellidos();
+            mapaComerciales.put(nombreCompleto, c.getId());
+            comboComerciales.getItems().add(nombreCompleto);
         }
     }
    
@@ -344,7 +346,6 @@ public class PantallaInformesController implements Initializable {
             return;
         }
 
-        // Obtener el ID real del comercial
         String idComercial = mapaComerciales.get(nombre);
 
         new Thread(() -> {
@@ -360,7 +361,7 @@ public class PantallaInformesController implements Initializable {
                 }
 
                 Map<String, Object> params = new HashMap<>();
-                params.put("COMERCIAL", nombre); // mostramos el nombre en el informe
+                params.put("COMERCIAL", nombre); 
 
                 JasperReport report = JasperCompileManager.compileReport(
                         getClass().getResourceAsStream("clientesPorComercial_Mensual_Barras_Ordenado.jrxml")
@@ -379,16 +380,29 @@ public class PantallaInformesController implements Initializable {
             }
         }).start();
     }
-
-
     
     /**
-    * Obtiene el número de clientes asignados a un comercial por cada mes del año.
+    * Obtiene el número de clientes captados por un comercial agrupados por mes.
     *
-    * <p>La fecha se obtiene a partir del timestamp del ObjectId del documento.</p>
+    * Este método consulta la colección "Clientes" de MongoDB filtrando por el
+    * identificador del comercial indicado. Para cada documento encontrado, se
+    * obtiene la fecha de creación a partir del {@link ObjectId} del cliente,
+    * utilizando su timestamp interno como fecha de alta.
     *
-    * @param comercial nombre del comercial
-    * @return lista de mapas con mes, orden y total de clientes
+    * A partir de esa fecha se determina el mes correspondiente y se incrementa
+    * el contador mensual. Finalmente, se construye una lista de mapas con 12
+    * entradas (una por cada mes del año), incluyendo:
+    *
+    * <ul>
+    *   <li><b>mes</b>: nombre del mes en español</li>
+    *   <li><b>ordenMes</b>: número del mes (1–12)</li>
+    *   <li><b>total</b>: total de clientes captados en ese mes</li>
+    * </ul>
+    *
+    * Esta estructura es compatible con el uso como datasource en JasperReports.
+    *
+    * @param idcomercial identificador del comercial asignado a los clientes
+    * @return una lista de 12 mapas con el total de clientes por mes
     */
     public List<Map<String, Object>> obtenerClientesPorComercialPorMes(String idcomercial) {
 
@@ -513,25 +527,47 @@ public class PantallaInformesController implements Initializable {
             return;
         }
 
-        generarInformeVentasMes(comercial);
+        String nombre = comboComerciales.getValue();
+        String idComercial = mapaComerciales.get(nombre);
+        
+        List<Map<String, Object>> datos = obtenerVentasPorMes(idComercial);
+        boolean hayVentas = datos.stream()
+            .anyMatch(fila -> ((Number) fila.get("total")).intValue() > 0);
+
+        if (!hayVentas) {
+            mostrarAlerta("Este comercial no tiene ventas registradas este año", Alert.AlertType.INFORMATION);
+            return;
+        }
+
+
+        generarInformeVentasMes(idComercial, nombre);
     }
     
     /**
-    * Genera el informe Jasper de ventas del mes actual.
+    * Genera el informe de ventas mensuales para un comercial específico.
     *
-    * @param comercial nombre del comercial
+    * Este método obtiene los datos agregados de ventas por mes mediante
+    * {@code obtenerVentasPorMes(idComercial)}, prepara los parámetros necesarios
+    * para el informe (incluyendo el nombre del comercial) y compila el archivo
+    * JRXML {@code ventasMesActual.jrxml}.
+    *
+    * Una vez compilado, se rellena el informe con los datos proporcionados
+    * utilizando un {@link JRMapCollectionDataSource} y se genera un
+    * {@link JasperPrint}, que posteriormente se envía al método
+    * {@code generarImagenAjustada(print)} para su visualización o exportación.
+    *
+    * Si ocurre cualquier error durante la compilación o generación del informe,
+    * se captura la excepción y se muestra un mensaje de error genérico.
+    *
+    * @param idComercial      identificador del comercial cuyas ventas se desean consultar
+    * @param nombreComercial  nombre del comercial que se mostrará en el informe
     */
-    private void generarInformeVentasMes(String comercial) {
+    private void generarInformeVentasMes(String idComercial, String nombreComercial) {
         try {
-            List<Map<String, Object>> datos = obtenerVentasPorMes(comercial);
-
-            if (datos.isEmpty()) {
-                mostrarAlerta("No hay ventas este mes para este comercial", Alert.AlertType.INFORMATION);
-                return;
-            }
-
+            List<Map<String, Object>> datos = obtenerVentasPorMes(idComercial);
+         
             Map<String, Object> params = new HashMap<>();
-            params.put("COMERCIAL", comercial);
+            params.put("COMERCIAL", nombreComercial);
 
             JasperReport report = JasperCompileManager.compileReport(
                     getClass().getResourceAsStream("ventasMesActual.jrxml")
@@ -623,32 +659,55 @@ public class PantallaInformesController implements Initializable {
     @FXML
     private void onVentasVsEmpresa(ActionEvent event) throws Exception {
 
-        String comercial = comboComerciales.getValue();
+        String nombre = comboComerciales.getValue();       
+        String idComercial = mapaComerciales.get(nombre);
 
-        if (comercial == null || comercial.isEmpty()) {
-            mostrarAlerta("Selecciona un comercial",Alert.AlertType.INFORMATION);
+        if (nombre == null || nombre.isEmpty()) {
+            mostrarAlerta("Selecciona un comercial", Alert.AlertType.INFORMATION);
+            return;
         }
 
-        JasperPrint print = generarInformeRelacionVentas(comercial);
+        JasperPrint print = generarInformeRelacionVentas(idComercial, nombre);
 
         generarImagenAjustada(print);
     }
     
     /**
-    * Construye el JasperPrint del informe de relación ventas comercial vs empresa.
+    * Genera el informe comparativo entre las ventas realizadas por un comercial
+    * y el total de instalaciones facturadas por la empresa.
     *
-    * @param comercial nombre del comercial
-    * @return JasperPrint generado
+    * El método consulta la colección "Presupuestos" de MongoDB para obtener:
+    * <ul>
+    *   <li>El número de instalaciones facturadas asignadas al comercial.</li>
+    *   <li>El total de instalaciones facturadas por la empresa.</li>
+    * </ul>
+    *
+    * A partir de estos valores se calculan los porcentajes correspondientes y se
+    * construye una lista de mapas compatible con {@link JRMapCollectionDataSource},
+    * que alimentará el informe JasperReports.
+    *
+    * También se preparan los parámetros del informe, incluyendo el nombre del
+    * comercial y un indicador booleano que determina si existen datos suficientes
+    * para mostrar el gráfico.
+    *
+    * Finalmente, el método carga el archivo compilado
+    * {@code ventasComercialVsEmpresa.jasper}, rellena el informe y devuelve el
+    * {@link JasperPrint} resultante. En caso de error, se captura la excepción y
+    * se devuelve {@code null}.
+    *
+    * @param idComercial      identificador del comercial cuyas ventas se analizarán
+    * @param nombreComercial  nombre del comercial que se mostrará en el informe
+    * @return un objeto {@link JasperPrint} listo para visualizar o exportar,
+    *         o {@code null} si ocurre un error durante el proceso
     */
-    private JasperPrint generarInformeRelacionVentas(String comercial) {
+    private JasperPrint generarInformeRelacionVentas(String idComercial, String nombreComercial) {
     try {
 
         MongoCollection<Document> col = database.getCollection("Presupuestos");
-
-        // 1. Datos
+       
         long ventasComercial = col.countDocuments(
                 Filters.and(
-                        Filters.eq("idComercial", comercial.trim()),
+                        Filters.eq("idComercial", idComercial.trim()),
                         Filters.regex("estado", "^facturado$", "i")
                 )
         );
@@ -659,16 +718,13 @@ public class PantallaInformesController implements Initializable {
 
         boolean hayDatos = instalacionesTotales > 0;
 
-        // 2. Porcentajes
         long total = instalacionesTotales == 0 ? 1 : instalacionesTotales;
 
         int pctComercial = (int) Math.round(ventasComercial * 100.0 / total);
         int pctInstalaciones = 100 - pctComercial;
 
-        // 3. Lista para Jasper
         List<Map<String, Object>> lista = new ArrayList<>();
 
-        // Ventas del Comercial
         {
             Map<String, Object> fila = new HashMap<>();
             fila.put("label", "Ventas del Comercial");
@@ -677,7 +733,6 @@ public class PantallaInformesController implements Initializable {
             lista.add(fila);
         }
 
-        // Instalaciones
         {
             Map<String, Object> fila = new HashMap<>();
             fila.put("label", "Instalaciones Totales");
@@ -686,12 +741,10 @@ public class PantallaInformesController implements Initializable {
             lista.add(fila);
         }
 
-        // 4. Parámetros
         Map<String, Object> params = new HashMap<>();
-        params.put("COMERCIAL", comercial);
+        params.put("COMERCIAL", nombreComercial);
         params.put("HAY_DATOS", hayDatos);
 
-        // 5. Cargar informe
         InputStream jasperStream = getClass().getResourceAsStream(
                 "/components/pantallas/erp/pantallaInformes/ventasComercialVsEmpresa.jasper"
         );
@@ -725,7 +778,7 @@ public class PantallaInformesController implements Initializable {
             imageView.setPreserveRatio(true);
             imageView.fitWidthProperty().bind(panelPreview.widthProperty());
             imageView.fitHeightProperty().bind(panelPreview.heightProperty());
-            // ⭐ AJUSTE AUTOMÁTICO AL PANEL
+
             imageView.setPreserveRatio(true);
             imageView.fitWidthProperty().bind(panelPreview.widthProperty());
             imageView.fitHeightProperty().bind(panelPreview.heightProperty());

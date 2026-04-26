@@ -30,7 +30,7 @@
 
                     <Button fx:id="btnVolver" onAction="#volverInicio" text="← Volver" />
 
-                    <Label style="-fx-font-size:18px; -fx-font-weight:bold;" text="Solar Manager" />
+                    <Label fx:id="txtTituloAltaModificacion" style="-fx-font-size:18px; -fx-font-weight:bold;" text="Alta del cliente" />
 
                     <Pane HBox.hgrow="ALWAYS" />
 
@@ -41,7 +41,7 @@
 
                 <VBox spacing="20" style="-fx-padding:20;">
 
-                    <Label style="-fx-font-size:22px; -fx-font-weight:bold;" text="Alta de Cliente" />
+                    <Label style="-fx-font-size:22px; -fx-font-weight:bold;" text="Datos del Cliente" />
 
                     <VBox spacing="20" style="                                 -fx-background-color:white;                                 -fx-border-color:#d0d0d0;                                 -fx-border-width:2;                                 -fx-background-radius:5;                                 -fx-border-radius:5;                                 -fx-padding:20;">
 

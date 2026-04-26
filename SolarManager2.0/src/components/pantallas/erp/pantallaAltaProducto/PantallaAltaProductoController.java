@@ -4,6 +4,9 @@ import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -35,6 +39,8 @@ public class PantallaAltaProductoController {
     @FXML private TextField txtStock;
     @FXML private ComboBox<String> cmbProveedor;
     @FXML private TextArea txtDescripcion;
+    @FXML private Label txtTituloAltaModificacion;
+    
 
     private String idProducto = null;
 
@@ -42,9 +48,10 @@ public class PantallaAltaProductoController {
      * Inicializa la pantalla cargando los tipos de producto y los proveedores.
      */
     @FXML
-    public void initialize() {
+    public void initialize() throws IOException {
         cmbTipo.getItems().addAll(Producto.TipoProducto.values());
-        cmbProveedor.getItems().addAll("Proveedor 1", "Proveedor 2", "Proveedor 3");
+        List<String> Proveedor = obtenerProveedores();
+        cmbProveedor.getItems().setAll(Proveedor);
     }
 
     /**
@@ -114,6 +121,40 @@ public class PantallaAltaProductoController {
     }
 
     /**
+    * Obtiene una lista de nombres de proveedores almacenados en la colección
+    * "Proveedor" de MongoDB.
+    *
+    * El método establece una conexión mediante {@link MongoConnection#conectar()},
+    * accede a la colección correspondiente y recorre todos los documentos
+    * almacenados. De cada documento extrae el campo {@code nombreEmpresa},
+    * añadiéndolo a la lista resultante siempre que no sea nulo ni esté vacío.
+    *
+    * Además, imprime por consola cada documento encontrado en formato JSON
+    * para facilitar la depuración.
+    *
+    * @return una lista de nombres de empresas proveedoras obtenidas desde MongoDB
+    * @throws IOException si ocurre un error al acceder a la base de datos
+    */
+    public List<String> obtenerProveedores() throws IOException {
+        List<String> lista = new ArrayList<>();
+
+        MongoDatabase db = MongoConnection.conectar();
+        MongoCollection<Document> col = db.getCollection("Proveedor");
+        
+        for (Document doc : col.find()) {
+        String nombreEmpresa = doc.getString("nombreEmpresa");
+
+        System.out.println("Proveedor encontrado: " + doc.toJson());
+
+        if (nombreEmpresa != null && !nombreEmpresa.trim().isEmpty()) {
+            lista.add(nombreEmpresa);
+        }
+    }
+
+        return lista;
+    }
+    
+    /**
      * Valida los campos del formulario.
      *
      * @return true si todos los campos son válidos, false en caso contrario
@@ -165,6 +206,7 @@ public class PantallaAltaProductoController {
      * @param p producto a editar
      */
     public void cargarProducto(Producto p) {
+        
         txtNombre.setText(p.getNombre());
         cmbTipo.setValue(p.getTipoProducto());
         txtPrecio.setText(String.valueOf(p.getPrecio()));
@@ -172,6 +214,7 @@ public class PantallaAltaProductoController {
         cmbProveedor.setValue(p.getIdProveedor());
         txtDescripcion.setText(p.getDescripcion());
         this.idProducto = p.getId();
+        txtTituloAltaModificacion.setText("Modificar Producto");
     }
 
     /**
@@ -218,12 +261,16 @@ public class PantallaAltaProductoController {
     */
     private void cambiarPantalla(Node nodo, String rutaFXML) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(rutaFXML));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            Parent root = loader.load();
+
             Stage stage = (Stage) nodo.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.centerOnScreen();
+
         } catch (IOException e) {
             e.printStackTrace();
+            AlertasSolarManager.errorCambioPantalla();
         }
     }
     /**

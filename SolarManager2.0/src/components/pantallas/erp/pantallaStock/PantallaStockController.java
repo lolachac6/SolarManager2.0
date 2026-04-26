@@ -26,6 +26,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import utils.AlertasSolarManager;
 
 /**
@@ -48,6 +49,7 @@ public class PantallaStockController implements Initializable {
     @FXML private TableColumn<Producto, String> colPrecio;
     @FXML private TableColumn<Producto, String> colProveedor;
     @FXML private TableColumn<Producto, String> colStock;
+    @FXML private TableColumn<Producto, String> colDescripcion;
     @FXML private TextField txtFiltro;
 
     private ObservableList<Producto> listaOriginal = FXCollections.observableArrayList();
@@ -68,6 +70,7 @@ public class PantallaStockController implements Initializable {
         colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         colStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
         colProveedor.setCellValueFactory(new PropertyValueFactory<>("idProveedor"));
+        colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 
         try {
             obtenerProductosTabla();
@@ -158,8 +161,8 @@ public class PantallaStockController implements Initializable {
     * @param e evento de acción
     */
     @FXML
-    private void volverInicio(javafx.event.ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
+    private void volverInicio(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(),
             "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml");
     }
     
@@ -169,8 +172,8 @@ public class PantallaStockController implements Initializable {
     * @param e evento de acción
     */
     @FXML
-    private void irClientes(ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
+    private void irClientes(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(),
             "/components/pantallas/erp/pantallaClientes/PantallaClientes.fxml");
     }
     
@@ -180,8 +183,8 @@ public class PantallaStockController implements Initializable {
     * @param e evento de acción
     */
     @FXML
-    private void irComerciales(ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
+    private void irComerciales(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(),
             "/components/pantallas/erp/pantallaComerciales/PantallaComerciales.fxml");
     }
     
@@ -191,8 +194,8 @@ public class PantallaStockController implements Initializable {
     * @param e evento de acción
     */
     @FXML
-    private void irProveedores(ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
+    private void irProveedores(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(),
             "/components/pantallas/erp/pantallaProveedor/PantallaProveedor.fxml");
     }
     
@@ -202,8 +205,8 @@ public class PantallaStockController implements Initializable {
     * @param e evento de acción
     */
     @FXML
-    private void irStock(ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
+    private void irStock(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(),
             "/components/pantallas/erp/pantallaStock/PantallaStock.fxml");
     }
     
@@ -213,8 +216,8 @@ public class PantallaStockController implements Initializable {
     * @param e evento de acción
     */
     @FXML
-    private void irPresupuestos(ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
+    private void irPresupuestos(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(),
             "/components/pantallas/erp/pantallaPresupuesto/PantallaPresupuesto.fxml");
     }
     
@@ -224,8 +227,8 @@ public class PantallaStockController implements Initializable {
     * @param e evento de acción
     */
     @FXML
-    private void irInstalaciones(ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
+    private void irInstalaciones(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(),
             "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml");
     }
     
@@ -235,8 +238,8 @@ public class PantallaStockController implements Initializable {
     * @param e evento de acción
     */
     @FXML
-    private void irInformes(ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
+    private void irInformes(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(),
             "/components/pantallas/erp/pantallaInformes/PantallaInformes.fxml");
     }
     
@@ -246,9 +249,49 @@ public class PantallaStockController implements Initializable {
     * @param e evento de acción
     */
     @FXML
-    private void anadirProducto(ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
+    private void anadirProducto(ActionEvent event) {
+        cambiarPantalla((Node) event.getSource(),
             "/components/pantallas/erp/pantallaAltaProducto/PantallaAltaProducto.fxml");
+    }
+    
+    /**
+     * Confirma si el usuario desea salir sin guardar y vuelve a la pantalla anterior.
+     */
+    @FXML
+    private void confirmarSalida(ActionEvent event) {
+        if (AlertasSolarManager.confirmar("Confirmación", "¿Desea salir sin guardar?")) {
+            volver(event);
+        }
+    }
+    
+    /**
+     * Cambia a la pantalla anterior cerrando la actual.
+     *
+     * @param event evento que contiene el nodo origen.
+     */
+    private void volver(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(
+                getClass().getResource("/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml")
+            );
+
+            Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stageActual.close();
+
+            Stage nuevoStage = new Stage();
+            nuevoStage.setScene(new Scene(root));
+            nuevoStage.setResizable(true);
+
+            Platform.runLater(() -> {
+                nuevoStage.setMaximized(true);
+                nuevoStage.centerOnScreen();
+            });
+
+            nuevoStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -347,13 +390,62 @@ public class PantallaStockController implements Initializable {
     }
     
     /**
+    * Abre una ventana modal con el detalle del producto seleccionado en la tabla de stock.
+    *
+    * El método verifica primero si hay un producto seleccionado; en caso contrario,
+    * muestra una alerta informando al usuario. Si existe selección, carga la vista
+    * {@code PantallaDetalleStock.fxml}, obtiene su controlador y le pasa el objeto
+    * {@link Producto} seleccionado mediante {@code cargarDatos()}.
+    *
+    * A continuación, crea una ventana modal bloqueante asociada a la ventana actual
+    * y muestra el detalle del producto. Si ocurre un error durante la carga del FXML,
+    * se captura la excepción y se muestra un mensaje de error genérico.
+    *
+    * @param event el evento de acción que dispara la apertura del detalle
+    */
+    @FXML
+    private void detalle(ActionEvent event) {
+        Producto seleccionado = tablaStock.getSelectionModel().getSelectedItem();
+
+        if (seleccionado == null) {
+            AlertasSolarManager.warning("Aviso", "Debe seleccionar un producto");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/components/pantallas/pantallaDetalleStock/PantallaDetalleStock.fxml")
+            );
+
+            Parent root = loader.load();
+
+            components.pantallas.pantallaDetalleStock.PantallaDetalleStockController controller =
+                    loader.getController();
+            controller.cargarDatos(seleccionado);
+
+            Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            Stage modal = new Stage();
+            modal.initOwner(stageActual);
+            modal.initModality(Modality.APPLICATION_MODAL);
+            modal.setResizable(false);
+            modal.setScene(new Scene(root));
+            modal.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertasSolarManager.errorGenerico("No se pudo abrir el detalle del producto.");
+        }
+    }
+    
+    /**
     * Abre la pantalla de modificación de producto cargando previamente
     * los datos del producto seleccionado en la tabla.
     *
     * <p>Si no hay ningún producto seleccionado, se muestra una alerta.</p>
     */
     @FXML
-    private void modificarProducto() {
+    private void modificarProducto(ActionEvent event) {
         Producto seleccionado = tablaStock.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
@@ -371,7 +463,7 @@ public class PantallaStockController implements Initializable {
             PantallaAltaProductoController controller = loader.getController();
             controller.cargarProducto(seleccionado);
 
-            Stage stageActual = (Stage) tablaStock.getScene().getWindow();
+            Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stageActual.close();
 
             Stage nuevoStage = new Stage();
@@ -385,8 +477,8 @@ public class PantallaStockController implements Initializable {
 
             nuevoStage.show();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
     
