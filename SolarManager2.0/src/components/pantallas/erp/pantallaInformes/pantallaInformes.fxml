@@ -76,13 +76,15 @@
                                     -fx-border-width:2;
                                     -fx-background-radius:5;
                                     -fx-border-radius:5;">
-
+                        
+                        
                         <ComboBox fx:id="comboComerciales"
                                   prefWidth="180"
-                                  promptText="Selecciona comercial" />
+                                  promptText="Selecciona comercial"/>
 
                         <Pane prefHeight="75"/>
-
+                        
+                        <Label style="-fx-font-weight:bold;" text="Informes por Comercial: " />
                         <Button fx:id="btnInformeComercial"
                                 text="Informe Nº clientes"
                                 prefWidth="180"
@@ -97,11 +99,17 @@
                                 text="Ventas/Instalaciones"
                                 prefWidth="180"
                                 onAction="#onVentasVsEmpresa"/>
-
+                        
+                        <BorderPane.margin>
+                            <Insets bottom="100" left="15" right="15" top="90" />
+                        </BorderPane.margin>
+                        
+                        <Label style="-fx-font-weight:bold;" text="Informes generales:" />
                         <Button fx:id="btnPresupuestos"
                                 text="Informe presupuestos"
                                 prefWidth="180"
-                                onAction="#onPresupuestos"/>
+                                onAction="#onPresupuestos"
+                        />
 
                     </VBox>
 
