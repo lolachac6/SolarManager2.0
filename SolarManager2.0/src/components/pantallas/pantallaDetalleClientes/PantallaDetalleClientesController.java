@@ -14,8 +14,20 @@ import org.bson.types.ObjectId;
 import utils.CifradoDatos;
 
 /**
- * Controlador de la pantalla modal de detalle de cliente.
+ * Controlador de la ventana modal que muestra el detalle completo de un cliente.
+ * 
+ * Esta pantalla se utiliza únicamente para visualización, sin permitir edición.
+ * El controlador carga los datos del cliente desde MongoDB a partir de su ID,
+ * incluyendo información personal, datos de contacto, dirección y el comercial
+ * asignado (mostrando su nombre completo en lugar del ID).
  *
+ * Los campos sensibles como teléfono, DNI o número de cuenta se descifran
+ * automáticamente mediante {@link CifradoDatos#descifrarSiEsPosible(String)}.
+ *
+ * La ventana se cierra mediante el botón asociado al método {@code cerrar()}.
+ * 
+ * Implementa {@link Initializable}, aunque no requiere inicialización adicional.
+ * 
  * @author Iván
  */
 public class PantallaDetalleClientesController implements Initializable {
@@ -40,7 +52,24 @@ public class PantallaDetalleClientesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
-
+    
+    /**
+     * Carga en la interfaz todos los datos del cliente cuyo identificador
+     * coincide con el proporcionado.
+     *
+     * El método consulta la colección "Clientes" en MongoDB, obtiene el documento
+     * correspondiente y rellena los campos de la vista con la información
+     * disponible. Los valores nulos se sustituyen por cadenas vacías mediante
+     * {@code valorTexto()}.
+     *
+     * También obtiene el comercial asignado al cliente consultando la colección
+     * "Comerciales", mostrando su nombre y apellidos en lugar del ID.
+     *
+     * Si el cliente no existe o ocurre un error durante la consulta, el método
+     * simplemente no modifica la interfaz.
+     *
+     * @param idCliente identificador del cliente en formato hexadecimal de ObjectId
+     */
     public void cargarClientePorId(String idCliente) {
         try {
             MongoDatabase db = MongoConnection.conectar();
@@ -62,7 +91,32 @@ public class PantallaDetalleClientesController implements Initializable {
             txtCif.setText(valorTexto(doc.getString("cif")));
             txtNumeroCuenta.setText(valorTexto(CifradoDatos.descifrarSiEsPosible(doc.getString("numeroCuenta"))));
             txtObservaciones.setText(valorTexto(doc.getString("observaciones")));
-            txtIdComercial.setText(valorTexto(doc.getString("idComercialAsignado")));
+            String idComercial = doc.getString("idComercialAsignado");
+
+            if (idComercial != null && !idComercial.isEmpty()) {
+
+                MongoCollection<Document> colComerciales = db.getCollection("Comerciales");
+
+                Document comercialDoc = colComerciales.find(
+                        new Document("_id", new ObjectId(idComercial))
+                ).first();
+
+                if (comercialDoc != null) {
+                    String nombre = comercialDoc.getString("nombre");
+                    String apellidos = comercialDoc.getString("apellidos");
+
+                    txtIdComercial.setText(
+                            (apellidos != null && !apellidos.isEmpty())
+                            ? nombre + " " + apellidos
+                            : nombre
+                    );
+                } else {
+                    txtIdComercial.setText("");
+                }
+
+            } else {
+                txtIdComercial.setText("");
+            }
 
             Document dir = (Document) doc.get("direccion");
             if (dir != null) {
@@ -83,11 +137,26 @@ public class PantallaDetalleClientesController implements Initializable {
             e.printStackTrace();
         }
     }
-
+    
+     /**
+     * Devuelve una cadena segura para mostrar en la interfaz.
+     *
+     * Si el valor recibido es {@code null}, devuelve una cadena vacía.
+     * En caso contrario, devuelve el valor original.
+     *
+     * @param valor texto que puede ser nulo
+     * @return el valor recibido o una cadena vacía si era {@code null}
+     */
     private String valorTexto(String valor) {
         return valor == null ? "" : valor;
     }
-
+    
+    /**
+     * Cierra la ventana modal de detalle del cliente.
+     *
+     * Obtiene la ventana actual a partir de cualquier nodo de la escena
+     * (en este caso, el campo {@code txtId}) y ejecuta {@code close()}.
+     */
     @FXML
     private void cerrar() {
         Stage stage = (Stage) txtId.getScene().getWindow();

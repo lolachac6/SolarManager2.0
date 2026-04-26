@@ -30,6 +30,7 @@ import org.bson.types.ObjectId;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.io.IOException;
+import javafx.scene.control.Label;
 
 import utils.AlertasSolarManager;
 import utils.CifradoDatos;
@@ -68,6 +69,7 @@ public class AltaClienteController implements Initializable {
     @FXML private TextField txtCiudad;
     @FXML private TextField txtProvincia;
     @FXML private TextField txtCodigoPostal;
+    @FXML private Label txtTituloAltaModificacion;
 
     private Cliente clienteEditar;
 
@@ -154,7 +156,8 @@ public class AltaClienteController implements Initializable {
     public void setCliente(Cliente cliente) {
 
         this.clienteEditar = cliente;
-
+        
+        txtTituloAltaModificacion.setText("Modificar Cliente");
         txtId.setText(cliente.getId());
         txtNombre.setText(cliente.getNombre());
         txtApellidos.setText(cliente.getApellidos());

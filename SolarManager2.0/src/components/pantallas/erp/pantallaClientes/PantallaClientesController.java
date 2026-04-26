@@ -404,7 +404,7 @@ public class PantallaClientesController implements Initializable {
         Cliente seleccionado = tablaClientes.getSelectionModel().getSelectedItem();
 
         if (seleccionado == null) {
-            AlertasSolarManager.seleccionarClienteParaEditar();
+            AlertasSolarManager.warning("Aviso", "Debe seleccionar un cliente");
             return;
         }
 

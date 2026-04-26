@@ -90,7 +90,8 @@
                             <TableColumn fx:id="colTipo" prefWidth="200.00006103515625" text="Tipo Producto" />
                             <TableColumn fx:id="colPrecio" prefWidth="111.19992065429688" text="Precio (€)" />
                             <TableColumn fx:id="colProveedor" prefWidth="166.39996337890625" text="Proveedor" />
-                            <TableColumn fx:id="colStock" prefWidth="87.19989013671875" text="Stock" />
+                            <TableColumn fx:id="colStock" prefWidth="66.39990234375" text="Stock" />
+                            <TableColumn fx:id="colDescripcion" prefWidth="108.0" text="Descripción" />
                         </columns>
                     </TableView>
 
@@ -102,13 +103,16 @@
 
                         <Button fx:id="btnAñadirProducto" onAction="#abrirAltaProducto" style="-fx-background-color: #2f6fda; -fx-text-fill: white;" text="➕ Añadir Producto" />
 
-                        <Pane HBox.hgrow="ALWAYS" />
+                        <Pane HBox.hgrow="ALWAYS">
+                     <children>
+                                                          
+                     </children></Pane>
+                     
+                        <Button layoutX="522.0" onAction="#detalle" text="Detalles" />
                         
                         <Button fx:id="btnModificar" onAction="#modificarProducto" text="Modificar" />
                         
-                        <Button fx:id="btnEliminar" onAction="#eliminarProducto" text="Eliminar" />
-
-                       
+                        <Button fx:id="btnEliminar" onAction="#eliminarProducto" text="Eliminar" />                       
 
                     </HBox>
 
