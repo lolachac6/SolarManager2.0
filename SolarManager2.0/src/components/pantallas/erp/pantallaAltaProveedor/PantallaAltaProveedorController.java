@@ -23,6 +23,7 @@ import static okhttp3.Cache.key;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import utils.AlertasSolarManager;
+import utils.CifradoDatos;
 
 /**
  * Controlador de la pantalla de alta y edición de proveedores.
@@ -39,6 +40,7 @@ public class PantallaAltaProveedorController {
 
     @FXML private TextField txtNombreEmpresa;
     @FXML private TextField txtRazonSocial;
+    @FXML private TextField txtCif;
     @FXML private TextField txtTelefono;
     @FXML private TextField txtEmail;
     @FXML private TextField txtDireccion;
@@ -110,11 +112,12 @@ public class PantallaAltaProveedorController {
         try {
             Proveedor nuevoProveedor = new Proveedor();
             nuevoProveedor.setNombreEmpresa(txtNombreEmpresa.getText());
-            nuevoProveedor.setTelefono(txtTelefono.getText());
+            nuevoProveedor.setTelefono(CifradoDatos.cifrar(txtTelefono.getText()));
             nuevoProveedor.setEmail(txtEmail.getText());
             nuevoProveedor.setDireccion(new Direccion());
             nuevoProveedor.setRazonSocial(txtRazonSocial.getText());
             nuevoProveedor.setObservaciones(txtObservaciones.getText());
+            nuevoProveedor.setCif(CifradoDatos.cifrar(txtCif.getText()));
 
             Document direccionDoc = new Document()
                     .append("calle", txtDireccion.getText())
@@ -126,10 +129,10 @@ public class PantallaAltaProveedorController {
             Document doc = new Document()
                     .append("nombreEmpresa", nuevoProveedor.getNombreEmpresa())
                     .append("razonSocial", nuevoProveedor.getRazonSocial())
+                    .append("cif", nuevoProveedor.getCif())
                     .append("telefono", nuevoProveedor.getTelefono())
                     .append("email", nuevoProveedor.getEmail())
                     .append("direccion", direccionDoc)
-                    .append("nombreEmpresa", nuevoProveedor.getNombreEmpresa())
                     .append("observaciones", nuevoProveedor.getObservaciones());
 
             MongoDatabase db = MongoConnection.conectar();
@@ -166,12 +169,27 @@ public class PantallaAltaProveedorController {
         }
         
         if (txtRazonSocial.getText().isEmpty()) {
-            AlertasSolarManager.nombreProveedorObligatorio();
+            AlertasSolarManager.razonSocialObligatorio();
+            return false;
+        }
+        
+        if (txtCif.getText().trim().isEmpty()) {
+            AlertasSolarManager.cifObligatorio();
+            return false;
+        }
+
+        if (!txtCif.getText().matches("(?i)^[A-Z]\\d{8}$")) {
+            AlertasSolarManager.cifInvalido();
             return false;
         }
 
         if (txtTelefono.getText().isEmpty()) {
             AlertasSolarManager.telefonoObligatorio();
+            return false;
+        }
+        
+        if (!txtTelefono.getText().matches("\\d{9}")) {
+            AlertasSolarManager.telefonoInvalido();
             return false;
         }
 
@@ -189,8 +207,68 @@ public class PantallaAltaProveedorController {
             AlertasSolarManager.direccionObligatoria();
             return false;
         }
+        
+        
+        if (txtMunicipio.getText().trim().isEmpty()) {
+        AlertasSolarManager.municipioObligatorio();
+        return false;
+        }
+        
+        if (txtProvincia.getText().trim().isEmpty()) {
+        AlertasSolarManager.provinciaObligatoria();
+        return false;
+        }
+        
+        
+        
+        String[] provinciasValidas = {
+        "Álava", "Albacete", "Alicante", "Almería", "Asturias", "Ávila",
+        "Badajoz", "Barcelona", "Burgos",
+        "Cáceres", "Cádiz", "Cantabria", "Castellón", "Ciudad Real", "Córdoba", "Cuenca",
+        "Girona", "Granada", "Guadalajara", "Guipúzcoa",
+        "Huelva", "Huesca",
+        "Illes Balears",
+        "Jaén",
+        "A Coruña",
+        "La Rioja", "Las Palmas", "León", "Lleida", "Lugo",
+        "Madrid", "Málaga", "Murcia",
+        "Navarra",
+        "Ourense",
+        "Palencia", "Pontevedra",
+        "Salamanca", "Santa Cruz de Tenerife", "Segovia", "Sevilla", "Soria",
+        "Tarragona", "Teruel", "Toledo",
+        "Valencia", "Valladolid", "Vizcaya",
+        "Zamora", "Zaragoza",
+        "Ceuta", "Melilla"
+        };
 
+        boolean provinciaValida = false;
+        for (String prov : provinciasValidas) {
+            if (prov.equalsIgnoreCase(txtProvincia.getText().trim())) {
+                provinciaValida = true;
+                break;
+            }
+        }
+
+        if (!provinciaValida) {
+            AlertasSolarManager.provinciaInvalida();
+            return false;
+        }
+        
+        if (txtCodigoPostal.getText().trim().isEmpty()) {
+        AlertasSolarManager.codigoPostalObligatorio(); 
+        return false;
+        }
+
+        if (!txtCodigoPostal.getText().matches("\\d{5}")) {
+            AlertasSolarManager.codigoPostalInvalido(); 
+            return false;
+        }
+
+        
+        
         return true;
+        
     }
 
     @FXML
@@ -254,7 +332,8 @@ public class PantallaAltaProveedorController {
 
         txtNombreEmpresa.setText(p.getNombreEmpresa());
         txtRazonSocial.setText(p.getRazonSocial());
-        txtTelefono.setText(p.getTelefono());
+        txtCif.setText(CifradoDatos.descifrarSiEsPosible(p.getCif()));
+        txtTelefono.setText(CifradoDatos.descifrarSiEsPosible(p.getTelefono()));
         txtEmail.setText(p.getEmail());
         txtObservaciones.setText(p.getObservaciones());
 
@@ -280,6 +359,7 @@ public class PantallaAltaProveedorController {
     private void limpiarFormulario() {
         txtNombreEmpresa.clear();
         txtRazonSocial.clear();
+        txtCif.clear();
         txtTelefono.clear();
         txtEmail.clear();
         txtDireccion.clear();

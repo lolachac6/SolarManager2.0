@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import modelo.Direccion;
 import modelo.Proveedor;
 import utils.AlertasSolarManager;
+import utils.CifradoDatos;
 
 /**
  * Controlador del modal de detalle de proveedor.
@@ -20,6 +21,7 @@ public class PantallaDetalleProveedorController {
 
     @FXML private TextField txtNombreEmpresa;
     @FXML private TextField txtRazonSocial;
+    @FXML private TextField txtCif;
     @FXML private TextField txtTelefono;
     @FXML private TextField txtEmail;
     @FXML private TextField txtCalle;
@@ -46,7 +48,8 @@ public class PantallaDetalleProveedorController {
 
     txtNombreEmpresa.setText(proveedor.getNombreEmpresa());
     txtRazonSocial.setText(proveedor.getRazonSocial());
-    txtTelefono.setText(proveedor.getTelefono());
+    txtCif.setText(CifradoDatos.descifrarSiEsPosible(proveedor.getCif()));
+    txtTelefono.setText(CifradoDatos.descifrarSiEsPosible(proveedor.getTelefono()));
     txtEmail.setText(proveedor.getEmail());
     txtObservaciones.setText(proveedor.getObservaciones());
 

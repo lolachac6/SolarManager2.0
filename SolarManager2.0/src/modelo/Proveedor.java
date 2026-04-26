@@ -37,8 +37,11 @@ public class Proveedor extends Persona {
     /** Nombre de la empresa proveedora */
     private String nombreEmpresa;
     
-     /** Nombre legal de la empresa proveedora */
+    /** Nombre legal de la empresa proveedora */
     private String razonSocial;
+    
+    /** CIF de la empresa proveedora */
+    private String cif;
 
     /** Página web del proveedor */
     private String web;
@@ -143,6 +146,24 @@ public class Proveedor extends Persona {
     }
 
     /**
+     * Obtiene el CIF de la empresa proveedora.
+     *
+     * @return nombre de la empresa
+     */
+    public String getCif() {
+        return cif;
+    }
+    
+    /**
+     * Establece el CIF de la empresa proveedora.
+     *
+     * @param cif nombre de la empresa
+     */
+    public void setCif(String cif) {
+        this.cif = cif;
+    }
+    
+    /**
      * Obtiene la página web del proveedor.
      *
      * @return página web
@@ -191,6 +212,7 @@ public class Proveedor extends Persona {
         public String toString() {
             return nombreEmpresa +
                    " | Razón social: " + razonSocial +
+                   " | CIF: " + cif +
                    " | Contacto: " + getNombre() + " " + getApellidos() +
                    " | Tel: " + getTelefono() +
                    " | Web: " + web;
