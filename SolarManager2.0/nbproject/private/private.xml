@@ -3,9 +3,23 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/aleix/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaStock/PantallaStockController.java</file>
-            <file>file:/C:/Users/aleix/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaAltaProveedor/PantallaAltaProveedorController.java</file>
-            <file>file:/C:/Users/aleix/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaAltaProducto/PantallaAltaProductoController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/tablaInstalaciones/TablaInstalacionesController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/tablaPresupuestos/TablaPresupuestosController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/calculoInstalacion/CalculoInstalacionController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaAltaPresupuesto/pantallaAltaPresupuesto.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/pantallaGeneral/PantallaGeneralController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/pantallaDetalleInstalaciones/PantallaDetalleInstalacionesController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/pantallaDetalleClientes/PantallaDetalleClientes.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/pantallaDetalleInstalaciones/pantallaDetalleInstalaciones.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/pantallaDetallePresupuesto/pantallaDetallePresupuestoController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/comercial/calculoInstalacion/calculoInstalacion.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/pantallaDetallePresupuesto/pantallaDetallePresupuesto.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/pantallaDetalleComerciales/PantallaDetalleComercialesController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/pantallaDetalleClientes/PantallaDetalleClientesController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/pantallaDetalleComerciales/pantallaDetalleComerciales.fxml</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/pantallas/erp/pantallaAltaPresupuesto/PantallaAltaPresupuestoController.java</file>
+            <file>file:/C:/Users/ivang/Desktop/SolarManager2.0/SolarManager2.0/src/components/tablaInstalaciones/tablaInstalaciones.fxml</file>
         </group>
     </open-files>
 </project-private>

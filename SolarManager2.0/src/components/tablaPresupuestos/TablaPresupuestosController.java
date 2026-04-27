@@ -38,7 +38,6 @@ public class TablaPresupuestosController implements Initializable {
 
     private void configurarColumnas(){
 
-        // 👇 CLIENTE (igual que instalaciones)
         colCliente.setCellValueFactory(data -> {
             String idCliente = data.getValue().getString("idCliente");
             String nombreCompleto = obtenerNombreCliente(idCliente);
@@ -57,7 +56,6 @@ public class TablaPresupuestosController implements Initializable {
                 ));
     }
 
-    //  MISMO MÉTODO QUE INSTALACIONES
     private String obtenerNombreCliente(String idCliente) {
 
         if (idCliente == null || idCliente.isEmpty()) {
@@ -104,6 +102,15 @@ public class TablaPresupuestosController implements Initializable {
         }
 
         tablaPresupuestos.setItems(lista);
+    }
+
+    /**
+     * Devuelve el presupuesto seleccionado en la tabla.
+     *
+     * @return documento del presupuesto seleccionado o null si no hay selección
+     */
+    public Document getPresupuestoSeleccionado() {
+        return tablaPresupuestos.getSelectionModel().getSelectedItem();
     }
 
     private String valorSeguro(String valor) {
