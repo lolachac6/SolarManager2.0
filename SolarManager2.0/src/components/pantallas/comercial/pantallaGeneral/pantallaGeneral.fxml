@@ -23,14 +23,10 @@
                     AnchorPane.rightAnchor="0"
                     AnchorPane.topAnchor="0">
 
-            <!-- ===================== -->
-            <!-- CABECERA -->
-            <!-- ===================== -->
             <top>
                 <HBox alignment="CENTER_LEFT"
                       spacing="10"
                       style="-fx-background-color:#f4f4f4; -fx-padding:10;">
-
 
                     <Label text="Solar Manager"
                            style="-fx-font-size:18px; -fx-font-weight:bold;"/>
@@ -41,9 +37,6 @@
                 </HBox>
             </top>
 
-            <!-- ===================== -->
-            <!-- MENU -->
-            <!-- ===================== -->
             <left>
                 <VBox alignment="TOP_CENTER"
                       prefWidth="200"
@@ -68,19 +61,12 @@
                 </VBox>
             </left>
 
-            <!-- ===================== -->
-            <!-- CONTENIDO -->
-            <!-- ===================== -->
             <center>
                 <VBox spacing="20" style="-fx-padding:20;">
 
-                    <!-- TITULO -->
                     <Label text="Área Comercial"
                            style="-fx-font-size:22px; -fx-font-weight:bold;"/>
 
-                    <!-- ===================== -->
-                    <!-- DASHBOARD -->
-                    <!-- ===================== -->
                     <StackPane VBox.vgrow="ALWAYS">
 
                         <GridPane alignment="CENTER"
@@ -92,7 +78,6 @@
                                 <ColumnConstraints percentWidth="50" halignment="CENTER"/>
                             </columnConstraints>
 
-                            <!-- BOTÓN CLIENTES -->
                             <Button fx:id="btnClientes"  
                                     styleClass="dashboard-button"
                                     contentDisplay="TOP"
@@ -101,7 +86,6 @@
                                     onAction="#abrirAltaCliente"
                                     GridPane.columnIndex="0"/>
 
-                            <!-- BOTÓN INSTALACIONES -->
                             <Button fx:id="btnInstalaciones"
                                     styleClass="dashboard-button"
                                     contentDisplay="TOP"
@@ -114,9 +98,6 @@
 
                     </StackPane>
 
-                    <!-- ===================== -->
-                    <!-- PANEL DINÁMICO (CLAVE) -->
-                    <!-- ===================== -->
                     <AnchorPane fx:id="panelTabla"
                                 VBox.vgrow="ALWAYS"
                                 style="-fx-background-color:white;
@@ -124,6 +105,20 @@
                                        -fx-border-width:2;
                                        -fx-border-radius:5;
                                        -fx-background-radius:5;"/>
+
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Button fx:id="btnHacerPresupuesto"
+                                text="Hacer Presupuesto"
+                                visible="false"
+                                managed="false"
+                                onAction="#hacerPresupuesto"/>
+
+                        <Button fx:id="btnDetalle"
+                                text="Detalle"
+                                visible="false"
+                                managed="false"
+                                onAction="#abrirDetalle"/>
+                    </HBox>
 
                 </VBox>
             </center>

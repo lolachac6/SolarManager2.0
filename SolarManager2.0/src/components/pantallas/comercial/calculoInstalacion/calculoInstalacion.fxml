@@ -141,8 +141,7 @@
 
                 <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color:#f4f4f4; -fx-padding:10;">
 
-                    <Button fx:id="btnGenerarPresupuesto" text="Generar Presupuesto" />
-
+                    
                     <Pane HBox.hgrow="ALWAYS" />
 
                     <Button fx:id="btnCalcular" onAction="#calcularInstalacion" text="Calcular" />

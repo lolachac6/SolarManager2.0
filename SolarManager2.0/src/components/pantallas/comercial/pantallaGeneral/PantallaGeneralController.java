@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import javafx.event.ActionEvent;
@@ -22,16 +23,21 @@ import javafx.scene.image.ImageView;
 
 import javafx.application.Platform;
 
-
 import javafx.scene.layout.AnchorPane;
-
 
 import modelo.Cliente;
 import modelo.Direccion;
+import modelo.InstalacionFotovoltaica;
 import org.bson.Document;
 import utils.AlertasSolarManager;
 import components.tablaClientes.TablaClientesController;
+import components.tablaInstalaciones.TablaInstalacionesController;
+import components.tablaPresupuestos.TablaPresupuestosController;
 import components.pantallas.comercial.calculoInstalacion.CalculoInstalacionController;
+import components.pantallas.erp.pantallaAltaPresupuesto.PantallaAltaPresupuestoController;
+import components.pantallas.pantallaDetalleClientes.PantallaDetalleClientesController;
+import components.pantallas.pantallaDetalleInstalaciones.PantallaDetalleInstalacionesController;
+import components.pantallas.pantallaDetallePresupuesto.pantallaDetallePresupuestoController;
 
 /**
  * Controlador de la pantalla general comercial.
@@ -47,13 +53,17 @@ public class PantallaGeneralController implements Initializable {
     private Button btnClientes;
     @FXML
     private Button btnInstalaciones;
-
+    @FXML
+    private Button btnHacerPresupuesto;
+    @FXML
+    private Button btnDetalle;
 
     @FXML private AnchorPane panelTabla;
 
-
-
     private TablaClientesController tablaClientesController;
+    private TablaInstalacionesController tablaInstalacionesController;
+    private TablaPresupuestosController tablaPresupuestosController;
+    private String tablaActual;
 
     /**
      * Inicializa la pantalla y carga los iconos del panel principal.
@@ -107,7 +117,6 @@ public class PantallaGeneralController implements Initializable {
         }
     }
 
-
     /**
      * Abre la pantalla de alta de cliente.
      *
@@ -127,8 +136,6 @@ public class PantallaGeneralController implements Initializable {
      */
     @FXML
     private void abrirCalculoInstalacion(ActionEvent e) {
-      /**  cambiarPantalla((Node) e.getSource(),
-                "/components/pantallas/comercial/calculoInstalacion/CalculoInstalacion.fxml");*/
 
         if (tablaClientesController == null) {
             AlertasSolarManager.warning(
@@ -168,7 +175,6 @@ public class PantallaGeneralController implements Initializable {
         }
     }
 
-
     /**
      * Carga la tabla de clientes en el panel central.
      *
@@ -176,17 +182,26 @@ public class PantallaGeneralController implements Initializable {
      */
     @FXML
     private void mostrarClientes(ActionEvent e) {
+        tablaActual = "CLIENTES";
+        btnHacerPresupuesto.setVisible(false);
+        btnHacerPresupuesto.setManaged(false);
+        btnDetalle.setVisible(true);
+        btnDetalle.setManaged(true);
         cargarEnPanel("/components/tablaClientes/tablaClientes.fxml");
     }
 
     /**
-     * Carga la tabla de Instalaciones en el panel cental
+     * Carga la tabla de instalaciones en el panel central.
      *
      * @param e evento de acción
      */
     @FXML
     private void mostrarInstalaciones(ActionEvent e) {
-        //System.out.println("👉 Instalaciones aún no implementado");
+        tablaActual = "INSTALACIONES";
+        btnHacerPresupuesto.setVisible(true);
+        btnHacerPresupuesto.setManaged(true);
+        btnDetalle.setVisible(true);
+        btnDetalle.setManaged(true);
         cargarEnPanel("/components/tablaInstalaciones/tablaInstalaciones.fxml");
     }
 
@@ -197,7 +212,219 @@ public class PantallaGeneralController implements Initializable {
      */
     @FXML
     private void mostrarPresupuestos(ActionEvent e) {
+        tablaActual = "PRESUPUESTOS";
+        btnHacerPresupuesto.setVisible(false);
+        btnHacerPresupuesto.setManaged(false);
+        btnDetalle.setVisible(true);
+        btnDetalle.setManaged(true);
         cargarEnPanel("/components/tablaPresupuestos/tablaPresupuestos.fxml");
+    }
+
+    /**
+     * Abre la pantalla de alta de presupuesto con la instalación seleccionada.
+     *
+     * @param e evento de acción
+     */
+    @FXML
+    private void hacerPresupuesto(ActionEvent e) {
+
+        if (tablaInstalacionesController == null) {
+            AlertasSolarManager.warning(
+                    "Instalaciones no cargadas",
+                    "Primero debe cargar la tabla de instalaciones."
+            );
+            return;
+        }
+
+        InstalacionFotovoltaica instalacionSeleccionada = tablaInstalacionesController.getInstalacionSeleccionada();
+
+        if (instalacionSeleccionada == null) {
+            AlertasSolarManager.warning(
+                    "Instalación no seleccionada",
+                    "Debe seleccionar una instalación para hacer el presupuesto."
+            );
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/components/pantallas/erp/pantallaAltaPresupuesto/PantallaAltaPresupuesto.fxml"
+            ));
+
+            Parent root = loader.load();
+
+            PantallaAltaPresupuestoController controller = loader.getController();
+            controller.cargarDatosInstalacion(instalacionSeleccionada);
+
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            AlertasSolarManager.errorCambioPantalla();
+        }
+    }
+
+    /**
+     * Abre la pantalla de detalle correspondiente según la tabla cargada.
+     *
+     * @param e evento de acción
+     */
+    @FXML
+    private void abrirDetalle(ActionEvent e) {
+
+        if ("CLIENTES".equals(tablaActual)) {
+            abrirDetalleCliente();
+            return;
+        }
+
+        if ("INSTALACIONES".equals(tablaActual)) {
+            abrirDetalleInstalacion();
+            return;
+        }
+
+        if ("PRESUPUESTOS".equals(tablaActual)) {
+            abrirDetallePresupuesto();
+        }
+    }
+
+    /**
+     * Abre la ventana de detalle del cliente seleccionado.
+     */
+    private void abrirDetalleCliente() {
+
+        if (tablaClientesController == null) {
+            AlertasSolarManager.warning(
+                    "Clientes no cargados",
+                    "Primero debe cargar la tabla de clientes."
+            );
+            return;
+        }
+
+        Document clienteDoc = tablaClientesController.getClienteSeleccionado();
+
+        if (clienteDoc == null) {
+            AlertasSolarManager.warning(
+                    "Cliente no seleccionado",
+                    "Debe seleccionar un cliente para ver el detalle."
+            );
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/components/pantallas/pantallaDetalleClientes/PantallaDetalleClientes.fxml"
+            ));
+
+            Parent root = loader.load();
+
+            PantallaDetalleClientesController controller = loader.getController();
+            controller.cargarClientePorId(clienteDoc.getObjectId("_id").toHexString());
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Detalle Cliente");
+            stage.showAndWait();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            AlertasSolarManager.errorCambioPantalla();
+        }
+    }
+
+    /**
+     * Abre la ventana de detalle de la instalación seleccionada.
+     */
+    private void abrirDetalleInstalacion() {
+
+        if (tablaInstalacionesController == null) {
+            AlertasSolarManager.warning(
+                    "Instalaciones no cargadas",
+                    "Primero debe cargar la tabla de instalaciones."
+            );
+            return;
+        }
+
+        InstalacionFotovoltaica instalacionSeleccionada = tablaInstalacionesController.getInstalacionSeleccionada();
+
+        if (instalacionSeleccionada == null) {
+            AlertasSolarManager.warning(
+                    "Instalación no seleccionada",
+                    "Debe seleccionar una instalación para ver el detalle."
+            );
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/components/pantallas/pantallaDetalleInstalaciones/PantallaDetalleInstalaciones.fxml"
+            ));
+
+            Parent root = loader.load();
+
+            PantallaDetalleInstalacionesController controller = loader.getController();
+            controller.cargarInstalacion(
+                    instalacionSeleccionada,
+                    tablaInstalacionesController.getNombreClienteSeleccionado()
+            );
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Detalle Instalación");
+            stage.showAndWait();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            AlertasSolarManager.errorCambioPantalla();
+        }
+    }
+
+    /**
+     * Abre la ventana de detalle del presupuesto seleccionado.
+     */
+    private void abrirDetallePresupuesto() {
+
+        if (tablaPresupuestosController == null) {
+            AlertasSolarManager.warning(
+                    "Presupuestos no cargados",
+                    "Primero debe cargar la tabla de presupuestos."
+            );
+            return;
+        }
+
+        Document presupuestoDoc = tablaPresupuestosController.getPresupuestoSeleccionado();
+
+        if (presupuestoDoc == null) {
+            AlertasSolarManager.warning(
+                    "Presupuesto no seleccionado",
+                    "Debe seleccionar un presupuesto para ver el detalle."
+            );
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/components/pantallas/pantallaDetallePresupuesto/PantallaDetallePresupuesto.fxml"
+            ));
+
+            Parent root = loader.load();
+
+            pantallaDetallePresupuestoController controller = loader.getController();
+            controller.cargarPresupuesto(presupuestoDoc);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Detalle Presupuesto");
+            stage.showAndWait();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            AlertasSolarManager.errorCambioPantalla();
+        }
     }
 
     /**
@@ -222,6 +449,14 @@ public class PantallaGeneralController implements Initializable {
                 tablaClientesController = loader.getController();
             }
 
+            if ("/components/tablaInstalaciones/tablaInstalaciones.fxml".equals(rutaFXML)) {
+                tablaInstalacionesController = loader.getController();
+            }
+
+            if ("/components/tablaPresupuestos/tablaPresupuestos.fxml".equals(rutaFXML)) {
+                tablaPresupuestosController = loader.getController();
+            }
+
             panelTabla.getChildren().clear();
             panelTabla.getChildren().add(contenido);
 
@@ -235,7 +470,6 @@ public class PantallaGeneralController implements Initializable {
         }
     }
 
-      
     /**
      * Cambia la pantalla actual por otra indicada.
      *
@@ -262,7 +496,6 @@ public class PantallaGeneralController implements Initializable {
             ex.printStackTrace();
         }
     }
-
 
     /**
      * Convierte un documento de MongoDB a objeto Cliente.
