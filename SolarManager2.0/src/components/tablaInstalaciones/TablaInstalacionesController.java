@@ -1,5 +1,6 @@
 package components.tablaInstalaciones;
 
+import ConexionSupabase.SessionManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -12,60 +13,73 @@ import org.bson.Document;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.in;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.json.JSONObject;
 
 public class TablaInstalacionesController implements Initializable {
 
-    @FXML private TableView<Document> tablaInstalaciones;
-    @FXML private TableColumn<Document, String> colCliente;
-    @FXML private TableColumn<Document, String> colPotencia;
-    @FXML private TableColumn<Document, String> colPaneles;
-    @FXML private TableColumn<Document, String> colProduccion;
-    @FXML private TableColumn<Document, String> colAhorro;
-    @FXML private TableColumn<Document, String> colInversor;
-    @FXML private TableColumn<Document, String> colBateria;
-    
+    @FXML
+    private TableView<Document> tablaInstalaciones;
+    @FXML
+    private TableColumn<Document, String> colCliente;
+    @FXML
+    private TableColumn<Document, String> colPotencia;
+    @FXML
+    private TableColumn<Document, String> colPaneles;
+    @FXML
+    private TableColumn<Document, String> colProduccion;
+    @FXML
+    private TableColumn<Document, String> colAhorro;
+    @FXML
+    private TableColumn<Document, String> colInversor;
+    @FXML
+    private TableColumn<Document, String> colBateria;
+
     private ObservableList<Document> lista;
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarColumnas();
         cargarDatos();
-    } 
-    
-    private void configurarColumnas(){
-    
-       colCliente.setCellValueFactory(data -> {
-             String idCliente = data.getValue().getString("idCliente");
-             String nombreCompleto = obtenerNombreCliente(idCliente);
-             return new SimpleStringProperty(nombreCompleto);
-             });
-        
-        colPotencia.setCellValueFactory(data ->
-                new SimpleStringProperty(String.valueOf(data.getValue().get("potenciaInstalada"))));
-        
-        colPaneles.setCellValueFactory(data->
-                new SimpleStringProperty(String.valueOf(data.getValue().get("numeroPaneles"))));
-        
-        colProduccion.setCellValueFactory(data->
-                new SimpleStringProperty(String.valueOf(data.getValue().get("produccionEstimada"))));
-        
-        colAhorro.setCellValueFactory(data->
-                new SimpleStringProperty(String.valueOf(data.getValue().get("ahorroEstimado"))));
-        
-        colInversor.setCellValueFactory(data->
-                new SimpleStringProperty(String.valueOf(data.getValue().get("inversor"))));
-        
-        colBateria.setCellValueFactory(data->
-                new SimpleStringProperty(String.valueOf(data.getValue().get("bateria"))));
-        
     }
-    
+
+    private void configurarColumnas() {
+
+        colCliente.setCellValueFactory(data -> {
+            String idCliente = data.getValue().getString("idCliente");
+            String nombreCompleto = obtenerNombreCliente(idCliente);
+            return new SimpleStringProperty(nombreCompleto);
+        });
+
+        colPotencia.setCellValueFactory(data
+                -> new SimpleStringProperty(String.valueOf(data.getValue().get("potenciaInstalada"))));
+
+        colPaneles.setCellValueFactory(data
+                -> new SimpleStringProperty(String.valueOf(data.getValue().get("numeroPaneles"))));
+
+        colProduccion.setCellValueFactory(data
+                -> new SimpleStringProperty(String.valueOf(data.getValue().get("produccionEstimada"))));
+
+        colAhorro.setCellValueFactory(data
+                -> new SimpleStringProperty(String.valueOf(data.getValue().get("ahorroEstimado"))));
+
+        colInversor.setCellValueFactory(data
+                -> new SimpleStringProperty(String.valueOf(data.getValue().get("inversor"))));
+
+        colBateria.setCellValueFactory(data
+                -> new SimpleStringProperty(String.valueOf(data.getValue().get("bateria"))));
+
+    }
+
     private String obtenerNombreCliente(String idCliente) {
 
         if (idCliente == null || idCliente.isEmpty()) {
@@ -90,23 +104,48 @@ public class TablaInstalacionesController implements Initializable {
 
         return "";
     }
-    
-    private void cargarDatos(){
-    
+
+    private void cargarDatos() {
+
         lista = FXCollections.observableArrayList();
-        
-        try{
+
+        try {
             MongoDatabase db = MongoConnection.conectar();
-            MongoCollection<Document> col = db.getCollection("Instalaciones");
-            
-            for(Document doc :col.find()){
-                lista.add(doc);
-                System.out.println(lista);
+
+            MongoCollection<Document> colInstalaciones = db.getCollection("Instalaciones");
+            MongoCollection<Document> colClientes = db.getCollection("Clientes");
+            MongoCollection<Document> colComerciales = db.getCollection("Comerciales");
+
+            JSONObject usuario = SessionManager.getUsuario();
+            String idSupabase = usuario.getString("id");
+
+            Document comercial = colComerciales.find(eq("supabase_id", idSupabase)).first();
+
+            if (comercial == null) {
+                tablaInstalaciones.setItems(lista);
+                return;
             }
-        }catch(IOException ex){
-            Logger.getLogger(TablaInstalacionesController.class.getName()).log(Level.SEVERE, null, ex);
+
+            String idComercial = comercial.getObjectId("_id").toHexString();
+
+            List<String> idsClientes = new ArrayList<>();
+
+            for (Document cliente : colClientes.find(eq("idComercialAsignado", idComercial))) {
+
+                String idCliente = cliente.getObjectId("_id").toHexString();
+                idsClientes.add(idCliente);
+
+            }
+
+            for (Document doc : colInstalaciones.find(in("idCliente", idsClientes))) {
+                lista.add(doc);
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(TablaInstalacionesController.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
-    
+
         tablaInstalaciones.setItems(lista);
     }
 
@@ -152,7 +191,8 @@ public class TablaInstalacionesController implements Initializable {
     }
 
     /**
-     * Devuelve el nombre visible del cliente asociado a la instalación seleccionada.
+     * Devuelve el nombre visible del cliente asociado a la instalación
+     * seleccionada.
      *
      * @return nombre completo del cliente
      */
@@ -189,7 +229,7 @@ public class TablaInstalacionesController implements Initializable {
 
         return false;
     }
-    
+
     private String valorSeguro(String valor) {
         return valor != null ? valor : "";
     }
