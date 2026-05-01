@@ -24,4 +24,14 @@ public class SessionContext {
     public static boolean isComercial() {
         return rol == Rol.COMERCIAL;
     }
+    
+    private static String pantallaOrigen;
+
+    public static void setPantallaOrigen(String ruta) {
+        pantallaOrigen = ruta;
+    }
+
+    public static String getPantallaOrigen() {
+        return pantallaOrigen;
+    }
 }

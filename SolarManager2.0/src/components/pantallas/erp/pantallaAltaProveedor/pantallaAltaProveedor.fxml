@@ -32,8 +32,8 @@
 
                     <Button onAction="#volver" text="← Volver" />
 
-                    <Label style="-fx-font-size:18px; -fx-font-weight:bold;" text="Alta de Proveedor" />
-
+                    <Label fx:id="lblTitulo" style="-fx-font-size:18px; -fx-font-weight:bold;" text="Alta de Proveedor" />
+                    
                     <Pane HBox.hgrow="ALWAYS" />
 
                 </HBox>

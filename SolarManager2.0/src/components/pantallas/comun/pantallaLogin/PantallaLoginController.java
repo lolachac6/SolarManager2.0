@@ -43,16 +43,26 @@ public class PantallaLoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         Image logo = new Image(
                 getClass().getResource("/assets/iconos/solar_manager_logo.jpg").toExternalForm()
         );
         imgLogo.setImage(logo);
-        
-        // ENTER en usuario
-        txtUsuario.setOnAction(e -> handleAceptar());
 
-        // ENTER en contraseña
+        txtUsuario.setOnAction(e -> handleAceptar());
         txtPassword.setOnAction(e -> handleAceptar());
+
+        Platform.runLater(() -> {
+            Scene scene = txtUsuario.getScene();
+
+            if (scene != null) {
+                scene.setOnKeyPressed(event -> {
+                    if (event.getCode().toString().equals("ENTER")) {
+                        handleAceptar();
+                    }
+                });
+            }
+        });
     }
 
     @FXML

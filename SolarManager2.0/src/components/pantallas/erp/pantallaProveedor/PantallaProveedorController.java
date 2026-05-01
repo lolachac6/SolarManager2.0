@@ -115,12 +115,17 @@ public class PantallaProveedorController implements Initializable {
     }
 
     @FXML
-    private void abrirAltaProveedor(javafx.event.ActionEvent e) {
+    private void abrirAltaProveedor(ActionEvent e) {
         try {
             FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/components/pantallas/erp/pantallaAltaProveedor/pantallaAltaProveedor.fxml")
             );
+
             Parent root = loader.load();
+
+            // 👇 AQUÍ ES DONDE TE FALTA
+            PantallaAltaProveedorController controller = loader.getController();
+            controller.setModoAlta();
 
             Stage stageActual = (Stage) ((Node) e.getSource()).getScene().getWindow();
             stageActual.close();
@@ -142,42 +147,44 @@ public class PantallaProveedorController implements Initializable {
     }
 
     @FXML
-    private void modificar(ActionEvent e) {
+private void modificar(ActionEvent e) {
 
-        Proveedor seleccionado = tablaProveedores.getSelectionModel().getSelectedItem();
+    Proveedor seleccionado = tablaProveedores.getSelectionModel().getSelectedItem();
 
-        if (seleccionado == null) {
-            System.out.println("Selecciona un proveedor");
-            return;
-        }
-
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/components/pantallas/erp/pantallaAltaProveedor/pantallaAltaProveedor.fxml")
-            );
-            Parent root = loader.load();
-
-            PantallaAltaProveedorController controller = loader.getController();
-            controller.cargarProveedor(seleccionado);
-
-            Stage stageActual = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            stageActual.close();
-
-            Stage nuevoStage = new Stage();
-            nuevoStage.setScene(new Scene(root));
-            nuevoStage.setResizable(true);
-
-            Platform.runLater(() -> {
-                nuevoStage.setMaximized(true);
-                nuevoStage.centerOnScreen();
-            });
-
-            nuevoStage.show();
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+    if (seleccionado == null) {
+        System.out.println("Selecciona un proveedor");
+        return;
     }
+
+    try {
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("/components/pantallas/erp/pantallaAltaProveedor/pantallaAltaProveedor.fxml")
+        );
+
+        Parent root = loader.load();
+
+        PantallaAltaProveedorController controller = loader.getController();
+
+        controller.setProveedor(seleccionado);
+
+        Stage stageActual = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        stageActual.close();
+
+        Stage nuevoStage = new Stage();
+        nuevoStage.setScene(new Scene(root));
+        nuevoStage.setResizable(true);
+
+        Platform.runLater(() -> {
+            nuevoStage.setMaximized(true);
+            nuevoStage.centerOnScreen();
+        });
+
+        nuevoStage.show();
+
+    } catch (IOException ex) {
+        ex.printStackTrace();
+    }
+}
     
 
     @FXML

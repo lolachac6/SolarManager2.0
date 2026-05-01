@@ -66,15 +66,6 @@ public class PantallaDetalleProveedorController {
 
     @FXML
     private void cerrar() {
-        boolean confirmar = AlertasSolarManager.confirmar(
-            "Cerrar detalle",
-            "¿Deseas cerrar la ventana de detalle?"
-        );
-
-        if (!confirmar) {
-            return;
-        }
-
         Stage stage = (Stage) txtNombreEmpresa.getScene().getWindow();
         stage.close();
     }

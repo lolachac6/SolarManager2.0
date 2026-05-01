@@ -3,6 +3,7 @@ package components.pantallas.erp.pantallaAltaPresupuesto;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import components.navigation.SessionContext;
 import java.io.IOException;
 import java.rmi.server.ObjID;
 import java.time.LocalDate;
@@ -554,19 +555,36 @@ public class PantallaAltaPresupuestoController {
 
         volver(e);
     }
+    
+    /**
+     * Vuelve a la pantalla anterior según rol.
+     *
+     * @param event evento del botón
+     */
     @FXML
     private void volver(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml"));
+            String ruta;
+
+            if (SessionContext.isAdmin()) {
+                ruta = "/components/pantallas/erp/pantallaInstalaciones/PantallaInstalaciones.fxml";
+            } else if (SessionContext.isComercial()) {
+                ruta = "/components/pantallas/comercial/pantallaInstalaciones/PantallaInstalaciones.fxml";
+            } else {
+                ruta = "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml";
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.close();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+            stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
-            AlertasSolarManager.errorGenerico("Error al volver a la pantalla de comerciales");
+            AlertasSolarManager.errorGenerico("Error al volver a la pantalla anterior");
         }
     }
 }

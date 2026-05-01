@@ -102,17 +102,24 @@ public class CalculoInstalacionController implements Initializable {
      * @param rutaFXML Ruta del fichero FXML
      */
     private void cambiarPantalla(Node nodo, String rutaFXML) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(rutaFXML));
+    try {
+        URL resource = getClass().getResource(rutaFXML);
 
-            Stage stage = (Stage) nodo.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.centerOnScreen();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (resource == null) {
+            System.out.println("❌ No se encontró el FXML: " + rutaFXML);
+            return;
         }
+
+        Parent root = FXMLLoader.load(resource);
+
+        Stage stage = (Stage) nodo.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.centerOnScreen();
+
+    } catch (IOException e) {
+        e.printStackTrace();
     }
+}
 
     /**
      * Vuelve a la pantalla principal según el rol del usuario actual.
@@ -308,8 +315,19 @@ public class CalculoInstalacionController implements Initializable {
      */
     @FXML
     private void volver(ActionEvent event) {
-        cambiarPantalla((Node) event.getSource(),
-                "/components/pantallas/erp/pantallaClientes/pantallaClientes.fxml");
+
+        String ruta;
+
+        if (SessionContext.isAdmin()) {
+            ruta = "/components/pantallas/erp/pantallaClientes/PantallaClientes.fxml";
+        } else if (SessionContext.isComercial()) {
+            ruta = "/components/pantallas/comercial/pantallaGeneral/PantallaGeneral.fxml";
+        } else {
+            AlertasSolarManager.errorGenerico("Rol no definido");
+            return;
+        }
+
+        cambiarPantalla((Node) event.getSource(), ruta);
     }
 
     /**

@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -36,7 +37,7 @@ import utils.CifradoDatos;
 public class PantallaAltaProveedorController {
 
     private ObjectId proveedorId;
-    private boolean modoEdicion = false;
+    private Proveedor proveedorEditar;
 
     @FXML private TextField txtNombreEmpresa;
     @FXML private TextField txtRazonSocial;
@@ -49,6 +50,8 @@ public class PantallaAltaProveedorController {
     @FXML private TextField txtProvincia;
     @FXML private TextField txtCodigoPostal;
     @FXML private TextArea txtObservaciones;
+    @FXML private Label lblTitulo;
+ 
 
     /**
      * Inicializa la pantalla bloqueando inicialmente el formulario.
@@ -84,7 +87,6 @@ public class PantallaAltaProveedorController {
         txtDireccion.clear();
         txtObservaciones.clear();
         proveedorId = null;
-        modoEdicion = false;
         bloquearFormulario(false);
     }
 
@@ -328,7 +330,6 @@ public class PantallaAltaProveedorController {
     public void cargarProveedor(Proveedor p) {
         
         this.proveedorId = new ObjectId(p.getId());
-        this.modoEdicion = true;
 
         txtNombreEmpresa.setText(p.getNombreEmpresa());
         txtRazonSocial.setText(p.getRazonSocial());
@@ -350,9 +351,45 @@ public class PantallaAltaProveedorController {
         }
 
         bloquearFormulario(false);
-        modoEdicion = false;
     }
 
+    
+    public void setModoAlta() {
+    this.proveedorEditar = null;
+    this.proveedorId = null;
+
+    lblTitulo.setText("Alta de Proveedor");
+
+    limpiarFormulario();
+    bloquearFormulario(false);
+}
+    
+    /**
+     * Carga en el formulario los datos del proveedor recibido para edición.
+     */
+    public void setProveedor(Proveedor p) {
+
+    this.proveedorEditar = p;
+    this.proveedorId = new ObjectId(p.getId());
+
+    lblTitulo.setText("Modificar Proveedor");
+
+    txtNombreEmpresa.setText(p.getNombreEmpresa());
+    txtRazonSocial.setText(p.getRazonSocial());
+    txtCif.setText(CifradoDatos.descifrarSiEsPosible(p.getCif()));
+    txtTelefono.setText(CifradoDatos.descifrarSiEsPosible(p.getTelefono()));
+    txtEmail.setText(p.getEmail());
+    txtObservaciones.setText(p.getObservaciones());
+
+    if (p.getDireccion() != null) {
+        txtDireccion.setText(p.getDireccion().getCalle());
+        txtNumero.setText(p.getDireccion().getNumero());
+        txtMunicipio.setText(p.getDireccion().getMunicipio());
+        txtProvincia.setText(p.getDireccion().getProvincia());
+        txtCodigoPostal.setText(p.getDireccion().getCodigoPostal());
+    }
+}
+    
     /**
      * Limpia el formulario y restablece su estado inicial.
      */
@@ -365,7 +402,6 @@ public class PantallaAltaProveedorController {
         txtDireccion.clear();
         txtObservaciones.clear();
         proveedorId = null;
-        modoEdicion = false;
         bloquearFormulario(true);
     }
 

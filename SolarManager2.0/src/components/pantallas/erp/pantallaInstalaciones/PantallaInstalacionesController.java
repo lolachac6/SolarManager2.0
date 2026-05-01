@@ -3,6 +3,7 @@ package components.pantallas.erp.pantallaInstalaciones;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import components.navigation.SessionContext;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -353,10 +354,20 @@ public class PantallaInstalacionesController implements Initializable {
      *
      * @param e evento de acción
      */
-    @FXML
+   @FXML
     private void volverInicio(ActionEvent e) {
-        cambiarPantalla((Node) e.getSource(),
-                "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml");
+
+        String ruta;
+
+        if (SessionContext.isAdmin()) {
+            ruta = "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml";
+        } else if (SessionContext.isComercial()) {
+            ruta = "/components/pantallas/comercial/pantallaGeneral/pantallaGeneral.fxml";
+        } else {
+            ruta = "/components/pantallas/erp/plantillaGeneral/PlantillaGeneral.fxml";
+        }
+
+        cambiarPantalla((Node) e.getSource(), ruta);
     }
 
     /**
