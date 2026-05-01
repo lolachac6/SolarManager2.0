@@ -1,5 +1,6 @@
 package components.tablaClientes;
 
+import ConexionSupabase.SessionManager;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -24,6 +25,7 @@ import javafx.beans.property.SimpleStringProperty;
 import org.bson.Document;
 
 import java.io.IOException;
+import org.json.JSONObject;
 
 public class TablaClientesController implements Initializable {
 
@@ -65,25 +67,29 @@ public class TablaClientesController implements Initializable {
                 new SimpleStringProperty(valorSeguro(data.getValue().getString("telefono"))));
     }
 
-    private void cargarDatos() {
+     private void cargarDatos() {
 
         lista = FXCollections.observableArrayList();
 
         try {
+            JSONObject usuario = SessionManager.getUsuario();
+            String idSupabase = usuario.getString("id");
+
             MongoDatabase db = MongoConnection.conectar();
-            MongoCollection<Document> col = db.getCollection("Clientes");
+            MongoCollection<Document> comerciales = db.getCollection("Comerciales");
 
-            /*
-             * FILTRA CLIENTES POR COMERCIAL --NOS FALTA SACAR LA PARTE DE USUAIRO LOGADO ---------------------------------------------------------
-             */
-           /* String idComercialLogado = SesionUsuario.getIdUsuario();
+            Document comercial = comerciales.find(eq("supabase_id", idSupabase)).first();
 
-            for (Document doc : col.find(eq("idComercialAsignado", idComercialLogado))) {
-                lista.add(doc);
-            }*/
-           for (Document doc : col.find()) { // HAY QUE QUITAR ESTE FOR CUANDO SE IMPLEMENTE EL DE ARRIBA --------------------------------------
+            if (comercial != null) {
+
+                String idMongoComercial = comercial.getObjectId("_id").toString();
+
+                MongoCollection<Document> clientes = db.getCollection("Clientes");
+
+                for (Document doc : clientes.find(eq("idComercialAsignado", idMongoComercial))) {
                     lista.add(doc);
                 }
+            }
 
         } catch (IOException ex) {
             Logger.getLogger(TablaClientesController.class.getName()).log(Level.SEVERE, null, ex);

@@ -1,5 +1,6 @@
 package components.tablaPresupuestos;
 
+import ConexionSupabase.SessionManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -10,14 +11,18 @@ import org.bson.Document;
 import DB.MongoConnection;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.in;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import modelo.Presupuesto;
-import modelo.Cliente;
+import org.json.JSONObject;
+
 
 public class TablaPresupuestosController implements Initializable {
 
@@ -83,26 +88,74 @@ public class TablaPresupuestosController implements Initializable {
         return "";
     }
 
-    private void cargarDatos(){
+private void cargarDatos(){
 
-        lista = FXCollections.observableArrayList();
+    lista = FXCollections.observableArrayList();
 
-        try{
-            MongoDatabase db = MongoConnection.conectar();
-            MongoCollection<Document> col = db.getCollection("Presupuestos");
+    try {
+        MongoDatabase db = MongoConnection.conectar();
 
-            for(Document doc : col.find()){
-                lista.add(doc);
-                System.out.println(lista);
-            }
+        MongoCollection<Document> colPresupuestos = db.getCollection("Presupuestos");
+        MongoCollection<Document> colClientes = db.getCollection("Clientes");
+        MongoCollection<Document> colComerciales = db.getCollection("Comerciales");
 
-        } catch(IOException ex){
-            Logger.getLogger(TablaPresupuestosController.class.getName())
-                  .log(Level.SEVERE, null, ex);
+        System.out.println("🔵 Cargando presupuestos filtrados");
+
+        // 🔹 Usuario Supabase
+        JSONObject usuario = SessionManager.getUsuario();
+        String supabaseId = usuario.getString("id");
+
+        System.out.println("🟡 Supabase ID: " + supabaseId);
+
+        // 🔹 Buscar comercial en Mongo
+        Document comercial = colComerciales.find(eq("supabase_id", supabaseId)).first();
+
+        if (comercial == null) {
+            System.out.println("🔴 Comercial no encontrado en Mongo");
+            tablaPresupuestos.setItems(lista);
+            return;
         }
 
-        tablaPresupuestos.setItems(lista);
+        String idComercial = comercial.getObjectId("_id").toHexString();
+
+        System.out.println("🟡 ID Comercial Mongo: " + idComercial);
+
+        // 🔹 Clientes del comercial
+        List<String> idsClientes = new ArrayList<>();
+
+        for (Document cliente : colClientes.find(eq("idComercialAsignado", idComercial))) {
+
+            String idCliente = cliente.getObjectId("_id").toHexString();
+            idsClientes.add(idCliente);
+
+            System.out.println("🟢 Cliente: " + idCliente);
+        }
+
+        System.out.println("🟡 Total clientes: " + idsClientes.size());
+
+        if (idsClientes.isEmpty()) {
+            System.out.println("🔴 Sin clientes → no hay presupuestos");
+            tablaPresupuestos.setItems(lista);
+            return;
+        }
+
+        // 🔹 Presupuestos de esos clientes
+        for (Document doc : colPresupuestos.find(in("idCliente", idsClientes))) {
+
+            System.out.println("🟣 Presupuesto: " + doc);
+
+            lista.add(doc);
+        }
+
+        System.out.println("🟢 Total presupuestos: " + lista.size());
+
+    } catch (IOException ex) {
+        Logger.getLogger(TablaPresupuestosController.class.getName())
+              .log(Level.SEVERE, null, ex);
     }
+
+    tablaPresupuestos.setItems(lista);
+}
 
     /**
      * Devuelve el presupuesto seleccionado en la tabla.
