@@ -1,5 +1,6 @@
 package components.pantallas.comercial.pantallaGeneral;
 
+import components.navigation.SessionContext;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -147,6 +148,8 @@ public class PantallaGeneralController implements Initializable {
             );
             return;
         }
+        
+        SessionContext.setPantallaOrigen("/components/pantallas/comercial/pantallaClientes/PantallaClientes.fxml");
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
