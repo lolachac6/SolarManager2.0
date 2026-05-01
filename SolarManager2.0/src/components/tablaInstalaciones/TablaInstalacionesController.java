@@ -75,8 +75,15 @@ public class TablaInstalacionesController implements Initializable {
         colInversor.setCellValueFactory(data
                 -> new SimpleStringProperty(String.valueOf(data.getValue().get("inversor"))));
 
-        colBateria.setCellValueFactory(data
-                -> new SimpleStringProperty(String.valueOf(data.getValue().get("bateria"))));
+        colBateria.setCellValueFactory(data -> {Object valor = data.getValue().get("bateria");
+
+            if (valor instanceof Boolean) {
+                boolean tieneBateria = (Boolean) valor;
+                return new SimpleStringProperty(tieneBateria ? "Sí" : "No");
+            }
+
+            return new SimpleStringProperty("");
+        });
 
     }
 
