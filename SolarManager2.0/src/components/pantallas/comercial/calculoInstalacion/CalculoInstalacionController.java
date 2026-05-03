@@ -248,11 +248,21 @@ public class CalculoInstalacionController implements Initializable {
             int numeroPaneles = convertirAInteger(txtPanelesNecesarios);
             double potenciaInstalada = Math.round(numeroPaneles * potenciaPanel * 100.0) / 100.0;
             int numeroInversores = (int) Math.ceil(potenciaInstalada / 5.0);
+                       
+            double energiaPorPanel = convertirADouble(txtEnergiaPanel);
+            double produccion = numeroPaneles * energiaPorPanel;
+
+            double precioKWh = 0.15;      
+            double autoconsumo = 0.60;    
+
+            double ahorro = produccion * precioKWh * autoconsumo;
 
             Document instalacion = new Document()
                     .append("idCliente", idCliente)
                     .append("potenciaInstalada", potenciaInstalada)
                     .append("numeroPaneles", numeroPaneles)
+                    .append("produccionEstimada", produccion)
+                    .append("ahorroEstimado", ahorro)
                     .append("horasSol", convertirADouble(txtHorasSol))
                     .append("inversor", String.valueOf(numeroInversores))
                     .append("bateria", chkBateria.isSelected())
